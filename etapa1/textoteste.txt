@@ -10,3 +10,7 @@ print
 1.0
 .675
 #3
+// print
+/* read
+double
+*/
