@@ -3,7 +3,7 @@
 #include <string.h>
 #include "hash.h"
 
-hashTable_ref symbolTable;
+hashTable_ref tokenTable;
 
 // LinkedList module
 
@@ -11,7 +11,7 @@ linkedList_t* nil(void)
 {
 	linkedList_t* list = (linkedList_t*) malloc( sizeof(linkedList_t) );
 
-	list->symbol = NULL;
+	list->token = NULL;
 	list->tail = NULL;
 
 	return list;
@@ -19,10 +19,10 @@ linkedList_t* nil(void)
 
 int isEmpty(linkedList_t list)
 {
-	return list.symbol == NULL;
+	return list.token == NULL;
 }
 
-linkedList_t* cons(symbol_ref symbol, type_t type, linkedList_t* list)
+linkedList_t* cons(token_ref token, type_t type, linkedList_t* list)
 {
 	if(list == NULL)
 	{
@@ -32,8 +32,8 @@ linkedList_t* cons(symbol_ref symbol, type_t type, linkedList_t* list)
 	{
 		linkedList_t* newList = (linkedList_t*) malloc( sizeof(linkedList_t) );
 
-		newList->symbol = (symbol_ref) malloc( strlen(symbol) );
-		strcpy(newList->symbol, symbol);
+		newList->token = (token_ref) malloc( strlen(token) );
+		strcpy(newList->token, token);
 		newList->type = type;
 
 		newList->tail = list;
@@ -42,13 +42,13 @@ linkedList_t* cons(symbol_ref symbol, type_t type, linkedList_t* list)
 	}
 }
 
-linkedList_t* find(symbol_ref symbol, linkedList_t list)
+linkedList_t* find(token_ref token, linkedList_t list)
 {
 	linkedList_t* aux = &list;
 
 	while( !isEmpty(*aux) )
 	{
-		if(strcmp(aux->symbol, symbol) == 0)
+		if(strcmp(aux->token, token) == 0)
 		{
 			return aux;
 		}
@@ -63,14 +63,14 @@ linkedList_t* find(symbol_ref symbol, linkedList_t list)
 
 // HashTable module
 
-int hashFunction(symbol_ref symbol, int tableSize)
+int hashFunction(token_ref token, int tableSize)
 {
 	int index = 1;
 	int i;
 
-	for(i = 0; i < strlen(symbol); i++)
+	for(i = 0; i < strlen(token); i++)
 	{
-		index = ( (index * symbol[i]) % tableSize ) + 1;
+		index = ( (index * token[i]) % tableSize ) + 1;
 	}	
 
 	return index - 1;
@@ -89,11 +89,11 @@ hashTable_ref newHashTable(int size)
 	return table;
 }
 
-linkedList_t* addToTable(symbol_ref symbol, type_t type, hashTable_ref table, int tableSize)
+linkedList_t* addToTable(token_ref token, type_t type, hashTable_ref table, int tableSize)
 {
-	int index = hashFunction(symbol, tableSize);
+	int index = hashFunction(token, tableSize);
 
-	linkedList_t* pointer = find(symbol, *(table[index]));
+	linkedList_t* pointer = find(token, *(table[index]));
 
 	if(pointer != NULL)
 	{
@@ -101,33 +101,33 @@ linkedList_t* addToTable(symbol_ref symbol, type_t type, hashTable_ref table, in
 	}
 	else
 	{
-		table[index] = cons(symbol, type, table[index]);
+		table[index] = cons(token, type, table[index]);
 
 		return table[index];
 	}
 }
 
-linkedList_t* findInTable(symbol_ref symbol, hashTable_ref table, int tableSize)
+linkedList_t* findInTable(token_ref token, hashTable_ref table, int tableSize)
 {
-	int index = hashFunction(symbol, tableSize);
+	int index = hashFunction(token, tableSize);
 
-	return find(symbol, *(table[index]));
+	return find(token, *(table[index]));
 }
 
-// SymbolTable module
+// TokenTable module
 
 void initMe(void)
 {
-	symbolTable = newHashTable(SYMBOL_TABLE_SIZE);
+	tokenTable = newHashTable(TOKEN_TABLE_SIZE);
 }
 
-linkedList_t* addSymbol(symbol_ref symbol, type_t type)
+linkedList_t* addToken(token_ref token, type_t type)
 {
-	return addToTable(symbol, type, symbolTable, SYMBOL_TABLE_SIZE);
+	return addToTable(token, type, tokenTable, TOKEN_TABLE_SIZE);
 }
 
-linkedList_t* findSymbol(symbol_ref symbol)
+linkedList_t* findToken(token_ref token)
 {
-	return findInTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
+	return findInTable(token, tokenTable, TOKEN_TABLE_SIZE);
 }
 

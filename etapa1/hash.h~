@@ -1,5 +1,5 @@
 
-#define SYMBOL_TABLE_SIZE 997
+#define TOKEN_TABLE_SIZE 997
 
 typedef char* symbol_ref;
 typedef int type_t;
@@ -37,10 +37,10 @@ linkedList_t* addToTable(symbol_ref symbol, type_t type, hashTable_ref table, in
 
 linkedList_t* findInTable(symbol_ref symbol, hashTable_ref table, int tableSize);
 
-// SymbolTable
+// TokenTable
 
 void initMe(void);
 
-linkedList_t* addSymbol(symbol_ref symbol, type_t type);
+linkedList_t* addToken(symbol_ref symbol, type_t type);
 
-linkedList_t* findSymbol(symbol_ref symbol);
+linkedList_t* findToken(symbol_ref symbol);

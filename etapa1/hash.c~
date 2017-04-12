@@ -5,20 +5,6 @@
 
 hashTable_ref symbolTable;
 
-// Symbol module
-
-void printSymbol(symbol_ref symbol)
-{
-	printf("%s", symbol);
-}
-
-// Type module
-
-void printType(type_t type)
-{
-	printf("%d", type);
-}
-
 // LinkedList module
 
 linkedList_t* nil(void)
@@ -75,26 +61,6 @@ linkedList_t* find(symbol_ref symbol, linkedList_t list)
 	return NULL;
 }
 
-void printList(linkedList_t list)
-{
-	linkedList_t* aux = &list;
-
-	while( !isEmpty(*aux) )
-	{
-		printf("(");
-		printSymbol(aux->symbol);
-		printf(" : ");
-		printType(aux->type);
-		printf(")");
-		
-		printf(" :: ");
-		
-		aux = aux->tail;
-	}
-
-	printf("[]");
-}
-
 // HashTable module
 
 int hashFunction(symbol_ref symbol, int tableSize)
@@ -148,22 +114,6 @@ linkedList_t* findInTable(symbol_ref symbol, hashTable_ref table, int tableSize)
 	return find(symbol, *(table[index]));
 }
 
-void printTable(hashTable_ref table, int tableSize)
-{
-	int i;
-
-	printf("{\n");
-
-	for(i = 0; i < tableSize; i++)
-	{
-		printf("\t");
-		printList( *(table[i]) );
-		printf("\n");
-	}
-
-	printf("}");
-}
-
 // SymbolTable module
 
 void initMe(void)
@@ -180,49 +130,4 @@ linkedList_t* findSymbol(symbol_ref symbol)
 {
 	return findInTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
-
-void printSymbolTable(void)
-{
-	printTable(symbolTable, SYMBOL_TABLE_SIZE);
-}
-
-/*
-int main()
-{
-	linkedList_t list = *cons("4", 1, cons("1", 1, cons("7", 1, nil())));
-	printList(list);
-	printf("\n");
-	hashTable_ref table = newHashTable(10);
-	printSymbol(addToTable("666", 1, table, 10)->symbol);
-	printf("\n");
-	printSymbol(addToTable("007", 1, table, 10)->symbol);
-	printf("\n");
-	printSymbol(addToTable("1984", 1, table, 10)->symbol);
-	printf("\n");
-	printSymbol(addToTable("666", 2, table, 10)->symbol);
-	printf("\n");
-	printSymbol(addToTable("banana", 2, table, 10)->symbol);
-	printf("\n");
-	printSymbol(addToTable("e", 2, table, 10)->symbol);
-	printf("\n");
-	printSymbol(addToTable("coentro", 2, table, 10)->symbol);
-	printf("\n");
-
-	printTable(table, 10);
-	initMe();
-	
-	addSymbol("the", 3);
-	addSymbol("quick", 4);
-	addSymbol("brown", 5);
-	addSymbol("fox", 6);
-	addSymbol("jumps", 7);
-	addSymbol("over", 8);
-	addSymbol("the", 9);
-	addSymbol("lazy", 10);
-	addSymbol("dog", 11);
-
-	printSymbolTable();
-	printf("\n");
-}
-*/
 
