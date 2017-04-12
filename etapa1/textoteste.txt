@@ -1,0 +1,10 @@
+when byte short
+1 when "stringzona" char 'c' char == =
+
+read 
+print
+1 1 11 111 
+11.11 
+1.1 
+0.1 
+1.0
