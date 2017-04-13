@@ -3,11 +3,11 @@
 	#include "tokens.h"
 	#include "hash.c"
 	
-	int open_input(char* file_path);
 	int token;
 	int line_number = 1;
-	int getLineNumber(void);
 	int running = 1;
+	int getLineNumber(void);
+	int isRunning(void);
 	int open_input(char* file_path);
 	
 	#include "main.c"
@@ -92,4 +92,9 @@ int open_input(char* file_path)
 int getLineNumber()
 {
 	return line_number;
+}
+
+int isRunning()
+{
+	return running;
 }

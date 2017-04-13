@@ -44,12 +44,12 @@
 "||"							{ return OPERATOR_OR;}
 
 
-[0-9]+							{ addSymbol(yytext, LIT_INTEGER	); return LIT_INTEGER; }
-[0-9]+\.[0-9]+					{ addSymbol(yytext, LIT_REAL); return LIT_REAL;  }
-\'[^']\'						{ addSymbol(yytext, LIT_CHAR	); return LIT_CHAR; 	}
-\"[^"]*\"						{ addSymbol(yytext, LIT_STRING	); return LIT_STRING; 	}
+[0-9]+							{ addToken(yytext, LIT_INTEGER	); return LIT_INTEGER; }
+[0-9]+\.[0-9]+					{ addToken(yytext, LIT_REAL); return LIT_REAL;  }
+\'[^']\'						{ addToken(yytext, LIT_CHAR	); return LIT_CHAR; 	}
+\"[^"]*\"						{ addToken(yytext, LIT_STRING	); return LIT_STRING; 	}
 
-[a-zA-Z_][a-zA-Z0-9_]*			{ addSymbol(yytext, TK_IDENTIFIER); return TK_IDENTIFIER; 	}
+[a-zA-Z_][a-zA-Z0-9_]*			{ addToken(yytext, TK_IDENTIFIER); return TK_IDENTIFIER; 	}
 
 "\n"							{ line_number++; }
 " "|"	"						{ 		}

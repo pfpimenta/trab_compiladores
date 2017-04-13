@@ -26,7 +26,5 @@ int main(int argc, char** argv)
 
 	printf("Your program has %d lines\n", getLineNumber()-1);
 
-	printSymbolTable();
-
 	return 1;
 }

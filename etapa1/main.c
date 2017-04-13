@@ -14,11 +14,11 @@ int main(int argc, char** argv)
 
 	initMe();
 
-	while(running)
+	while(isRunning())
 	{
 		token = yylex();
 		
-		if(!running)
+		if(!isRunning())
 			break;
 		
 		printf("token: %d (line %d)\n", token, getLineNumber());
