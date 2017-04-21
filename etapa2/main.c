@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "hash.h"
 #include "y.tab.h"
 
 int main(int argc, char** argv)
@@ -30,7 +31,9 @@ int main(int argc, char** argv)
     */
     yyparse();
 
+    //se chegou ate aqui, o programa de input esta correto
     fprintf(stderr,"programa %s aceito\n", argv[1]);
-	
+    // exit(0);	//??
+
     return 1;
 }

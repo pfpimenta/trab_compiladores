@@ -1,0 +1,162 @@
+   0  $accept : program $end
+
+   1  program : cmdlist
+
+   2  cmdlist : cmd ';' cmdlist
+   3          | cmd
+
+   4  cmd : LIT_INTEGER
+   5      | TK_IDENTIFIER '=' expr
+
+   6  expr : expr '*' expr
+   7       | '(' expr ')'
+   8       | LIT_INTEGER
+   9       | TK_IDENTIFIER
+
+state 0
+	$accept : . program $end  (0)
+
+	TK_IDENTIFIER  shift 1
+	LIT_INTEGER  shift 2
+	.  error
+
+	program  goto 3
+	cmdlist  goto 4
+	cmd  goto 5
+
+
+state 1
+	cmd : TK_IDENTIFIER . '=' expr  (5)
+
+	'='  shift 6
+	.  error
+
+
+state 2
+	cmd : LIT_INTEGER .  (4)
+
+	.  reduce 4
+
+
+state 3
+	$accept : program . $end  (0)
+
+	$end  accept
+
+
+state 4
+	program : cmdlist .  (1)
+
+	.  reduce 1
+
+
+state 5
+	cmdlist : cmd . ';' cmdlist  (2)
+	cmdlist : cmd .  (3)
+
+	';'  shift 7
+	$end  reduce 3
+
+
+state 6
+	cmd : TK_IDENTIFIER '=' . expr  (5)
+
+	TK_IDENTIFIER  shift 8
+	LIT_INTEGER  shift 9
+	'('  shift 10
+	.  error
+
+	expr  goto 11
+
+
+state 7
+	cmdlist : cmd ';' . cmdlist  (2)
+
+	TK_IDENTIFIER  shift 1
+	LIT_INTEGER  shift 2
+	.  error
+
+	cmdlist  goto 12
+	cmd  goto 5
+
+
+state 8
+	expr : TK_IDENTIFIER .  (9)
+
+	.  reduce 9
+
+
+state 9
+	expr : LIT_INTEGER .  (8)
+
+	.  reduce 8
+
+
+state 10
+	expr : '(' . expr ')'  (7)
+
+	TK_IDENTIFIER  shift 8
+	LIT_INTEGER  shift 9
+	'('  shift 10
+	.  error
+
+	expr  goto 13
+
+
+state 11
+	cmd : TK_IDENTIFIER '=' expr .  (5)
+	expr : expr . '*' expr  (6)
+
+	'*'  shift 14
+	$end  reduce 5
+	';'  reduce 5
+
+
+state 12
+	cmdlist : cmd ';' cmdlist .  (2)
+
+	.  reduce 2
+
+
+state 13
+	expr : expr . '*' expr  (6)
+	expr : '(' expr . ')'  (7)
+
+	'*'  shift 14
+	')'  shift 15
+	.  error
+
+
+state 14
+	expr : expr '*' . expr  (6)
+
+	TK_IDENTIFIER  shift 8
+	LIT_INTEGER  shift 9
+	'('  shift 10
+	.  error
+
+	expr  goto 16
+
+
+state 15
+	expr : '(' expr ')' .  (7)
+
+	.  reduce 7
+
+
+16: shift/reduce conflict (shift 14, reduce 6) on '*'
+state 16
+	expr : expr . '*' expr  (6)
+	expr : expr '*' expr .  (6)
+
+	'*'  shift 14
+	$end  reduce 6
+	';'  reduce 6
+	')'  reduce 6
+
+
+State 16 contains 1 shift/reduce conflict.
+
+
+32 terminals, 5 nonterminals
+10 grammar rules, 17 states

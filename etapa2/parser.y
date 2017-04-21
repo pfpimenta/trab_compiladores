@@ -7,6 +7,7 @@
 %}
 
 
+%union{ linkedList_t* symbol; }
 
 %token KW_BYTE
 %token KW_SHORT
