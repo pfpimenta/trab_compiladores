@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "y.tab.h"
 
 int main(int argc, char** argv)
 {
@@ -14,7 +15,7 @@ int main(int argc, char** argv)
 
 	initMe();
 
-	while(isRunning())
+	/*while(isRunning())
 	{
 		token = yylex();
 		
@@ -23,8 +24,12 @@ int main(int argc, char** argv)
 		
 		printf("token: %d (line %d)\n", token, getLineNumber());
 	}
+    
 
 	printf("Your program has %d lines\n", getLineNumber()-1);
-
-	return 1;
+    */
+    yyparse();
+    fprintf(stderr,"cannot open file name %s\n", argv[1]);
+	
+    return 1;
 }

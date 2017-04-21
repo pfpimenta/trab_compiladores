@@ -1,7 +1,7 @@
 %{
 	#include <stdio.h>
-	#include "tokens.h"
 	#include "hash.c"
+	#include "y.tab.h"
 	
 	int token;
 	int line_number = 1;
