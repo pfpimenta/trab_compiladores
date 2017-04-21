@@ -53,5 +53,6 @@ expr: expr '*' expr | '(' expr ')' | LIT_INTEGER | TK_IDENTIFIER
 
 void yyerror(char *s)
 {
-    fprintf(stdout, "%s\n", s);
+    int lineNum = getLineNumber();
+    fprintf(stdout, "ERROR\n%s\nna linha: %i\n\n   ", s, lineNum);
 }

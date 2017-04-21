@@ -29,7 +29,8 @@ int main(int argc, char** argv)
 	printf("Your program has %d lines\n", getLineNumber()-1);
     */
     yyparse();
-    fprintf(stderr,"cannot open file name %s\n", argv[1]);
+
+    fprintf(stderr,"programa %s aceito\n", argv[1]);
 	
     return 1;
 }
