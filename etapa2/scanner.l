@@ -9,8 +9,6 @@
 	int getLineNumber(void);
 	int isRunning(void);
 	int open_input(char* file_path);
-	
-	#include "main.c"
 %}
 
 %x COMMENT
