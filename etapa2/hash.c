@@ -3,52 +3,44 @@
 #include <string.h>
 #include "hash.h"
 
-hashTable_ref tokenTable;
+hashTable_ref symbolTable;
+
+// Symbol module
+
+int equal(symbol_t symbol1, symbol_t symbol2)
+{
+	return (symbol1.type == symbol2.type) && (strcmp(symbol1.text, symbol2.text) == 0);
+}
 
 // LinkedList module
 
 linkedList_t* nil(void)
 {
-	linkedList_t* list = (linkedList_t*) malloc( sizeof(linkedList_t) );
-
-	list->token = NULL;
-	list->tail = NULL;
-
-	return list;
+	return NULL;
 }
 
-int isEmpty(linkedList_t list)
+int isEmpty(linkedList_t* list)
 {
-	return list.token == NULL;
+	return list == NULL;
 }
 
-linkedList_t* cons(token_ref token, type_t type, linkedList_t* list)
+linkedList_t* cons(symbol_t symbol, linkedList_t* list)
 {
-	if(list == NULL)
-	{
-		return NULL;
-	}
-	else
-	{
-		linkedList_t* newList = (linkedList_t*) malloc( sizeof(linkedList_t) );
+	linkedList_t* newList = (linkedList_t*) malloc( sizeof(linkedList_t) );
 
-		newList->token = (token_ref) malloc( strlen(token) );
-		strcpy(newList->token, token);
-		newList->type = type;
+	newList->symbol = symbol;
+	newList->tail = list;
 
-		newList->tail = list;
-
-		return newList;
-	}
+	return newList;
 }
 
-linkedList_t* find(token_ref token, linkedList_t list)
+linkedList_t* find(symbol_t symbol, linkedList_t* list)
 {
-	linkedList_t* aux = &list;
+	linkedList_t* aux = list;
 
-	while( !isEmpty(*aux) )
+	while( !isEmpty(aux) )
 	{
-		if(strcmp(aux->token, token) == 0)
+		if(equal(aux->symbol, symbol))
 		{
 			return aux;
 		}
@@ -61,16 +53,17 @@ linkedList_t* find(token_ref token, linkedList_t list)
 	return NULL;
 }
 
+
 // HashTable module
 
-int hashFunction(token_ref token, int tableSize)
+int hashFunction(char* text, int tableSize)
 {
 	int index = 1;
 	int i;
 
-	for(i = 0; i < strlen(token); i++)
+	for(i = 0; i < strlen(text); i++)
 	{
-		index = ( (index * token[i]) % tableSize ) + 1;
+		index = ( (index * text[i]) % tableSize ) + 1;
 	}	
 
 	return index - 1;
@@ -89,11 +82,11 @@ hashTable_ref newHashTable(int size)
 	return table;
 }
 
-linkedList_t* addToTable(token_ref token, type_t type, hashTable_ref table, int tableSize)
+linkedList_t* addToTable(symbol_t symbol, hashTable_ref table, int tableSize)
 {
-	int index = hashFunction(token, tableSize);
+	int index = hashFunction(symbol.text, tableSize);
 
-	linkedList_t* pointer = find(token, *(table[index]));
+	linkedList_t* pointer = find(symbol, table[index]);
 
 	if(pointer != NULL)
 	{
@@ -101,60 +94,52 @@ linkedList_t* addToTable(token_ref token, type_t type, hashTable_ref table, int 
 	}
 	else
 	{
-		table[index] = cons(token, type, table[index]);
+		table[index] = cons(symbol, table[index]);
 
 		return table[index];
 	}
 }
 
-linkedList_t* findInTable(token_ref token, hashTable_ref table, int tableSize)
+linkedList_t* findInTable(symbol_t symbol, hashTable_ref table, int tableSize)
 {
-	int index = hashFunction(token, tableSize);
+	int index = hashFunction(symbol.text, tableSize);
 
-	return find(token, *(table[index]));
+	return find(symbol, table[index]);
 }
 
-// TokenTable module
+
+// SymbolTable module
 
 void initMe(void)
 {
-	tokenTable = newHashTable(TOKEN_TABLE_SIZE);
+	symbolTable = newHashTable(SYMBOL_TABLE_SIZE);
 }
 
-linkedList_t* addToken(token_ref token, type_t type)
+char* removeQuotes(char* s)
 {
-	return addToTable(token, type, tokenTable, TOKEN_TABLE_SIZE);
+	int newLength = strlen(s) - 2;
+	char* s2 = (char*) calloc(newLength + 1, sizeof(char));
+	strncpy(s2, s + 1, newLength);
+
+	return s2;
 }
 
-linkedList_t* findToken(token_ref token)
+linkedList_t* addSymbol(char* text, type_t type)
 {
-	return findInTable(token, tokenTable, TOKEN_TABLE_SIZE);
+	symbol_t symbol;
+	symbol.text = (char*) calloc(strlen(text) + 1, sizeof(char));
+	strcpy(symbol.text, text);
+	symbol.type = type;
+
+	return addToTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
 
-// Printing Table
-
-void printType(type_t type)
+linkedList_t* findSymbol(symbol_t symbol)
 {
-	switch(type)
-	{
-		case SYMBOL_LIT_INTEGER:
-			fprintf(stderr,"int");
-			break;
-		case SYMBOL_LIT_REAL:
-			fprintf(stderr,"real");
-			break;
-		case SYMBOL_LIT_CHAR:
-			fprintf(stderr,"char");
-			break;
-		case SYMBOL_LIT_STRING:
-			fprintf(stderr,"string");
-			break;
-		case SYMBOL_TK_IDENTIFIER:
-			fprint(stderr,"identifier");
-			break;
-	}
+	return findInTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
 
+// Printing Tables
 
 void printSymbol(symbol_t symbol)
 {
@@ -165,14 +150,35 @@ void printSymbol(symbol_t symbol)
 	fprintf(stderr,")");
 }
 
+void printType(type_t type)
+{
+	switch(type)
+	{
+		case SYMBOL_LIT_INTEGER:
+			fprintf(stderr,"int");
+			break;
+		case SYMBOL_LIT_REAL:
+			fprintf(stderr,"true");
+			break;
+		case SYMBOL_LIT_CHAR:
+			fprintf(stderr,"char");
+			break;
+		case SYMBOL_LIT_STRING:
+			fprintf(stderr,"string");
+			break;
+		case SYMBOL_TK_IDENTIFIER:
+			fprintf(stderr,"id");
+			break;
+	}
+}
 
 void printList(linkedList_t* list)
 {
-	linkedList_t* aux = &list;
+	linkedList_t* aux = list;
 
-	while( !isEmpty(*aux) )
+	while( !isEmpty(aux) )
 	{
-		printSymbol(aux->token);
+		printSymbol(aux->symbol);
 		
 		fprintf(stderr," :: ");
 		
@@ -200,5 +206,5 @@ void printTable(hashTable_ref table, int tableSize)
 
 void printSymbolTable(void)
 {
-	printTable(tokenTable, TOKEN_TABLE_SIZE);
+	printTable(symbolTable, SYMBOL_TABLE_SIZE);
 }

@@ -1,5 +1,4 @@
-
-#define TOKEN_TABLE_SIZE 997
+#define SYMBOL_TABLE_SIZE 997
 
 #define SYMBOL_LIT_INTEGER 1
 #define SYMBOL_LIT_REAL 2
@@ -7,8 +6,6 @@
 #define SYMBOL_LIT_STRING 4
 #define SYMBOL_TK_IDENTIFIER 5
 
-
-typedef char* token_ref;
 typedef int type_t;
 
 union value_s
@@ -29,54 +26,57 @@ struct symbol_s
 
 struct linkedList_s
 {
-	token_ref token;
-	type_t type;
+	struct symbol_s symbol;
 	struct linkedList_s* tail;
 };
 
-typedef struct linkedList_s linkedList_t;
-
 typedef struct symbol_s symbol_t;
+
+typedef struct linkedList_s linkedList_t;
 
 typedef linkedList_t** hashTable_ref;
 
+// Symbol module
 
-// LinkedList
+int equal(symbol_t symbol1, symbol_t symbol2);
+
+// LinkedList module
 
 linkedList_t* nil(void);
 
-int isEmpty(linkedList_t list);
+int isEmpty(linkedList_t* list);
 
-linkedList_t* cons(token_ref token, type_t type, linkedList_t* list);
+linkedList_t* cons(symbol_t symbol, linkedList_t* list);
 
-linkedList_t* find(token_ref token, linkedList_t list);
+linkedList_t* find(symbol_t symbol, linkedList_t* list);
 
 
-// HashTable
+// HashTable module
 
-int hashFunction(token_ref token, int tableSize);
+int hashFunction(char* text, int tableSize);
 
 hashTable_ref newHashTable(int size);
 
-linkedList_t* addToTable(token_ref token, type_t type, hashTable_ref table, int tableSize);
+linkedList_t* addToTable(symbol_t symbol, hashTable_ref table, int tableSize);
 
-linkedList_t* findInTable(token_ref token, hashTable_ref table, int tableSize);
+linkedList_t* findInTable(symbol_t symbol, hashTable_ref table, int tableSize);
 
-
-// TokenTable
+// SymbolTable module
 
 void initMe(void);
 
-linkedList_t* addToken(token_ref token, type_t type);
+char* removeQuotes(char* s);
 
-linkedList_t* findToken(token_ref token);
+linkedList_t* addSymbol(char* text, type_t type);
+
+linkedList_t* findSymbol(symbol_t symbol);
 
 
 // Printing Table
 
-void printType(type_t type);
-
 void printSymbol(symbol_t symbol);
+
+void printType(type_t type);
 
 void printList(linkedList_t* list);
 

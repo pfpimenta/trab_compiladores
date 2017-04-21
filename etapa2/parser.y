@@ -7,6 +7,8 @@
 %}
 
 
+%union{ linkedList_t* symbol; }
+
 %token KW_BYTE
 %token KW_SHORT
 %token KW_LONG
@@ -28,12 +30,12 @@
 %token OPERATOR_AND
 %token OPERATOR_OR
 
-%token TK_IDENTIFIER
+%token <symbol> TK_IDENTIFIER
 
-%token LIT_INTEGER
-%token LIT_REAL
-%token LIT_CHAR
-%token LIT_STRING
+%token <symbol> LIT_INTEGER
+%token <symbol> LIT_REAL
+%token <symbol> LIT_CHAR
+%token <symbol> LIT_STRING
 
 %token TOKEN_ERROR
 
@@ -56,4 +58,6 @@ void yyerror(char *s)
 {
     int lineNum = getLineNumber();
     fprintf(stdout, "ERROR\n%s\nna linha: %i\n\n   ", s, lineNum);
+    
+    exit(3);
 }

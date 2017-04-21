@@ -1,6 +1,6 @@
 %{
 	#include <stdio.h>
-	#include "hash.c"
+	#include "hash.h"
 	#include "y.tab.h"
 	
 	int token;
@@ -42,12 +42,12 @@
 "||"							{ return OPERATOR_OR;}
 
 
-[0-9]+							{ addToken(yytext, LIT_INTEGER	); return LIT_INTEGER; }
-[0-9]+\.[0-9]+					{ addToken(yytext, LIT_REAL); return LIT_REAL;  }
-\'[^']\'						{ addToken(yytext, LIT_CHAR	); return LIT_CHAR; 	}
-\"[^"]*\"						{ addToken(yytext, LIT_STRING	); return LIT_STRING; 	}
+[0-9]+							{ yylval.symbol =  addSymbol(yytext, LIT_INTEGER	); return LIT_INTEGER; }
+[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, LIT_REAL); return LIT_REAL;  }
+\'[^']\'						{ yylval.symbol = addSymbol(yytext, LIT_CHAR	); return LIT_CHAR; 	}
+\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, LIT_STRING	); return LIT_STRING; 	}
 
-[a-zA-Z_][a-zA-Z0-9_]*			{ addToken(yytext, TK_IDENTIFIER); return TK_IDENTIFIER; 	}
+[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, TK_IDENTIFIER); return TK_IDENTIFIER; 	}
 
 "\n"							{ line_number++; }
 " "|"	"						{ 		}
