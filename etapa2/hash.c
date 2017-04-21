@@ -131,3 +131,74 @@ linkedList_t* findToken(token_ref token)
 	return findInTable(token, tokenTable, TOKEN_TABLE_SIZE);
 }
 
+// Printing Table
+
+void printType(type_t type)
+{
+	switch(type)
+	{
+		case SYMBOL_LIT_INTEGER:
+			fprintf(stderr,"int");
+			break;
+		case SYMBOL_LIT_REAL:
+			fprintf(stderr,"real");
+			break;
+		case SYMBOL_LIT_CHAR:
+			fprintf(stderr,"char");
+			break;
+		case SYMBOL_LIT_STRING:
+			fprintf(stderr,"string");
+			break;
+		case SYMBOL_TK_IDENTIFIER:
+			fprint(stderr,"identifier");
+			break;
+	}
+}
+
+
+void printSymbol(symbol_t symbol)
+{
+	fprintf(stderr,"(");
+	fprintf(stderr,"%s",symbol.text);
+	fprintf(stderr," : ");
+	printType(symbol.type);
+	fprintf(stderr,")");
+}
+
+
+void printList(linkedList_t* list)
+{
+	linkedList_t* aux = &list;
+
+	while( !isEmpty(*aux) )
+	{
+		printSymbol(aux->token);
+		
+		fprintf(stderr," :: ");
+		
+		aux = aux->tail;
+	}
+
+	fprintf(stderr,"[]");
+}
+
+void printTable(hashTable_ref table, int tableSize)
+{
+	int i;
+
+	fprintf(stderr,"{\n");
+
+	for(i = 0; i < tableSize; i++)
+	{
+		fprintf(stderr,"\t");
+		printList(table[i]);
+		fprintf(stderr,"\n");
+	}
+
+	fprintf(stderr,"}\n");
+}
+
+void printSymbolTable(void)
+{
+	printTable(tokenTable, TOKEN_TABLE_SIZE);
+}

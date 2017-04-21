@@ -28,7 +28,8 @@
 %token OPERATOR_AND
 %token OPERATOR_OR
 
-%token TK_IDENTIFIER 
+%token TK_IDENTIFIER
+
 %token LIT_INTEGER
 %token LIT_REAL
 %token LIT_CHAR
