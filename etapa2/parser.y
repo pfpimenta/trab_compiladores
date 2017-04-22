@@ -19,6 +19,7 @@
 %token KW_ELSE
 %token KW_WHILE
 %token KW_FOR
+%token KW_TO
 %token KW_READ
 %token KW_RETURN
 %token KW_PRINT
@@ -42,11 +43,38 @@
 
 %%
 
-program : cmdlist 
+program : declist 
     ;
-
-cmdlist : cmd ';' cmdlist | cmd 
+declist: dec declist 
+	| /* nada */
+	;
+dec: funcdec | vardec
+	;
+vardec: TK_IDENTIFIER ':' vartypeandvalue ';'
+	;
+vartypeandvalue: KW_BYTE LIT_CHAR
+	| KW_BYTE LIT_INTEGER
+	| KW_SHORT LIT_INTEGER
+	| KW_LONG LIT_INTEGER
+	;
+funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody
+	;
+parameters: paramlist
+	| /* nada */
+	;
+paramlist: param ',' paramlist | param
+	;
+param:	vartype TK_IDENTIFIER
+	;
+vartype: KW_BYTE | KW_SHORT | KW_LONG | KW_FLOAT | KW_DOUBLE
+	;
+funcbody: cmd
+	;
+cmdlist : cmdlisttail
+	| /* nada */
     ;
+cmdlisttail: cmd ';' cmdlisttail | cmd
+	;
 cmd : LIT_INTEGER | TK_IDENTIFIER '=' expr
     ; 
 

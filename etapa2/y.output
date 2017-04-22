@@ -1,162 +1,450 @@
    0  $accept : program $end
 
-   1  program : cmdlist
+   1  program : declist
 
-   2  cmdlist : cmd ';' cmdlist
-   3          | cmd
+   2  declist : dec declist
+   3          |
 
-   4  cmd : LIT_INTEGER
-   5      | TK_IDENTIFIER '=' expr
+   4  dec : funcdec
+   5      | vardec
 
-   6  expr : expr '*' expr
-   7       | '(' expr ')'
-   8       | LIT_INTEGER
-   9       | TK_IDENTIFIER
+   6  vardec : TK_IDENTIFIER ':' vartypeandvalue ';'
+
+   7  vartypeandvalue : KW_BYTE LIT_CHAR
+   8                  | KW_BYTE LIT_INTEGER
+   9                  | KW_SHORT LIT_INTEGER
+  10                  | KW_LONG LIT_INTEGER
+
+  11  funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody
+
+  12  parameters : paramlist
+  13             |
+
+  14  paramlist : param ',' paramlist
+  15            | param
+
+  16  param : vartype TK_IDENTIFIER
+
+  17  vartype : KW_BYTE
+  18          | KW_SHORT
+  19          | KW_LONG
+  20          | KW_FLOAT
+  21          | KW_DOUBLE
+
+  22  funcbody : cmd
+
+  23  cmdlist : cmdlisttail
+  24          |
+
+  25  cmdlisttail : cmd ';' cmdlisttail
+  26              | cmd
+
+  27  cmd : LIT_INTEGER
+  28      | TK_IDENTIFIER '=' expr
+
+  29  expr : expr '*' expr
+  30       | '(' expr ')'
+  31       | LIT_INTEGER
+  32       | TK_IDENTIFIER
 
 state 0
 	$accept : . program $end  (0)
+	declist : .  (3)
 
-	TK_IDENTIFIER  shift 1
-	LIT_INTEGER  shift 2
-	.  error
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	TK_IDENTIFIER  shift 6
+	$end  reduce 3
 
-	program  goto 3
-	cmdlist  goto 4
-	cmd  goto 5
+	program  goto 7
+	declist  goto 8
+	dec  goto 9
+	funcdec  goto 10
+	vardec  goto 11
+	vartype  goto 12
 
 
 state 1
-	cmd : TK_IDENTIFIER . '=' expr  (5)
+	vartype : KW_BYTE .  (17)
 
-	'='  shift 6
-	.  error
+	.  reduce 17
 
 
 state 2
-	cmd : LIT_INTEGER .  (4)
+	vartype : KW_SHORT .  (18)
 
-	.  reduce 4
+	.  reduce 18
 
 
 state 3
+	vartype : KW_LONG .  (19)
+
+	.  reduce 19
+
+
+state 4
+	vartype : KW_FLOAT .  (20)
+
+	.  reduce 20
+
+
+state 5
+	vartype : KW_DOUBLE .  (21)
+
+	.  reduce 21
+
+
+state 6
+	vardec : TK_IDENTIFIER . ':' vartypeandvalue ';'  (6)
+
+	':'  shift 13
+	.  error
+
+
+state 7
 	$accept : program . $end  (0)
 
 	$end  accept
 
 
-state 4
-	program : cmdlist .  (1)
+state 8
+	program : declist .  (1)
 
 	.  reduce 1
 
 
-state 5
-	cmdlist : cmd . ';' cmdlist  (2)
-	cmdlist : cmd .  (3)
+state 9
+	declist : dec . declist  (2)
+	declist : .  (3)
 
-	';'  shift 7
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	TK_IDENTIFIER  shift 6
 	$end  reduce 3
 
-
-state 6
-	cmd : TK_IDENTIFIER '=' . expr  (5)
-
-	TK_IDENTIFIER  shift 8
-	LIT_INTEGER  shift 9
-	'('  shift 10
-	.  error
-
-	expr  goto 11
-
-
-state 7
-	cmdlist : cmd ';' . cmdlist  (2)
-
-	TK_IDENTIFIER  shift 1
-	LIT_INTEGER  shift 2
-	.  error
-
-	cmdlist  goto 12
-	cmd  goto 5
-
-
-state 8
-	expr : TK_IDENTIFIER .  (9)
-
-	.  reduce 9
-
-
-state 9
-	expr : LIT_INTEGER .  (8)
-
-	.  reduce 8
+	declist  goto 14
+	dec  goto 9
+	funcdec  goto 10
+	vardec  goto 11
+	vartype  goto 12
 
 
 state 10
-	expr : '(' . expr ')'  (7)
+	dec : funcdec .  (4)
 
-	TK_IDENTIFIER  shift 8
-	LIT_INTEGER  shift 9
-	'('  shift 10
-	.  error
-
-	expr  goto 13
+	.  reduce 4
 
 
 state 11
-	cmd : TK_IDENTIFIER '=' expr .  (5)
-	expr : expr . '*' expr  (6)
+	dec : vardec .  (5)
 
-	'*'  shift 14
-	$end  reduce 5
-	';'  reduce 5
+	.  reduce 5
 
 
 state 12
-	cmdlist : cmd ';' cmdlist .  (2)
+	funcdec : vartype . TK_IDENTIFIER '(' parameters ')' funcbody  (11)
+
+	TK_IDENTIFIER  shift 15
+	.  error
+
+
+state 13
+	vardec : TK_IDENTIFIER ':' . vartypeandvalue ';'  (6)
+
+	KW_BYTE  shift 16
+	KW_SHORT  shift 17
+	KW_LONG  shift 18
+	.  error
+
+	vartypeandvalue  goto 19
+
+
+state 14
+	declist : dec declist .  (2)
 
 	.  reduce 2
 
 
-state 13
-	expr : expr . '*' expr  (6)
-	expr : '(' expr . ')'  (7)
-
-	'*'  shift 14
-	')'  shift 15
-	.  error
-
-
-state 14
-	expr : expr '*' . expr  (6)
-
-	TK_IDENTIFIER  shift 8
-	LIT_INTEGER  shift 9
-	'('  shift 10
-	.  error
-
-	expr  goto 16
-
-
 state 15
-	expr : '(' expr ')' .  (7)
+	funcdec : vartype TK_IDENTIFIER . '(' parameters ')' funcbody  (11)
+
+	'('  shift 20
+	.  error
+
+
+state 16
+	vartypeandvalue : KW_BYTE . LIT_CHAR  (7)
+	vartypeandvalue : KW_BYTE . LIT_INTEGER  (8)
+
+	LIT_INTEGER  shift 21
+	LIT_CHAR  shift 22
+	.  error
+
+
+state 17
+	vartypeandvalue : KW_SHORT . LIT_INTEGER  (9)
+
+	LIT_INTEGER  shift 23
+	.  error
+
+
+state 18
+	vartypeandvalue : KW_LONG . LIT_INTEGER  (10)
+
+	LIT_INTEGER  shift 24
+	.  error
+
+
+state 19
+	vardec : TK_IDENTIFIER ':' vartypeandvalue . ';'  (6)
+
+	';'  shift 25
+	.  error
+
+
+state 20
+	funcdec : vartype TK_IDENTIFIER '(' . parameters ')' funcbody  (11)
+	parameters : .  (13)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	')'  reduce 13
+
+	vartype  goto 26
+	parameters  goto 27
+	paramlist  goto 28
+	param  goto 29
+
+
+state 21
+	vartypeandvalue : KW_BYTE LIT_INTEGER .  (8)
+
+	.  reduce 8
+
+
+state 22
+	vartypeandvalue : KW_BYTE LIT_CHAR .  (7)
 
 	.  reduce 7
 
 
-16: shift/reduce conflict (shift 14, reduce 6) on '*'
-state 16
-	expr : expr . '*' expr  (6)
-	expr : expr '*' expr .  (6)
+state 23
+	vartypeandvalue : KW_SHORT LIT_INTEGER .  (9)
 
-	'*'  shift 14
-	$end  reduce 6
-	';'  reduce 6
-	')'  reduce 6
+	.  reduce 9
 
 
-State 16 contains 1 shift/reduce conflict.
+state 24
+	vartypeandvalue : KW_LONG LIT_INTEGER .  (10)
+
+	.  reduce 10
 
 
-32 terminals, 5 nonterminals
-10 grammar rules, 17 states
+state 25
+	vardec : TK_IDENTIFIER ':' vartypeandvalue ';' .  (6)
+
+	.  reduce 6
+
+
+state 26
+	param : vartype . TK_IDENTIFIER  (16)
+
+	TK_IDENTIFIER  shift 30
+	.  error
+
+
+state 27
+	funcdec : vartype TK_IDENTIFIER '(' parameters . ')' funcbody  (11)
+
+	')'  shift 31
+	.  error
+
+
+state 28
+	parameters : paramlist .  (12)
+
+	.  reduce 12
+
+
+state 29
+	paramlist : param . ',' paramlist  (14)
+	paramlist : param .  (15)
+
+	','  shift 32
+	')'  reduce 15
+
+
+state 30
+	param : vartype TK_IDENTIFIER .  (16)
+
+	.  reduce 16
+
+
+state 31
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' . funcbody  (11)
+
+	TK_IDENTIFIER  shift 33
+	LIT_INTEGER  shift 34
+	.  error
+
+	funcbody  goto 35
+	cmd  goto 36
+
+
+state 32
+	paramlist : param ',' . paramlist  (14)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	.  error
+
+	vartype  goto 26
+	paramlist  goto 37
+	param  goto 29
+
+
+state 33
+	cmd : TK_IDENTIFIER . '=' expr  (28)
+
+	'='  shift 38
+	.  error
+
+
+state 34
+	cmd : LIT_INTEGER .  (27)
+
+	.  reduce 27
+
+
+state 35
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody .  (11)
+
+	.  reduce 11
+
+
+state 36
+	funcbody : cmd .  (22)
+
+	.  reduce 22
+
+
+state 37
+	paramlist : param ',' paramlist .  (14)
+
+	.  reduce 14
+
+
+state 38
+	cmd : TK_IDENTIFIER '=' . expr  (28)
+
+	TK_IDENTIFIER  shift 39
+	LIT_INTEGER  shift 40
+	'('  shift 41
+	.  error
+
+	expr  goto 42
+
+
+state 39
+	expr : TK_IDENTIFIER .  (32)
+
+	.  reduce 32
+
+
+state 40
+	expr : LIT_INTEGER .  (31)
+
+	.  reduce 31
+
+
+state 41
+	expr : '(' . expr ')'  (30)
+
+	TK_IDENTIFIER  shift 39
+	LIT_INTEGER  shift 40
+	'('  shift 41
+	.  error
+
+	expr  goto 43
+
+
+state 42
+	cmd : TK_IDENTIFIER '=' expr .  (28)
+	expr : expr . '*' expr  (29)
+
+	'*'  shift 44
+	$end  reduce 28
+	KW_BYTE  reduce 28
+	KW_SHORT  reduce 28
+	KW_LONG  reduce 28
+	KW_FLOAT  reduce 28
+	KW_DOUBLE  reduce 28
+	TK_IDENTIFIER  reduce 28
+
+
+state 43
+	expr : expr . '*' expr  (29)
+	expr : '(' expr . ')'  (30)
+
+	')'  shift 45
+	'*'  shift 44
+	.  error
+
+
+state 44
+	expr : expr '*' . expr  (29)
+
+	TK_IDENTIFIER  shift 39
+	LIT_INTEGER  shift 40
+	'('  shift 41
+	.  error
+
+	expr  goto 46
+
+
+state 45
+	expr : '(' expr ')' .  (30)
+
+	.  reduce 30
+
+
+46: shift/reduce conflict (shift 44, reduce 29) on '*'
+state 46
+	expr : expr . '*' expr  (29)
+	expr : expr '*' expr .  (29)
+
+	'*'  shift 44
+	$end  reduce 29
+	KW_BYTE  reduce 29
+	KW_SHORT  reduce 29
+	KW_LONG  reduce 29
+	KW_FLOAT  reduce 29
+	KW_DOUBLE  reduce 29
+	TK_IDENTIFIER  reduce 29
+	')'  reduce 29
+
+
+Rules never reduced:
+	cmdlist : cmdlisttail  (23)
+	cmdlist :  (24)
+	cmdlisttail : cmd ';' cmdlisttail  (25)
+	cmdlisttail : cmd  (26)
+
+
+State 46 contains 1 shift/reduce conflict.
+
+
+35 terminals, 16 nonterminals
+33 grammar rules, 47 states
