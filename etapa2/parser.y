@@ -56,7 +56,23 @@ vartypeandvalue: KW_BYTE LIT_CHAR
 	| KW_BYTE LIT_INTEGER
 	| KW_SHORT LIT_INTEGER
 	| KW_LONG LIT_INTEGER
+	| KW_FLOAT LIT_REAL
+	| KW_DOUBLE LIT_INTEGER 
+	| KW_BYTE '[' LIT_INTEGER ']' intlist 
+	| KW_BYTE '[' LIT_INTEGER ']' charlist 
+	| KW_SHORT '[' LIT_INTEGER ']' intlist 
+	| KW_LONG '[' LIT_INTEGER ']' intlist
+	| KW_FLOAT '[' LIT_INTEGER ']' floatlist
+	| KW_DOUBLE '[' LIT_INTEGER ']' intlist 
 	;
+intlist: LIT_INTEGER intlist
+	| /* nada */
+	;
+charlist: LIT_CHAR charlist
+	| /* nada */
+	;
+floatlist: LIT_REAL floatlist
+	| /* nada */
 funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody
 	;
 parameters: paramlist

@@ -14,38 +14,55 @@
    8                  | KW_BYTE LIT_INTEGER
    9                  | KW_SHORT LIT_INTEGER
   10                  | KW_LONG LIT_INTEGER
+  11                  | KW_FLOAT LIT_REAL
+  12                  | KW_DOUBLE LIT_INTEGER
+  13                  | KW_BYTE '[' LIT_INTEGER ']' intlist
+  14                  | KW_BYTE '[' LIT_INTEGER ']' charlist
+  15                  | KW_SHORT '[' LIT_INTEGER ']' intlist
+  16                  | KW_LONG '[' LIT_INTEGER ']' intlist
+  17                  | KW_FLOAT '[' LIT_INTEGER ']' floatlist
+  18                  | KW_DOUBLE '[' LIT_INTEGER ']' intlist
 
-  11  funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody
+  19  intlist : LIT_INTEGER intlist
+  20          |
 
-  12  parameters : paramlist
-  13             |
+  21  charlist : LIT_CHAR charlist
+  22           |
 
-  14  paramlist : param ',' paramlist
-  15            | param
+  23  floatlist : LIT_REAL floatlist
+  24            |
 
-  16  param : vartype TK_IDENTIFIER
+  25  funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody
 
-  17  vartype : KW_BYTE
-  18          | KW_SHORT
-  19          | KW_LONG
-  20          | KW_FLOAT
-  21          | KW_DOUBLE
+  26  parameters : paramlist
+  27             |
 
-  22  funcbody : cmd
+  28  paramlist : param ',' paramlist
+  29            | param
 
-  23  cmdlist : cmdlisttail
-  24          |
+  30  param : vartype TK_IDENTIFIER
 
-  25  cmdlisttail : cmd ';' cmdlisttail
-  26              | cmd
+  31  vartype : KW_BYTE
+  32          | KW_SHORT
+  33          | KW_LONG
+  34          | KW_FLOAT
+  35          | KW_DOUBLE
 
-  27  cmd : LIT_INTEGER
-  28      | TK_IDENTIFIER '=' expr
+  36  funcbody : cmd
 
-  29  expr : expr '*' expr
-  30       | '(' expr ')'
-  31       | LIT_INTEGER
-  32       | TK_IDENTIFIER
+  37  cmdlist : cmdlisttail
+  38          |
+
+  39  cmdlisttail : cmd ';' cmdlisttail
+  40              | cmd
+
+  41  cmd : LIT_INTEGER
+  42      | TK_IDENTIFIER '=' expr
+
+  43  expr : expr '*' expr
+  44       | '(' expr ')'
+  45       | LIT_INTEGER
+  46       | TK_IDENTIFIER
 
 state 0
 	$accept : . program $end  (0)
@@ -68,33 +85,33 @@ state 0
 
 
 state 1
-	vartype : KW_BYTE .  (17)
+	vartype : KW_BYTE .  (31)
 
-	.  reduce 17
+	.  reduce 31
 
 
 state 2
-	vartype : KW_SHORT .  (18)
+	vartype : KW_SHORT .  (32)
 
-	.  reduce 18
+	.  reduce 32
 
 
 state 3
-	vartype : KW_LONG .  (19)
+	vartype : KW_LONG .  (33)
 
-	.  reduce 19
+	.  reduce 33
 
 
 state 4
-	vartype : KW_FLOAT .  (20)
+	vartype : KW_FLOAT .  (34)
 
-	.  reduce 20
+	.  reduce 34
 
 
 state 5
-	vartype : KW_DOUBLE .  (21)
+	vartype : KW_DOUBLE .  (35)
 
-	.  reduce 21
+	.  reduce 35
 
 
 state 6
@@ -148,7 +165,7 @@ state 11
 
 
 state 12
-	funcdec : vartype . TK_IDENTIFIER '(' parameters ')' funcbody  (11)
+	funcdec : vartype . TK_IDENTIFIER '(' parameters ')' funcbody  (25)
 
 	TK_IDENTIFIER  shift 15
 	.  error
@@ -160,9 +177,11 @@ state 13
 	KW_BYTE  shift 16
 	KW_SHORT  shift 17
 	KW_LONG  shift 18
+	KW_FLOAT  shift 19
+	KW_DOUBLE  shift 20
 	.  error
 
-	vartypeandvalue  goto 19
+	vartypeandvalue  goto 21
 
 
 state 14
@@ -172,136 +191,245 @@ state 14
 
 
 state 15
-	funcdec : vartype TK_IDENTIFIER . '(' parameters ')' funcbody  (11)
+	funcdec : vartype TK_IDENTIFIER . '(' parameters ')' funcbody  (25)
 
-	'('  shift 20
+	'('  shift 22
 	.  error
 
 
 state 16
 	vartypeandvalue : KW_BYTE . LIT_CHAR  (7)
 	vartypeandvalue : KW_BYTE . LIT_INTEGER  (8)
+	vartypeandvalue : KW_BYTE . '[' LIT_INTEGER ']' intlist  (13)
+	vartypeandvalue : KW_BYTE . '[' LIT_INTEGER ']' charlist  (14)
 
-	LIT_INTEGER  shift 21
-	LIT_CHAR  shift 22
+	LIT_INTEGER  shift 23
+	LIT_CHAR  shift 24
+	'['  shift 25
 	.  error
 
 
 state 17
 	vartypeandvalue : KW_SHORT . LIT_INTEGER  (9)
+	vartypeandvalue : KW_SHORT . '[' LIT_INTEGER ']' intlist  (15)
 
-	LIT_INTEGER  shift 23
+	LIT_INTEGER  shift 26
+	'['  shift 27
 	.  error
 
 
 state 18
 	vartypeandvalue : KW_LONG . LIT_INTEGER  (10)
+	vartypeandvalue : KW_LONG . '[' LIT_INTEGER ']' intlist  (16)
 
-	LIT_INTEGER  shift 24
+	LIT_INTEGER  shift 28
+	'['  shift 29
 	.  error
 
 
 state 19
-	vardec : TK_IDENTIFIER ':' vartypeandvalue . ';'  (6)
+	vartypeandvalue : KW_FLOAT . LIT_REAL  (11)
+	vartypeandvalue : KW_FLOAT . '[' LIT_INTEGER ']' floatlist  (17)
 
-	';'  shift 25
+	LIT_REAL  shift 30
+	'['  shift 31
 	.  error
 
 
 state 20
-	funcdec : vartype TK_IDENTIFIER '(' . parameters ')' funcbody  (11)
-	parameters : .  (13)
+	vartypeandvalue : KW_DOUBLE . LIT_INTEGER  (12)
+	vartypeandvalue : KW_DOUBLE . '[' LIT_INTEGER ']' intlist  (18)
+
+	LIT_INTEGER  shift 32
+	'['  shift 33
+	.  error
+
+
+state 21
+	vardec : TK_IDENTIFIER ':' vartypeandvalue . ';'  (6)
+
+	';'  shift 34
+	.  error
+
+
+state 22
+	funcdec : vartype TK_IDENTIFIER '(' . parameters ')' funcbody  (25)
+	parameters : .  (27)
 
 	KW_BYTE  shift 1
 	KW_SHORT  shift 2
 	KW_LONG  shift 3
 	KW_FLOAT  shift 4
 	KW_DOUBLE  shift 5
-	')'  reduce 13
+	')'  reduce 27
 
-	vartype  goto 26
-	parameters  goto 27
-	paramlist  goto 28
-	param  goto 29
+	vartype  goto 35
+	parameters  goto 36
+	paramlist  goto 37
+	param  goto 38
 
 
-state 21
+state 23
 	vartypeandvalue : KW_BYTE LIT_INTEGER .  (8)
 
 	.  reduce 8
 
 
-state 22
+state 24
 	vartypeandvalue : KW_BYTE LIT_CHAR .  (7)
 
 	.  reduce 7
 
 
-state 23
+state 25
+	vartypeandvalue : KW_BYTE '[' . LIT_INTEGER ']' intlist  (13)
+	vartypeandvalue : KW_BYTE '[' . LIT_INTEGER ']' charlist  (14)
+
+	LIT_INTEGER  shift 39
+	.  error
+
+
+state 26
 	vartypeandvalue : KW_SHORT LIT_INTEGER .  (9)
 
 	.  reduce 9
 
 
-state 24
+state 27
+	vartypeandvalue : KW_SHORT '[' . LIT_INTEGER ']' intlist  (15)
+
+	LIT_INTEGER  shift 40
+	.  error
+
+
+state 28
 	vartypeandvalue : KW_LONG LIT_INTEGER .  (10)
 
 	.  reduce 10
 
 
-state 25
+state 29
+	vartypeandvalue : KW_LONG '[' . LIT_INTEGER ']' intlist  (16)
+
+	LIT_INTEGER  shift 41
+	.  error
+
+
+state 30
+	vartypeandvalue : KW_FLOAT LIT_REAL .  (11)
+
+	.  reduce 11
+
+
+state 31
+	vartypeandvalue : KW_FLOAT '[' . LIT_INTEGER ']' floatlist  (17)
+
+	LIT_INTEGER  shift 42
+	.  error
+
+
+state 32
+	vartypeandvalue : KW_DOUBLE LIT_INTEGER .  (12)
+
+	.  reduce 12
+
+
+state 33
+	vartypeandvalue : KW_DOUBLE '[' . LIT_INTEGER ']' intlist  (18)
+
+	LIT_INTEGER  shift 43
+	.  error
+
+
+state 34
 	vardec : TK_IDENTIFIER ':' vartypeandvalue ';' .  (6)
 
 	.  reduce 6
 
 
-state 26
-	param : vartype . TK_IDENTIFIER  (16)
+state 35
+	param : vartype . TK_IDENTIFIER  (30)
 
-	TK_IDENTIFIER  shift 30
+	TK_IDENTIFIER  shift 44
 	.  error
 
 
-state 27
-	funcdec : vartype TK_IDENTIFIER '(' parameters . ')' funcbody  (11)
+state 36
+	funcdec : vartype TK_IDENTIFIER '(' parameters . ')' funcbody  (25)
 
-	')'  shift 31
+	')'  shift 45
 	.  error
 
 
-state 28
-	parameters : paramlist .  (12)
+state 37
+	parameters : paramlist .  (26)
 
-	.  reduce 12
-
-
-state 29
-	paramlist : param . ',' paramlist  (14)
-	paramlist : param .  (15)
-
-	','  shift 32
-	')'  reduce 15
+	.  reduce 26
 
 
-state 30
-	param : vartype TK_IDENTIFIER .  (16)
+state 38
+	paramlist : param . ',' paramlist  (28)
+	paramlist : param .  (29)
 
-	.  reduce 16
+	','  shift 46
+	')'  reduce 29
 
 
-state 31
-	funcdec : vartype TK_IDENTIFIER '(' parameters ')' . funcbody  (11)
+state 39
+	vartypeandvalue : KW_BYTE '[' LIT_INTEGER . ']' intlist  (13)
+	vartypeandvalue : KW_BYTE '[' LIT_INTEGER . ']' charlist  (14)
 
-	TK_IDENTIFIER  shift 33
-	LIT_INTEGER  shift 34
+	']'  shift 47
 	.  error
 
-	funcbody  goto 35
-	cmd  goto 36
+
+state 40
+	vartypeandvalue : KW_SHORT '[' LIT_INTEGER . ']' intlist  (15)
+
+	']'  shift 48
+	.  error
 
 
-state 32
-	paramlist : param ',' . paramlist  (14)
+state 41
+	vartypeandvalue : KW_LONG '[' LIT_INTEGER . ']' intlist  (16)
+
+	']'  shift 49
+	.  error
+
+
+state 42
+	vartypeandvalue : KW_FLOAT '[' LIT_INTEGER . ']' floatlist  (17)
+
+	']'  shift 50
+	.  error
+
+
+state 43
+	vartypeandvalue : KW_DOUBLE '[' LIT_INTEGER . ']' intlist  (18)
+
+	']'  shift 51
+	.  error
+
+
+state 44
+	param : vartype TK_IDENTIFIER .  (30)
+
+	.  reduce 30
+
+
+state 45
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' . funcbody  (25)
+
+	TK_IDENTIFIER  shift 52
+	LIT_INTEGER  shift 53
+	.  error
+
+	funcbody  goto 54
+	cmd  goto 55
+
+
+state 46
+	paramlist : param ',' . paramlist  (28)
 
 	KW_BYTE  shift 1
 	KW_SHORT  shift 2
@@ -310,141 +438,281 @@ state 32
 	KW_DOUBLE  shift 5
 	.  error
 
-	vartype  goto 26
-	paramlist  goto 37
-	param  goto 29
+	vartype  goto 35
+	paramlist  goto 56
+	param  goto 38
 
 
-state 33
-	cmd : TK_IDENTIFIER . '=' expr  (28)
+47: reduce/reduce conflict (reduce 20, reduce 22) on ';'
+state 47
+	vartypeandvalue : KW_BYTE '[' LIT_INTEGER ']' . intlist  (13)
+	vartypeandvalue : KW_BYTE '[' LIT_INTEGER ']' . charlist  (14)
+	intlist : .  (20)
+	charlist : .  (22)
 
-	'='  shift 38
+	LIT_INTEGER  shift 57
+	LIT_CHAR  shift 58
+	';'  reduce 20
+
+	intlist  goto 59
+	charlist  goto 60
+
+
+state 48
+	vartypeandvalue : KW_SHORT '[' LIT_INTEGER ']' . intlist  (15)
+	intlist : .  (20)
+
+	LIT_INTEGER  shift 57
+	';'  reduce 20
+
+	intlist  goto 61
+
+
+state 49
+	vartypeandvalue : KW_LONG '[' LIT_INTEGER ']' . intlist  (16)
+	intlist : .  (20)
+
+	LIT_INTEGER  shift 57
+	';'  reduce 20
+
+	intlist  goto 62
+
+
+state 50
+	vartypeandvalue : KW_FLOAT '[' LIT_INTEGER ']' . floatlist  (17)
+	floatlist : .  (24)
+
+	LIT_REAL  shift 63
+	';'  reduce 24
+
+	floatlist  goto 64
+
+
+state 51
+	vartypeandvalue : KW_DOUBLE '[' LIT_INTEGER ']' . intlist  (18)
+	intlist : .  (20)
+
+	LIT_INTEGER  shift 57
+	';'  reduce 20
+
+	intlist  goto 65
+
+
+state 52
+	cmd : TK_IDENTIFIER . '=' expr  (42)
+
+	'='  shift 66
 	.  error
 
 
-state 34
-	cmd : LIT_INTEGER .  (27)
+state 53
+	cmd : LIT_INTEGER .  (41)
 
-	.  reduce 27
-
-
-state 35
-	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody .  (11)
-
-	.  reduce 11
+	.  reduce 41
 
 
-state 36
-	funcbody : cmd .  (22)
+state 54
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody .  (25)
 
-	.  reduce 22
+	.  reduce 25
 
 
-state 37
-	paramlist : param ',' paramlist .  (14)
+state 55
+	funcbody : cmd .  (36)
+
+	.  reduce 36
+
+
+state 56
+	paramlist : param ',' paramlist .  (28)
+
+	.  reduce 28
+
+
+state 57
+	intlist : LIT_INTEGER . intlist  (19)
+	intlist : .  (20)
+
+	LIT_INTEGER  shift 57
+	';'  reduce 20
+
+	intlist  goto 67
+
+
+state 58
+	charlist : LIT_CHAR . charlist  (21)
+	charlist : .  (22)
+
+	LIT_CHAR  shift 58
+	';'  reduce 22
+
+	charlist  goto 68
+
+
+state 59
+	vartypeandvalue : KW_BYTE '[' LIT_INTEGER ']' intlist .  (13)
+
+	.  reduce 13
+
+
+state 60
+	vartypeandvalue : KW_BYTE '[' LIT_INTEGER ']' charlist .  (14)
 
 	.  reduce 14
 
 
-state 38
-	cmd : TK_IDENTIFIER '=' . expr  (28)
+state 61
+	vartypeandvalue : KW_SHORT '[' LIT_INTEGER ']' intlist .  (15)
 
-	TK_IDENTIFIER  shift 39
-	LIT_INTEGER  shift 40
-	'('  shift 41
+	.  reduce 15
+
+
+state 62
+	vartypeandvalue : KW_LONG '[' LIT_INTEGER ']' intlist .  (16)
+
+	.  reduce 16
+
+
+state 63
+	floatlist : LIT_REAL . floatlist  (23)
+	floatlist : .  (24)
+
+	LIT_REAL  shift 63
+	';'  reduce 24
+
+	floatlist  goto 69
+
+
+state 64
+	vartypeandvalue : KW_FLOAT '[' LIT_INTEGER ']' floatlist .  (17)
+
+	.  reduce 17
+
+
+state 65
+	vartypeandvalue : KW_DOUBLE '[' LIT_INTEGER ']' intlist .  (18)
+
+	.  reduce 18
+
+
+state 66
+	cmd : TK_IDENTIFIER '=' . expr  (42)
+
+	TK_IDENTIFIER  shift 70
+	LIT_INTEGER  shift 71
+	'('  shift 72
 	.  error
 
-	expr  goto 42
+	expr  goto 73
 
 
-state 39
-	expr : TK_IDENTIFIER .  (32)
+state 67
+	intlist : LIT_INTEGER intlist .  (19)
 
-	.  reduce 32
-
-
-state 40
-	expr : LIT_INTEGER .  (31)
-
-	.  reduce 31
+	.  reduce 19
 
 
-state 41
-	expr : '(' . expr ')'  (30)
+state 68
+	charlist : LIT_CHAR charlist .  (21)
 
-	TK_IDENTIFIER  shift 39
-	LIT_INTEGER  shift 40
-	'('  shift 41
+	.  reduce 21
+
+
+state 69
+	floatlist : LIT_REAL floatlist .  (23)
+
+	.  reduce 23
+
+
+state 70
+	expr : TK_IDENTIFIER .  (46)
+
+	.  reduce 46
+
+
+state 71
+	expr : LIT_INTEGER .  (45)
+
+	.  reduce 45
+
+
+state 72
+	expr : '(' . expr ')'  (44)
+
+	TK_IDENTIFIER  shift 70
+	LIT_INTEGER  shift 71
+	'('  shift 72
 	.  error
 
-	expr  goto 43
+	expr  goto 74
 
 
-state 42
-	cmd : TK_IDENTIFIER '=' expr .  (28)
-	expr : expr . '*' expr  (29)
+state 73
+	cmd : TK_IDENTIFIER '=' expr .  (42)
+	expr : expr . '*' expr  (43)
 
-	'*'  shift 44
-	$end  reduce 28
-	KW_BYTE  reduce 28
-	KW_SHORT  reduce 28
-	KW_LONG  reduce 28
-	KW_FLOAT  reduce 28
-	KW_DOUBLE  reduce 28
-	TK_IDENTIFIER  reduce 28
+	'*'  shift 75
+	$end  reduce 42
+	KW_BYTE  reduce 42
+	KW_SHORT  reduce 42
+	KW_LONG  reduce 42
+	KW_FLOAT  reduce 42
+	KW_DOUBLE  reduce 42
+	TK_IDENTIFIER  reduce 42
 
 
-state 43
-	expr : expr . '*' expr  (29)
-	expr : '(' expr . ')'  (30)
+state 74
+	expr : expr . '*' expr  (43)
+	expr : '(' expr . ')'  (44)
 
-	')'  shift 45
-	'*'  shift 44
+	')'  shift 76
+	'*'  shift 75
 	.  error
 
 
-state 44
-	expr : expr '*' . expr  (29)
+state 75
+	expr : expr '*' . expr  (43)
 
-	TK_IDENTIFIER  shift 39
-	LIT_INTEGER  shift 40
-	'('  shift 41
+	TK_IDENTIFIER  shift 70
+	LIT_INTEGER  shift 71
+	'('  shift 72
 	.  error
 
-	expr  goto 46
+	expr  goto 77
 
 
-state 45
-	expr : '(' expr ')' .  (30)
+state 76
+	expr : '(' expr ')' .  (44)
 
-	.  reduce 30
+	.  reduce 44
 
 
-46: shift/reduce conflict (shift 44, reduce 29) on '*'
-state 46
-	expr : expr . '*' expr  (29)
-	expr : expr '*' expr .  (29)
+77: shift/reduce conflict (shift 75, reduce 43) on '*'
+state 77
+	expr : expr . '*' expr  (43)
+	expr : expr '*' expr .  (43)
 
-	'*'  shift 44
-	$end  reduce 29
-	KW_BYTE  reduce 29
-	KW_SHORT  reduce 29
-	KW_LONG  reduce 29
-	KW_FLOAT  reduce 29
-	KW_DOUBLE  reduce 29
-	TK_IDENTIFIER  reduce 29
-	')'  reduce 29
+	'*'  shift 75
+	$end  reduce 43
+	KW_BYTE  reduce 43
+	KW_SHORT  reduce 43
+	KW_LONG  reduce 43
+	KW_FLOAT  reduce 43
+	KW_DOUBLE  reduce 43
+	TK_IDENTIFIER  reduce 43
+	')'  reduce 43
 
 
 Rules never reduced:
-	cmdlist : cmdlisttail  (23)
-	cmdlist :  (24)
-	cmdlisttail : cmd ';' cmdlisttail  (25)
-	cmdlisttail : cmd  (26)
+	cmdlist : cmdlisttail  (37)
+	cmdlist :  (38)
+	cmdlisttail : cmd ';' cmdlisttail  (39)
+	cmdlisttail : cmd  (40)
 
 
-State 46 contains 1 shift/reduce conflict.
+State 47 contains 1 reduce/reduce conflict.
+State 77 contains 1 shift/reduce conflict.
 
 
-35 terminals, 16 nonterminals
-33 grammar rules, 47 states
+37 terminals, 19 nonterminals
+47 grammar rules, 78 states
