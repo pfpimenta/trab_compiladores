@@ -8,6 +8,7 @@ f: float 10.55;
 c: byte 'x';
 d: byte 65;
 vchar: byte[3] 'a' 'b' 'c';
+vfloat: float[4] 10.0 0.3 999.99 15.001;
 
 
 long main()

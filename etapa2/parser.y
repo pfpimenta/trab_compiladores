@@ -73,6 +73,7 @@ charlist: LIT_CHAR charlist
 	;
 floatlist: LIT_REAL floatlist
 	| /* nada */
+	;
 funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody
 	;
 parameters: paramlist
