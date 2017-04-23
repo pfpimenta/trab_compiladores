@@ -96,42 +96,68 @@ vartype: KW_BYTE | KW_SHORT | KW_LONG | KW_FLOAT | KW_DOUBLE
 funcbody: cmd
     ;
 
-cmdlist : cmdlisttail
-    | /* nada */
-    ;
-
-cmdlisttail: cmd cmdlisttail | cmd
+cmdlist : cmd
+    | cmdlist cmd
     ;
 
 cmd : atrib ';'
+    |/* nada*/ 
     | '{' cmdlist '}' ';'
     | ';'
+    | control
+	| KW_READ TK_IDENTIFIER ';'
+    | KW_PRINT printlist ';'
+	| KW_RETURN expr ';'
+    ;
+	
+printlist: printelement printlist | printelement
+    ;
+
+printelement: LIT_STRING | expr
+    ;
+
+control: KW_WHEN '(' expr ')' KW_THEN cmd
+    | KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE cmd
+    | KW_WHILE '(' expr ')' cmd
+    | KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd
     ;
 
 atrib: TK_IDENTIFIER '=' expr
-    | TK_IDENTIFIER '#' expr '=' expr
+    | TK_IDENTIFIER'#'expr '=' expr
     ;
 
 
 expr:  '(' expr ')'
     | TK_IDENTIFIER
     | TK_IDENTIFIER '[' expr ']'
+    | TK_IDENTIFIER '(' args ')'
     | LIT_INTEGER
-    | LIT_CHAR 
+    | LIT_CHAR
     | LIT_REAL
     | expr operator expr
+    ;
+	
+args: expr argstail
+    |  /* nada */
+    ;
+	
+argstail: ',' expr argstail
+	|  /* nada */
 	;
 
 operator: OPERATOR_LE
-	| OPERATOR_GE
-	| OPERATOR_EQ
-	| OPERATOR_NE
-	| OPERATOR_AND
-	| OPERATOR_OR
-	| '*'
-	| '+'
-	| '-'
-	| '/'
+    | OPERATOR_GE
+    | OPERATOR_EQ
+    | OPERATOR_NE
+    | OPERATOR_AND
+    | OPERATOR_OR
+    | '*'
+    | '+'
+    | '-'
+    | '/'
+    | '<'
+    | '>'
+    | '!' 
 ;
 
 %%
