@@ -53,16 +53,34 @@
   37  cmdlist : cmdlisttail
   38          |
 
-  39  cmdlisttail : cmd ';' cmdlisttail
+  39  cmdlisttail : cmd cmdlisttail
   40              | cmd
 
-  41  cmd : LIT_INTEGER
-  42      | TK_IDENTIFIER '=' expr
+  41  cmd : atrib ';'
+  42      | '{' cmdlist '}' ';'
+  43      | ';'
 
-  43  expr : expr '*' expr
-  44       | '(' expr ')'
-  45       | LIT_INTEGER
-  46       | TK_IDENTIFIER
+  44  atrib : TK_IDENTIFIER '=' expr
+  45        | TK_IDENTIFIER '#' expr '=' expr
+
+  46  expr : '(' expr ')'
+  47       | TK_IDENTIFIER
+  48       | TK_IDENTIFIER '[' expr ']'
+  49       | LIT_INTEGER
+  50       | LIT_CHAR
+  51       | LIT_REAL
+  52       | expr operator expr
+
+  53  operator : OPERATOR_LE
+  54           | OPERATOR_GE
+  55           | OPERATOR_EQ
+  56           | OPERATOR_NE
+  57           | OPERATOR_AND
+  58           | OPERATOR_OR
+  59           | '*'
+  60           | '+'
+  61           | '-'
+  62           | '/'
 
 state 0
 	$accept : . program $end  (0)
@@ -421,11 +439,13 @@ state 45
 	funcdec : vartype TK_IDENTIFIER '(' parameters ')' . funcbody  (25)
 
 	TK_IDENTIFIER  shift 52
-	LIT_INTEGER  shift 53
+	';'  shift 53
+	'{'  shift 54
 	.  error
 
-	funcbody  goto 54
-	cmd  goto 55
+	funcbody  goto 55
+	cmd  goto 56
+	atrib  goto 57
 
 
 state 46
@@ -439,7 +459,7 @@ state 46
 	.  error
 
 	vartype  goto 35
-	paramlist  goto 56
+	paramlist  goto 58
 	param  goto 38
 
 
@@ -450,269 +470,567 @@ state 47
 	intlist : .  (20)
 	charlist : .  (22)
 
-	LIT_INTEGER  shift 57
-	LIT_CHAR  shift 58
+	LIT_INTEGER  shift 59
+	LIT_CHAR  shift 60
 	';'  reduce 20
 
-	intlist  goto 59
-	charlist  goto 60
+	intlist  goto 61
+	charlist  goto 62
 
 
 state 48
 	vartypeandvalue : KW_SHORT '[' LIT_INTEGER ']' . intlist  (15)
 	intlist : .  (20)
 
-	LIT_INTEGER  shift 57
+	LIT_INTEGER  shift 59
 	';'  reduce 20
 
-	intlist  goto 61
+	intlist  goto 63
 
 
 state 49
 	vartypeandvalue : KW_LONG '[' LIT_INTEGER ']' . intlist  (16)
 	intlist : .  (20)
 
-	LIT_INTEGER  shift 57
+	LIT_INTEGER  shift 59
 	';'  reduce 20
 
-	intlist  goto 62
+	intlist  goto 64
 
 
 state 50
 	vartypeandvalue : KW_FLOAT '[' LIT_INTEGER ']' . floatlist  (17)
 	floatlist : .  (24)
 
-	LIT_REAL  shift 63
+	LIT_REAL  shift 65
 	';'  reduce 24
 
-	floatlist  goto 64
+	floatlist  goto 66
 
 
 state 51
 	vartypeandvalue : KW_DOUBLE '[' LIT_INTEGER ']' . intlist  (18)
 	intlist : .  (20)
 
-	LIT_INTEGER  shift 57
-	';'  reduce 20
-
-	intlist  goto 65
-
-
-state 52
-	cmd : TK_IDENTIFIER . '=' expr  (42)
-
-	'='  shift 66
-	.  error
-
-
-state 53
-	cmd : LIT_INTEGER .  (41)
-
-	.  reduce 41
-
-
-state 54
-	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody .  (25)
-
-	.  reduce 25
-
-
-state 55
-	funcbody : cmd .  (36)
-
-	.  reduce 36
-
-
-state 56
-	paramlist : param ',' paramlist .  (28)
-
-	.  reduce 28
-
-
-state 57
-	intlist : LIT_INTEGER . intlist  (19)
-	intlist : .  (20)
-
-	LIT_INTEGER  shift 57
+	LIT_INTEGER  shift 59
 	';'  reduce 20
 
 	intlist  goto 67
 
 
+state 52
+	atrib : TK_IDENTIFIER . '=' expr  (44)
+	atrib : TK_IDENTIFIER . '#' expr '=' expr  (45)
+
+	'='  shift 68
+	'#'  shift 69
+	.  error
+
+
+state 53
+	cmd : ';' .  (43)
+
+	.  reduce 43
+
+
+state 54
+	cmd : '{' . cmdlist '}' ';'  (42)
+	cmdlist : .  (38)
+
+	TK_IDENTIFIER  shift 52
+	';'  shift 53
+	'{'  shift 54
+	'}'  reduce 38
+
+	cmd  goto 70
+	cmdlist  goto 71
+	cmdlisttail  goto 72
+	atrib  goto 57
+
+
+state 55
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody .  (25)
+
+	.  reduce 25
+
+
+state 56
+	funcbody : cmd .  (36)
+
+	.  reduce 36
+
+
+state 57
+	cmd : atrib . ';'  (41)
+
+	';'  shift 73
+	.  error
+
+
 state 58
-	charlist : LIT_CHAR . charlist  (21)
-	charlist : .  (22)
+	paramlist : param ',' paramlist .  (28)
 
-	LIT_CHAR  shift 58
-	';'  reduce 22
-
-	charlist  goto 68
+	.  reduce 28
 
 
 state 59
+	intlist : LIT_INTEGER . intlist  (19)
+	intlist : .  (20)
+
+	LIT_INTEGER  shift 59
+	';'  reduce 20
+
+	intlist  goto 74
+
+
+state 60
+	charlist : LIT_CHAR . charlist  (21)
+	charlist : .  (22)
+
+	LIT_CHAR  shift 60
+	';'  reduce 22
+
+	charlist  goto 75
+
+
+state 61
 	vartypeandvalue : KW_BYTE '[' LIT_INTEGER ']' intlist .  (13)
 
 	.  reduce 13
 
 
-state 60
+state 62
 	vartypeandvalue : KW_BYTE '[' LIT_INTEGER ']' charlist .  (14)
 
 	.  reduce 14
 
 
-state 61
+state 63
 	vartypeandvalue : KW_SHORT '[' LIT_INTEGER ']' intlist .  (15)
 
 	.  reduce 15
 
 
-state 62
+state 64
 	vartypeandvalue : KW_LONG '[' LIT_INTEGER ']' intlist .  (16)
 
 	.  reduce 16
 
 
-state 63
+state 65
 	floatlist : LIT_REAL . floatlist  (23)
 	floatlist : .  (24)
 
-	LIT_REAL  shift 63
+	LIT_REAL  shift 65
 	';'  reduce 24
 
-	floatlist  goto 69
+	floatlist  goto 76
 
 
-state 64
+state 66
 	vartypeandvalue : KW_FLOAT '[' LIT_INTEGER ']' floatlist .  (17)
 
 	.  reduce 17
 
 
-state 65
+state 67
 	vartypeandvalue : KW_DOUBLE '[' LIT_INTEGER ']' intlist .  (18)
 
 	.  reduce 18
 
 
-state 66
-	cmd : TK_IDENTIFIER '=' . expr  (42)
+state 68
+	atrib : TK_IDENTIFIER '=' . expr  (44)
 
-	TK_IDENTIFIER  shift 70
-	LIT_INTEGER  shift 71
-	'('  shift 72
+	TK_IDENTIFIER  shift 77
+	LIT_INTEGER  shift 78
+	LIT_REAL  shift 79
+	LIT_CHAR  shift 80
+	'('  shift 81
 	.  error
 
-	expr  goto 73
+	expr  goto 82
 
 
-state 67
+state 69
+	atrib : TK_IDENTIFIER '#' . expr '=' expr  (45)
+
+	TK_IDENTIFIER  shift 77
+	LIT_INTEGER  shift 78
+	LIT_REAL  shift 79
+	LIT_CHAR  shift 80
+	'('  shift 81
+	.  error
+
+	expr  goto 83
+
+
+state 70
+	cmdlisttail : cmd . cmdlisttail  (39)
+	cmdlisttail : cmd .  (40)
+
+	TK_IDENTIFIER  shift 52
+	';'  shift 53
+	'{'  shift 54
+	'}'  reduce 40
+
+	cmd  goto 70
+	cmdlisttail  goto 84
+	atrib  goto 57
+
+
+state 71
+	cmd : '{' cmdlist . '}' ';'  (42)
+
+	'}'  shift 85
+	.  error
+
+
+state 72
+	cmdlist : cmdlisttail .  (37)
+
+	.  reduce 37
+
+
+state 73
+	cmd : atrib ';' .  (41)
+
+	.  reduce 41
+
+
+state 74
 	intlist : LIT_INTEGER intlist .  (19)
 
 	.  reduce 19
 
 
-state 68
+state 75
 	charlist : LIT_CHAR charlist .  (21)
 
 	.  reduce 21
 
 
-state 69
+state 76
 	floatlist : LIT_REAL floatlist .  (23)
 
 	.  reduce 23
 
 
-state 70
-	expr : TK_IDENTIFIER .  (46)
+state 77
+	expr : TK_IDENTIFIER .  (47)
+	expr : TK_IDENTIFIER . '[' expr ']'  (48)
+
+	'['  shift 86
+	OPERATOR_LE  reduce 47
+	OPERATOR_GE  reduce 47
+	OPERATOR_EQ  reduce 47
+	OPERATOR_NE  reduce 47
+	OPERATOR_AND  reduce 47
+	OPERATOR_OR  reduce 47
+	';'  reduce 47
+	']'  reduce 47
+	')'  reduce 47
+	'='  reduce 47
+	'*'  reduce 47
+	'+'  reduce 47
+	'-'  reduce 47
+	'/'  reduce 47
+
+
+state 78
+	expr : LIT_INTEGER .  (49)
+
+	.  reduce 49
+
+
+state 79
+	expr : LIT_REAL .  (51)
+
+	.  reduce 51
+
+
+state 80
+	expr : LIT_CHAR .  (50)
+
+	.  reduce 50
+
+
+state 81
+	expr : '(' . expr ')'  (46)
+
+	TK_IDENTIFIER  shift 77
+	LIT_INTEGER  shift 78
+	LIT_REAL  shift 79
+	LIT_CHAR  shift 80
+	'('  shift 81
+	.  error
+
+	expr  goto 87
+
+
+state 82
+	atrib : TK_IDENTIFIER '=' expr .  (44)
+	expr : expr . operator expr  (52)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'*'  shift 94
+	'+'  shift 95
+	'-'  shift 96
+	'/'  shift 97
+	';'  reduce 44
+
+	operator  goto 98
+
+
+state 83
+	atrib : TK_IDENTIFIER '#' expr . '=' expr  (45)
+	expr : expr . operator expr  (52)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'='  shift 99
+	'*'  shift 94
+	'+'  shift 95
+	'-'  shift 96
+	'/'  shift 97
+	.  error
+
+	operator  goto 98
+
+
+state 84
+	cmdlisttail : cmd cmdlisttail .  (39)
+
+	.  reduce 39
+
+
+state 85
+	cmd : '{' cmdlist '}' . ';'  (42)
+
+	';'  shift 100
+	.  error
+
+
+state 86
+	expr : TK_IDENTIFIER '[' . expr ']'  (48)
+
+	TK_IDENTIFIER  shift 77
+	LIT_INTEGER  shift 78
+	LIT_REAL  shift 79
+	LIT_CHAR  shift 80
+	'('  shift 81
+	.  error
+
+	expr  goto 101
+
+
+state 87
+	expr : '(' expr . ')'  (46)
+	expr : expr . operator expr  (52)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	')'  shift 102
+	'*'  shift 94
+	'+'  shift 95
+	'-'  shift 96
+	'/'  shift 97
+	.  error
+
+	operator  goto 98
+
+
+state 88
+	operator : OPERATOR_LE .  (53)
+
+	.  reduce 53
+
+
+state 89
+	operator : OPERATOR_GE .  (54)
+
+	.  reduce 54
+
+
+state 90
+	operator : OPERATOR_EQ .  (55)
+
+	.  reduce 55
+
+
+state 91
+	operator : OPERATOR_NE .  (56)
+
+	.  reduce 56
+
+
+state 92
+	operator : OPERATOR_AND .  (57)
+
+	.  reduce 57
+
+
+state 93
+	operator : OPERATOR_OR .  (58)
+
+	.  reduce 58
+
+
+state 94
+	operator : '*' .  (59)
+
+	.  reduce 59
+
+
+state 95
+	operator : '+' .  (60)
+
+	.  reduce 60
+
+
+state 96
+	operator : '-' .  (61)
+
+	.  reduce 61
+
+
+state 97
+	operator : '/' .  (62)
+
+	.  reduce 62
+
+
+state 98
+	expr : expr operator . expr  (52)
+
+	TK_IDENTIFIER  shift 77
+	LIT_INTEGER  shift 78
+	LIT_REAL  shift 79
+	LIT_CHAR  shift 80
+	'('  shift 81
+	.  error
+
+	expr  goto 103
+
+
+state 99
+	atrib : TK_IDENTIFIER '#' expr '=' . expr  (45)
+
+	TK_IDENTIFIER  shift 77
+	LIT_INTEGER  shift 78
+	LIT_REAL  shift 79
+	LIT_CHAR  shift 80
+	'('  shift 81
+	.  error
+
+	expr  goto 104
+
+
+state 100
+	cmd : '{' cmdlist '}' ';' .  (42)
+
+	.  reduce 42
+
+
+state 101
+	expr : TK_IDENTIFIER '[' expr . ']'  (48)
+	expr : expr . operator expr  (52)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	']'  shift 105
+	'*'  shift 94
+	'+'  shift 95
+	'-'  shift 96
+	'/'  shift 97
+	.  error
+
+	operator  goto 98
+
+
+state 102
+	expr : '(' expr ')' .  (46)
 
 	.  reduce 46
 
 
-state 71
-	expr : LIT_INTEGER .  (45)
+103: shift/reduce conflict (shift 88, reduce 52) on OPERATOR_LE
+103: shift/reduce conflict (shift 89, reduce 52) on OPERATOR_GE
+103: shift/reduce conflict (shift 90, reduce 52) on OPERATOR_EQ
+103: shift/reduce conflict (shift 91, reduce 52) on OPERATOR_NE
+103: shift/reduce conflict (shift 92, reduce 52) on OPERATOR_AND
+103: shift/reduce conflict (shift 93, reduce 52) on OPERATOR_OR
+103: shift/reduce conflict (shift 94, reduce 52) on '*'
+103: shift/reduce conflict (shift 95, reduce 52) on '+'
+103: shift/reduce conflict (shift 96, reduce 52) on '-'
+103: shift/reduce conflict (shift 97, reduce 52) on '/'
+state 103
+	expr : expr . operator expr  (52)
+	expr : expr operator expr .  (52)
 
-	.  reduce 45
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'*'  shift 94
+	'+'  shift 95
+	'-'  shift 96
+	'/'  shift 97
+	';'  reduce 52
+	']'  reduce 52
+	')'  reduce 52
+	'='  reduce 52
 
-
-state 72
-	expr : '(' . expr ')'  (44)
-
-	TK_IDENTIFIER  shift 70
-	LIT_INTEGER  shift 71
-	'('  shift 72
-	.  error
-
-	expr  goto 74
-
-
-state 73
-	cmd : TK_IDENTIFIER '=' expr .  (42)
-	expr : expr . '*' expr  (43)
-
-	'*'  shift 75
-	$end  reduce 42
-	KW_BYTE  reduce 42
-	KW_SHORT  reduce 42
-	KW_LONG  reduce 42
-	KW_FLOAT  reduce 42
-	KW_DOUBLE  reduce 42
-	TK_IDENTIFIER  reduce 42
-
-
-state 74
-	expr : expr . '*' expr  (43)
-	expr : '(' expr . ')'  (44)
-
-	')'  shift 76
-	'*'  shift 75
-	.  error
+	operator  goto 98
 
 
-state 75
-	expr : expr '*' . expr  (43)
+state 104
+	atrib : TK_IDENTIFIER '#' expr '=' expr .  (45)
+	expr : expr . operator expr  (52)
 
-	TK_IDENTIFIER  shift 70
-	LIT_INTEGER  shift 71
-	'('  shift 72
-	.  error
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'*'  shift 94
+	'+'  shift 95
+	'-'  shift 96
+	'/'  shift 97
+	';'  reduce 45
 
-	expr  goto 77
-
-
-state 76
-	expr : '(' expr ')' .  (44)
-
-	.  reduce 44
-
-
-77: shift/reduce conflict (shift 75, reduce 43) on '*'
-state 77
-	expr : expr . '*' expr  (43)
-	expr : expr '*' expr .  (43)
-
-	'*'  shift 75
-	$end  reduce 43
-	KW_BYTE  reduce 43
-	KW_SHORT  reduce 43
-	KW_LONG  reduce 43
-	KW_FLOAT  reduce 43
-	KW_DOUBLE  reduce 43
-	TK_IDENTIFIER  reduce 43
-	')'  reduce 43
+	operator  goto 98
 
 
-Rules never reduced:
-	cmdlist : cmdlisttail  (37)
-	cmdlist :  (38)
-	cmdlisttail : cmd ';' cmdlisttail  (39)
-	cmdlisttail : cmd  (40)
+state 105
+	expr : TK_IDENTIFIER '[' expr ']' .  (48)
+
+	.  reduce 48
 
 
 State 47 contains 1 reduce/reduce conflict.
-State 77 contains 1 shift/reduce conflict.
+State 103 contains 10 shift/reduce conflicts.
 
 
-37 terminals, 19 nonterminals
-47 grammar rules, 78 states
+43 terminals, 21 nonterminals
+63 grammar rules, 106 states

@@ -1,8 +1,8 @@
 %{
-	#include <stdlib.h>
-	#include <stdio.h>
-	#include <string.h>
-	#include "hash.h"
+    #include <stdlib.h>
+    #include <stdio.h>
+    #include <string.h>
+    #include "hash.h"
     void yyerror(char *s);
 %}
 
@@ -43,60 +43,97 @@
 
 %%
 
-program : declist 
+program : declist
     ;
-declist: dec declist 
-	| /* nada */
-	;
+declist: dec declist
+    | /* nada */
+    ;
 dec: funcdec | vardec
-	;
-vardec: TK_IDENTIFIER ':' vartypeandvalue ';'
-	;
-vartypeandvalue: KW_BYTE LIT_CHAR
-	| KW_BYTE LIT_INTEGER
-	| KW_SHORT LIT_INTEGER
-	| KW_LONG LIT_INTEGER
-	| KW_FLOAT LIT_REAL
-	| KW_DOUBLE LIT_INTEGER 
-	| KW_BYTE '[' LIT_INTEGER ']' intlist 
-	| KW_BYTE '[' LIT_INTEGER ']' charlist 
-	| KW_SHORT '[' LIT_INTEGER ']' intlist 
-	| KW_LONG '[' LIT_INTEGER ']' intlist
-	| KW_FLOAT '[' LIT_INTEGER ']' floatlist
-	| KW_DOUBLE '[' LIT_INTEGER ']' intlist 
-	;
-intlist: LIT_INTEGER intlist
-	| /* nada */
-	;
-charlist: LIT_CHAR charlist
-	| /* nada */
-	;
-floatlist: LIT_REAL floatlist
-	| /* nada */
-	;
-funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody
-	;
-parameters: paramlist
-	| /* nada */
-	;
-paramlist: param ',' paramlist | param
-	;
-param:	vartype TK_IDENTIFIER
-	;
-vartype: KW_BYTE | KW_SHORT | KW_LONG | KW_FLOAT | KW_DOUBLE
-	;
-funcbody: cmd
-	;
-cmdlist : cmdlisttail
-	| /* nada */
     ;
-cmdlisttail: cmd ';' cmdlisttail | cmd
-	;
-cmd : LIT_INTEGER | TK_IDENTIFIER '=' expr
-    ; 
+vardec: TK_IDENTIFIER ':' vartypeandvalue ';'
+    ;
+vartypeandvalue: KW_BYTE LIT_CHAR
+    | KW_BYTE LIT_INTEGER
+    | KW_SHORT LIT_INTEGER
+    | KW_LONG LIT_INTEGER
+    | KW_FLOAT LIT_REAL
+    | KW_DOUBLE LIT_INTEGER
+    | KW_BYTE '[' LIT_INTEGER ']' intlist
+    | KW_BYTE '[' LIT_INTEGER ']' charlist
+    | KW_SHORT '[' LIT_INTEGER ']' intlist
+    | KW_LONG '[' LIT_INTEGER ']' intlist
+    | KW_FLOAT '[' LIT_INTEGER ']' floatlist
+    | KW_DOUBLE '[' LIT_INTEGER ']' intlist
+    ;
+intlist: LIT_INTEGER intlist
+    | /* nada */
+    ;
 
-expr: expr '*' expr | '(' expr ')' | LIT_INTEGER | TK_IDENTIFIER
-    ; 
+charlist: LIT_CHAR charlist
+    | /* nada */
+    ;
+
+floatlist: LIT_REAL floatlist
+    | /* nada */
+    ;
+
+funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody
+    ;
+
+parameters: paramlist
+    | /* nada */
+    ;
+
+paramlist: param ',' paramlist | param
+    ;
+
+param:    vartype TK_IDENTIFIER
+    ;
+
+vartype: KW_BYTE | KW_SHORT | KW_LONG | KW_FLOAT | KW_DOUBLE
+    ;
+
+funcbody: cmd
+    ;
+
+cmdlist : cmdlisttail
+    | /* nada */
+    ;
+
+cmdlisttail: cmd cmdlisttail | cmd
+    ;
+
+cmd : atrib ';'
+    | '{' cmdlist '}' ';'
+    | ';'
+    ;
+
+atrib: TK_IDENTIFIER '=' expr
+    | TK_IDENTIFIER '#' expr '=' expr
+    ;
+
+
+expr:  '(' expr ')'
+    | TK_IDENTIFIER
+    | TK_IDENTIFIER '[' expr ']'
+    | LIT_INTEGER
+    | LIT_CHAR 
+    | LIT_REAL
+    | expr operator expr
+	;
+
+operator: OPERATOR_LE
+	| OPERATOR_GE
+	| OPERATOR_EQ
+	| OPERATOR_NE
+	| OPERATOR_AND
+	| OPERATOR_OR
+	| '*'
+	| '+'
+	| '-'
+	| '/'
+;
+
 %%
 
 void yyerror(char *s)
