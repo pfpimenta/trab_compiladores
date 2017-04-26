@@ -31,12 +31,12 @@
 %token OPERATOR_AND
 %token OPERATOR_OR
 
-%token <symbol> TK_IDENTIFIER
+%token <symbol> SYMBOL_ID
 
-%token <symbol> LIT_INTEGER
-%token <symbol> LIT_REAL
-%token <symbol> LIT_CHAR
-%token <symbol> LIT_STRING
+%token <symbol> SYMBOL_LIT_INTEGER
+%token <symbol> SYMBOL_LIT_REAL
+%token <symbol> SYMBOL_LIT_CHAR
+%token <symbol> SYMBOL_LIT_STRING
 
 %token TOKEN_ERROR
 
@@ -56,34 +56,34 @@ declist: dec declist
     ;
 dec: funcdec | vardec
     ;
-vardec: TK_IDENTIFIER ':' vartypeandvalue ';'
+vardec: SYMBOL_ID ':' vartypeandvalue ';'
     ;
-vartypeandvalue: KW_BYTE LIT_CHAR
-    | KW_BYTE LIT_INTEGER
-    | KW_SHORT LIT_INTEGER
-    | KW_LONG LIT_INTEGER
-    | KW_FLOAT LIT_REAL
-    | KW_DOUBLE LIT_INTEGER
-    | KW_BYTE '[' LIT_INTEGER ']' intlist
-    | KW_BYTE '[' LIT_INTEGER ']' charlist
-    | KW_SHORT '[' LIT_INTEGER ']' intlist
-    | KW_LONG '[' LIT_INTEGER ']' intlist
-    | KW_FLOAT '[' LIT_INTEGER ']' floatlist
-    | KW_DOUBLE '[' LIT_INTEGER ']' intlist
+vartypeandvalue: KW_BYTE SYMBOL_LIT_CHAR
+    | KW_BYTE SYMBOL_LIT_INTEGER
+    | KW_SHORT SYMBOL_LIT_INTEGER
+    | KW_LONG SYMBOL_LIT_INTEGER
+    | KW_FLOAT SYMBOL_LIT_REAL
+    | KW_DOUBLE SYMBOL_LIT_INTEGER
+    | KW_BYTE '[' SYMBOL_LIT_INTEGER ']' intlist
+    | KW_BYTE '[' SYMBOL_LIT_INTEGER ']' charlist
+    | KW_SHORT '[' SYMBOL_LIT_INTEGER ']' intlist
+    | KW_LONG '[' SYMBOL_LIT_INTEGER ']' intlist
+    | KW_FLOAT '[' SYMBOL_LIT_INTEGER ']' floatlist
+    | KW_DOUBLE '[' SYMBOL_LIT_INTEGER ']' intlist
     ;
-intlist: LIT_INTEGER intlist
+intlist: SYMBOL_LIT_INTEGER intlist
     | /* nada */
     ;
 
-charlist: LIT_CHAR charlist
+charlist: SYMBOL_LIT_CHAR charlist
     | /* nada */
     ;
 
-floatlist: LIT_REAL floatlist
+floatlist: SYMBOL_LIT_REAL floatlist
     | /* nada */
     ;
 
-funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody ';'
+funcdec: vartype SYMBOL_ID '(' parameters ')' funcbody ';'
     ;
 
 parameters: paramlist
@@ -93,7 +93,7 @@ parameters: paramlist
 paramlist: param ',' paramlist | param
     ;
 
-param:    vartype TK_IDENTIFIER
+param:    vartype SYMBOL_ID
     ;
 
 vartype: KW_BYTE | KW_SHORT | KW_LONG | KW_FLOAT | KW_DOUBLE
@@ -108,7 +108,7 @@ cmdlist : cmdlist cmd ';'
 
 cmd : atrib
     | '{' cmdlist '}' 
-    | KW_READ TK_IDENTIFIER
+    | KW_READ SYMBOL_ID
     | KW_PRINT printlist
     | KW_RETURN expr
     | control
@@ -118,27 +118,27 @@ cmd : atrib
 printlist: printelement printlist | printelement
     ;
 
-printelement: LIT_STRING | expr
+printelement: SYMBOL_LIT_STRING | expr
     ;
 
 control: KW_WHEN '(' expr ')' KW_THEN cmd
     | KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE cmd
     | KW_WHILE '(' expr ')' cmd
-    | KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd
+    | KW_FOR '(' SYMBOL_ID '=' expr KW_TO expr ')' cmd
     ;
 
-atrib: TK_IDENTIFIER '=' expr
-    | TK_IDENTIFIER '#' expr '=' expr
+atrib: SYMBOL_ID '=' expr
+    | SYMBOL_ID '#' expr '=' expr
     ;
 
 
 expr:  '(' expr ')'
-    | TK_IDENTIFIER
-    | TK_IDENTIFIER '[' expr ']'
-    | TK_IDENTIFIER '(' args ')'
-    | LIT_INTEGER
-    | LIT_CHAR
-    | LIT_REAL
+    | SYMBOL_ID
+    | SYMBOL_ID '[' expr ']'
+    | SYMBOL_ID '(' args ')'
+    | SYMBOL_LIT_INTEGER
+    | SYMBOL_LIT_CHAR
+    | SYMBOL_LIT_REAL
     | expr operator expr
     ;
 	
