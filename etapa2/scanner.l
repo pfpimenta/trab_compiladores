@@ -33,7 +33,7 @@
 "/*"							{ BEGIN(COMMENT);}
 "//"[^"\n"]*							{ 							}
 
-[-,;:(){}*+/<>=!&$\]\[]			{ return (int)yytext[0]; 									}
+[-,;:(){}*+#/<>=!&$\]\[]			{ return (int)yytext[0]; 									}
 
 "<="							{ return OPERATOR_LE;}
 ">="							{ return OPERATOR_GE; }

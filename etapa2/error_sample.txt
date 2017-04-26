@@ -16,7 +16,7 @@ long main()
   for (i = 1 to 10)
 
   print " Digite um numero: \n";
-  read i makefile;
+  read i;
   while (i<10)
     {
     a = incn(a,1);
@@ -38,3 +38,6 @@ long incn (long x, long n)
   return x+n;
 
 short voidfunc() ;
+
+byte funcaobugada()
+  for(i = 1 to 10)

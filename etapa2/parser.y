@@ -123,7 +123,7 @@ control: KW_WHEN '(' expr ')' KW_THEN cmd
     ;
 
 atrib: TK_IDENTIFIER '=' expr
-    | TK_IDENTIFIER'#'expr '=' expr
+    | TK_IDENTIFIER '#' expr '=' expr
     ;
 
 
