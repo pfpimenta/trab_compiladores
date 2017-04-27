@@ -65,6 +65,8 @@ linkedList_t* findInTable(symbol_t symbol, hashTable_ref table, int tableSize);
 
 void initMe(void);
 
+char* removeQuotes(char* s);
+
 linkedList_t* addSymbol(char* text, type_t type);
 
 linkedList_t* findSymbol(symbol_t symbol);
