@@ -8,18 +8,8 @@
 
 typedef int type_t;
 
-union value_s
-{
-	int intLit;
-	char charLit;
-	int boolLit;
-	char* stringLit;
-	char* identifier;
-};
-
 struct symbol_s
 {
-	union value_s value;
 	char* text;
 	type_t type;
 };
