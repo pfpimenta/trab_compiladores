@@ -149,7 +149,7 @@ void printType(type_t type)
 			fprintf(stderr,"int");
 			break;
 		case SYMBOL_LIT_REAL:
-			fprintf(stderr,"true");
+			fprintf(stderr,"real");
 			break;
 		case SYMBOL_LIT_CHAR:
 			fprintf(stderr,"char");
