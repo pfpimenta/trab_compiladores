@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 	//printf("debug"); 
 	if(argc < 2){ // insuficient arguments
         	printf("\nerror : insuficient arguments\n");
-		exit(1);}
+		exit(0);}
 
 	if(!open_input(argv[1])) {// couldn't open input file
        		printf("\nerror : couldn't open input file\n");
