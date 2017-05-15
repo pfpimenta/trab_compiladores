@@ -1,3 +1,6 @@
+#ifndef HASH_H
+#define HASH_H
+
 #define SYMBOL_TABLE_SIZE 997
 
 #define SYMBOL_LIT_INTEGER 1
@@ -22,9 +25,9 @@ struct linkedList_s
 
 typedef struct symbol_s HASH_NODE;
 
-typedef struct linkedList_s linkedList_t;
+typedef struct linkedList_s LINKED_LIST;
 
-typedef linkedList_t** hashTable_ref;
+typedef LINKED_LIST** hashTable_ref;
 
 // Symbol module
 
@@ -32,13 +35,13 @@ int equal(HASH_NODE symbol1, HASH_NODE symbol2);
 
 // LinkedList module
 
-linkedList_t* nil(void);
+LINKED_LIST* nil(void);
 
-int isEmpty(linkedList_t* list);
+int isEmpty(LINKED_LIST* list);
 
-linkedList_t* cons(HASH_NODE symbol, linkedList_t* list);
+LINKED_LIST* cons(HASH_NODE symbol, LINKED_LIST* list);
 
-linkedList_t* find(HASH_NODE symbol, linkedList_t* list);
+LINKED_LIST* find(HASH_NODE symbol, LINKED_LIST* list);
 
 
 // HashTable module
@@ -47,17 +50,17 @@ int hashFunction(char* text, int tableSize);
 
 hashTable_ref newHashTable(int size);
 
-linkedList_t* addToTable(HASH_NODE symbol, hashTable_ref table, int tableSize);
+LINKED_LIST* addToTable(HASH_NODE symbol, hashTable_ref table, int tableSize);
 
-linkedList_t* findInTable(HASH_NODE symbol, hashTable_ref table, int tableSize);
+LINKED_LIST* findInTable(HASH_NODE symbol, hashTable_ref table, int tableSize);
 
 // SymbolTable module
 
 void initMe(void);
 
-linkedList_t* addSymbol(char* text, type_t type);
+LINKED_LIST* addSymbol(char* text, type_t type);
 
-linkedList_t* findSymbol(HASH_NODE symbol);
+LINKED_LIST* findSymbol(HASH_NODE symbol);
 
 
 // Printing Table
@@ -66,8 +69,10 @@ void printSymbol(HASH_NODE symbol);
 
 void printType(type_t type);
 
-void printList(linkedList_t* list);
+void printList(LINKED_LIST* list);
 
 void printTable(hashTable_ref table, int tableSize);
 
 void printSymbolTable(void);
+
+#endif

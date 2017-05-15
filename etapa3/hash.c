@@ -14,19 +14,19 @@ int equal(HASH_NODE symbol1, HASH_NODE symbol2)
 
 // LinkedList module
 
-linkedList_t* nil(void)
+LINKED_LIST* nil(void)
 {
 	return NULL;
 }
 
-int isEmpty(linkedList_t* list)
+int isEmpty(LINKED_LIST* list)
 {
 	return list == NULL;
 }
 
-linkedList_t* cons(HASH_NODE symbol, linkedList_t* list)
+LINKED_LIST* cons(HASH_NODE symbol, LINKED_LIST* list)
 {
-	linkedList_t* newList = (linkedList_t*) malloc( sizeof(linkedList_t) );
+	LINKED_LIST* newList = (LINKED_LIST*) malloc( sizeof(LINKED_LIST) );
 
 	newList->symbol = symbol;
 	newList->tail = list;
@@ -34,9 +34,9 @@ linkedList_t* cons(HASH_NODE symbol, linkedList_t* list)
 	return newList;
 }
 
-linkedList_t* find(HASH_NODE symbol, linkedList_t* list)
+LINKED_LIST* find(HASH_NODE symbol, LINKED_LIST* list)
 {
-	linkedList_t* aux = list;
+	LINKED_LIST* aux = list;
 
 	while( !isEmpty(aux) )
 	{
@@ -71,7 +71,7 @@ int hashFunction(char* text, int tableSize)
 
 hashTable_ref newHashTable(int size)
 {
-	hashTable_ref table = (hashTable_ref) calloc(size, sizeof(linkedList_t*));
+	hashTable_ref table = (hashTable_ref) calloc(size, sizeof(LINKED_LIST*));
 	int i;
 
 	for(i = 0; i < size; i++)
@@ -82,11 +82,11 @@ hashTable_ref newHashTable(int size)
 	return table;
 }
 
-linkedList_t* addToTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
+LINKED_LIST* addToTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
 {
 	int index = hashFunction(symbol.text, tableSize);
 
-	linkedList_t* pointer = find(symbol, table[index]);
+	LINKED_LIST* pointer = find(symbol, table[index]);
 
 	if(pointer != NULL)
 	{
@@ -100,7 +100,7 @@ linkedList_t* addToTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
 	}
 }
 
-linkedList_t* findInTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
+LINKED_LIST* findInTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
 {
 	int index = hashFunction(symbol.text, tableSize);
 
@@ -115,7 +115,7 @@ void initMe(void)
 	symbolTable = newHashTable(SYMBOL_TABLE_SIZE);
 }
 
-linkedList_t* addSymbol(char* text, type_t type)
+LINKED_LIST* addSymbol(char* text, type_t type)
 {
 	HASH_NODE symbol;
 	symbol.text = (char*) calloc(strlen(text) + 1, sizeof(char));
@@ -125,7 +125,7 @@ linkedList_t* addSymbol(char* text, type_t type)
 	return addToTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
 
-linkedList_t* findSymbol(HASH_NODE symbol)
+LINKED_LIST* findSymbol(HASH_NODE symbol)
 {
 	return findInTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
@@ -163,9 +163,9 @@ void printType(type_t type)
 	}
 }
 
-void printList(linkedList_t* list)
+void printList(LINKED_LIST* list)
 {
-	linkedList_t* aux = list;
+	LINKED_LIST* aux = list;
 
 	while( !isEmpty(aux) )
 	{

@@ -1,6 +1,7 @@
 %{
 	#include <stdio.h>
 	#include "hash.h"
+	#include "astree.h"
 	#include "y.tab.h"
 	
 	int token;

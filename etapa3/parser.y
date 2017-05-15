@@ -9,8 +9,9 @@
     ASTREE* root;
 %}
 
+%start program
 
-%union{ linkedList_t* symbol; ASTREE* astree;}
+%union{ LINKED_LIST* symbol; ASTREE* astree;}
 
 %token KW_BYTE
 %token KW_SHORT
@@ -105,7 +106,9 @@ param:    vartype TK_IDENTIFIER
     ;
 
 vartype: KW_BYTE
-    | KW_SHORT | KW_LONG | KW_FLOAT
+    | KW_SHORT
+    | KW_LONG
+    | KW_FLOAT
     | KW_DOUBLE
     ;
 
