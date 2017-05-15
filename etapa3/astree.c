@@ -1,5 +1,5 @@
-#include "astree.h"
 #include <stdio.h>
+#include "astree.h"
 
 ASTREE* astreeCreate(int type, HASH_NODE* symbol,
                     ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3)
@@ -25,11 +25,19 @@ void astreePrint(ASTREE* node, int level)
     fprintf(stderr, "ASTREE(");
     switch(node->type)
     {
-        case ASTREE_SYMBOL: fprintf(stderr, "ASTREE_SYMBOL"); break;
-        case ASTREE_ADD: fprintf(stderr,"ASTREE_ADD"); break;
+        case ASTREE_SYMBOL:
+        {
+            fprintf(stderr, "ASTREE_SYMBOL");
+            break;
+        }
+        case ASTREE_ADD:
+        {
+            fprintf(stderr,"ASTREE_ADD");
+            break;
+        }
     }
     if(node->symbol)
-        fprintf(stderr, ",%s", node->symbol_c->text); // CHECK print (?)
+        fprintf(stderr, ",%s", node->symbol->text); // CHECK print (?)
     else
         fprintf(stderr, ",");
 };

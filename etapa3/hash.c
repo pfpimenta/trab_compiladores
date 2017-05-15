@@ -7,7 +7,7 @@ hashTable_ref symbolTable;
 
 // Symbol module
 
-int equal(symbol_t symbol1, symbol_t symbol2)
+int equal(HASH_NODE symbol1, HASH_NODE symbol2)
 {
 	return (symbol1.type == symbol2.type) && (strcmp(symbol1.text, symbol2.text) == 0);
 }
@@ -24,7 +24,7 @@ int isEmpty(linkedList_t* list)
 	return list == NULL;
 }
 
-linkedList_t* cons(symbol_t symbol, linkedList_t* list)
+linkedList_t* cons(HASH_NODE symbol, linkedList_t* list)
 {
 	linkedList_t* newList = (linkedList_t*) malloc( sizeof(linkedList_t) );
 
@@ -34,7 +34,7 @@ linkedList_t* cons(symbol_t symbol, linkedList_t* list)
 	return newList;
 }
 
-linkedList_t* find(symbol_t symbol, linkedList_t* list)
+linkedList_t* find(HASH_NODE symbol, linkedList_t* list)
 {
 	linkedList_t* aux = list;
 
@@ -82,7 +82,7 @@ hashTable_ref newHashTable(int size)
 	return table;
 }
 
-linkedList_t* addToTable(symbol_t symbol, hashTable_ref table, int tableSize)
+linkedList_t* addToTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
 {
 	int index = hashFunction(symbol.text, tableSize);
 
@@ -100,7 +100,7 @@ linkedList_t* addToTable(symbol_t symbol, hashTable_ref table, int tableSize)
 	}
 }
 
-linkedList_t* findInTable(symbol_t symbol, hashTable_ref table, int tableSize)
+linkedList_t* findInTable(HASH_NODE symbol, hashTable_ref table, int tableSize)
 {
 	int index = hashFunction(symbol.text, tableSize);
 
@@ -117,7 +117,7 @@ void initMe(void)
 
 linkedList_t* addSymbol(char* text, type_t type)
 {
-	symbol_t symbol;
+	HASH_NODE symbol;
 	symbol.text = (char*) calloc(strlen(text) + 1, sizeof(char));
 	strcpy(symbol.text, text);
 	symbol.type = type;
@@ -125,14 +125,14 @@ linkedList_t* addSymbol(char* text, type_t type)
 	return addToTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
 
-linkedList_t* findSymbol(symbol_t symbol)
+linkedList_t* findSymbol(HASH_NODE symbol)
 {
 	return findInTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
 
 // Printing Tables
 
-void printSymbol(symbol_t symbol)
+void printSymbol(HASH_NODE symbol)
 {
 	fprintf(stderr,"(");
 	fprintf(stderr,"%s",symbol.text);

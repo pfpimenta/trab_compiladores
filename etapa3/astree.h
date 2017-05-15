@@ -1,12 +1,19 @@
+#include <stdlib.h>
+#include <stdio.h>
 
-struct astree
+#include "hash.h"
+
+#define ASTREE_SYMBOL 0
+#define ASTREE_ADD 1
+
+
+typedef struct astree
 {
     int type;
     HASH_NODE* symbol;
     ASTREE** son;
-};
+} ASTREE;
 
-typedef struct astree ASTREE;
 
 ASTREE* astreeCreate(int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3);
 
