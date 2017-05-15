@@ -11,7 +11,7 @@ typedef struct astree
 {
     int type;
     HASH_NODE* symbol;
-    ASTREE** son;
+    struct ASTREE** son;
 } ASTREE;
 
 
