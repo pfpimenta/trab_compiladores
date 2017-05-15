@@ -29,7 +29,7 @@ void astreePrint(ASTREE* node, int level)
         case ASTREE_ADD: fprintf(stderr,"ASTREE_ADD"); break;
     }
     if(node->symbol)
-        fprintf(stderr, ",%s", node->symbol->text); // CHECK print (?)
+        fprintf(stderr, ",%s", node->symbol_c->text); // CHECK print (?)
     else
         fprintf(stderr, ",");
 };
