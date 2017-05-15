@@ -3,11 +3,14 @@
     #include <stdio.h>
     #include <string.h>
     #include "hash.h"
+    #include "astree.h"
     void yyerror(char *s);
+    
+    ASTREE* root;
 %}
 
 
-%union{ linkedList_t* symbol; }
+%union{ linkedList_t* symbol; ASTREE* astree;}
 
 %token KW_BYTE
 %token KW_SHORT
@@ -40,6 +43,9 @@
 
 %token TOKEN_ERROR
 
+%type <astree> declist
+%type <astree> dec
+
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
 %left '<' '>' '!'
@@ -49,12 +55,13 @@
 
 %%
 
-program : declist
+program : declist { root = $1; }
     ;
-declist: dec declist
-    | /* nada */
+declist: dec declist { $$ = astreeCreate(PROGRAM, NULL, $1, $2, 0, 0); }
+    | /* nada */ { $$ = astreeCreate(PROGRAM, NULL, 0, 0, 0, 0); }
     ;
-dec: funcdec | vardec
+dec: funcdec
+    | vardec
     ;
 vardec: TK_IDENTIFIER ':' vartypeandvalue ';'
     ;
@@ -90,13 +97,16 @@ parameters: paramlist
     | /* nada */
     ;
 
-paramlist: param ',' paramlist | param
+paramlist: param ',' paramlist
+    | param
     ;
 
 param:    vartype TK_IDENTIFIER
     ;
 
-vartype: KW_BYTE | KW_SHORT | KW_LONG | KW_FLOAT | KW_DOUBLE
+vartype: KW_BYTE
+    | KW_SHORT | KW_LONG | KW_FLOAT
+    | KW_DOUBLE
     ;
 
 funcbody: cmd

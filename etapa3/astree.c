@@ -20,8 +20,14 @@ ASTREE* astreeCreate(int type, HASH_NODE* symbol,
 
 void astreePrint(ASTREE* node, int level)
 {
+    int i;
+    
     if(!node) return;
-    //for i in level print ("  ")
+    for(i=0; i < level; i++)
+    {
+        fprintf(stderr, "  ");
+    }
+    
     fprintf(stderr, "ASTREE(");
     switch(node->type)
     {
@@ -40,4 +46,32 @@ void astreePrint(ASTREE* node, int level)
         fprintf(stderr, ",%s", node->symbol->text); // CHECK print (?)
     else
         fprintf(stderr, ",");
+    for(i=0; i < MAX_SONS; i++)
+    {
+        astreePrint(node->son[i], level+1);
+    }
 };
+
+void astreeNodePrint(ASTREE* node)
+{
+    if(!node) return;
+    fprintf(stderr, "ASTREE NODE(");
+    switch(node->type)
+    {
+        case ASTREE_SYMBOL:
+        {
+            fprintf(stderr, "ASTREE_SYMBOL");
+            break;
+        }
+        case ASTREE_ADD:
+        {
+            fprintf(stderr,"ASTREE_ADD");
+            break;
+        }
+    }
+    if(node->symbol)
+        fprintf(stderr, ",%s", node->symbol->text); // CHECK print (?)
+    else
+        fprintf(stderr, ",");
+
+}

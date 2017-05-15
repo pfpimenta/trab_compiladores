@@ -3,8 +3,11 @@
 
 #include "hash.h"
 
-#define ASTREE_SYMBOL 0
-#define ASTREE_ADD 1
+#define MAX_SONS 4
+
+#define PROGRAM 0
+#define ASTREE_SYMBOL 1
+#define ASTREE_ADD 2
 
 
 typedef struct astree

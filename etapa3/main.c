@@ -16,19 +16,6 @@ int main(int argc, char** argv)
 
 	initMe();
 
-	/*while(isRunning())
-	{
-		token = yylex();
-		
-		if(!isRunning())
-			break;
-		
-		printf("token: %d (line %d)\n", token, getLineNumber());
-	}
-    
-
-	printf("Your program has %d lines\n", getLineNumber()-1);
-    */
     yyparse();
 
     //se chegou ate aqui, o programa de input esta correto

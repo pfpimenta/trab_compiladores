@@ -15,25 +15,25 @@
 
 %%
 
-"byte"							{ return KW_BYTE; 											}
-"short"							{ return KW_SHORT; 											}
-"long"							{ return KW_LONG; 											}
-"float"							{ return KW_FLOAT; 											}	
-"double"						{ return KW_DOUBLE; 										}
-"when"							{ return KW_WHEN; 											}
-"then"							{ return KW_THEN; 											}
-"else"							{ return KW_ELSE; 											}
-"while"						 	{ return KW_WHILE; 											}
-"for"							{ return KW_FOR; 											}
-"to"							{ return KW_TO; 											}
-"read"							{ return KW_READ; 											}
-"return"						{ return KW_RETURN; 										}
-"print"							{ return KW_PRINT; 											}
+"byte"							{ return KW_BYTE; 	}
+"short"							{ return KW_SHORT; 	}
+"long"							{ return KW_LONG; 	}
+"float"							{ return KW_FLOAT; 	}	
+"double"						{ return KW_DOUBLE; }
+"when"							{ return KW_WHEN; 	}
+"then"							{ return KW_THEN; 	}
+"else"							{ return KW_ELSE; 	}
+"while"						 	{ return KW_WHILE; 	}
+"for"							{ return KW_FOR; 	}
+"to"							{ return KW_TO; 	}
+"read"							{ return KW_READ; 	}
+"return"						{ return KW_RETURN; }
+"print"							{ return KW_PRINT; 	}
 
 "/*"							{ BEGIN(COMMENT);}
-"//"[^"\n"]*							{ 							}
+"//"[^"\n"]*					{}
 
-[-,;:(){}*+#/<>=!&$\]\[]			{ return (int)yytext[0]; 									}
+[-,;:(){}*+#/<>=!&$\]\[]		{ return (int)yytext[0]; }
 
 "<="							{ return OPERATOR_LE;}
 ">="							{ return OPERATOR_GE; }
@@ -60,7 +60,7 @@
 <COMMENT>
 "\n"							{ line_number++;}	
 <COMMENT>
-. 								{ 							}
+. 								{ }
 
 %%
 
