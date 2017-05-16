@@ -3,7 +3,7 @@
 	#include "hash.h"
 	#include "astree.h"
 	#include "y.tab.h"
-	
+
 	int token;
 	int line_number = 1;
 	int running = 1;
@@ -19,7 +19,7 @@
 "byte"							{ return KW_BYTE; 	}
 "short"							{ return KW_SHORT; 	}
 "long"							{ return KW_LONG; 	}
-"float"							{ return KW_FLOAT; 	}	
+"float"							{ return KW_FLOAT; 	}
 "double"						{ return KW_DOUBLE; }
 "when"							{ return KW_WHEN; 	}
 "then"							{ return KW_THEN; 	}
@@ -34,14 +34,14 @@
 "/*"							{ BEGIN(COMMENT);}
 "//"[^"\n"]*					{}
 
-[-,;:(){}*+#/<>=!&$\]\[]		{ return (int)yytext[0]; }
-
 "<="							{ return OPERATOR_LE;}
 ">="							{ return OPERATOR_GE; }
 "=="							{ return OPERATOR_EQ;}
 "!="							{ return OPERATOR_NE;}
 "&&"							{ return OPERATOR_AND;}
 "||"							{ return OPERATOR_OR;}
+
+[-,;:(){}*+#/<>=!&$\]\[]		{ return (int)yytext[0]; }
 
 
 [0-9]+							{ yylval.symbol =  addSymbol(yytext, LIT_INTEGER	); return LIT_INTEGER; }
@@ -59,7 +59,7 @@
 <COMMENT>
 "*/"							{ BEGIN(INITIAL);}
 <COMMENT>
-"\n"							{ line_number++;}	
+"\n"							{ line_number++;}
 <COMMENT>
 . 								{ }
 
