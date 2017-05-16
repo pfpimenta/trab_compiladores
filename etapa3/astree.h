@@ -10,15 +10,21 @@
 #define MAX_SONS 4
 
 #define PROGRAM 0
-#define ASTREE_SYMBOL 1
-#define ASTREE_ADD 2
+#define VARDEC 1
+#define KWBYTE 2
+#define KWFLOAT 3
+#define INTLIST 4
+#define FLOATLIST 5
+#define CHARLIST 6
+#define ASTREE_SYMBOL 111
+#define ASTREE_ADD 211
 
 
 typedef struct astree
 {
     int type;
     HASH_NODE* symbol;
-    struct ASTREE** son;
+    struct ASTREE* son[MAX_SONS];
 } ASTREE;
 
 
