@@ -5,7 +5,7 @@
     #include "hash.h"
     #include "astree.h"
     void yyerror(char *s);
-    
+
     ASTREE* root;
 %}
 
@@ -64,129 +64,129 @@
 
 program : declist { root = $1; }
     ;
-declist: dec declist { $$ = astreeCreate(PROGRAM, NULL, $1, $2, 0, 0); }
-    | /* nada */ { $$ = astreeCreate(PROGRAM, NULL, 0, 0, 0, 0); }
+declist: dec declist { $$ = astreeCreate(ASTREE_PROGRAM, NULL, $1, $2, 0, 0); }
+    | /* nada */ { $$ = 0; }
     ;
 dec: funcdec  { $$ = $1; }
     | vardec { $$ = $1; }
     ;
-vardec: TK_IDENTIFIER ':' vartypeandvalue ';' { $$ = astreeCreate(PROGRAM, NULL, $1, $3, 0, 0); }
+vardec: TK_IDENTIFIER ':' vartypeandvalue ';' { $$ = astreeCreate(ASTREE_VARDEC, $1, $3, 0, 0, 0); }
     ;
-vartypeandvalue: KW_BYTE LIT_CHAR { $$ = astreeCreate(KWBYTE, NULL,
-                                    astreeCreate(LITCHAR, $2, 0, 0, 0, 0), 0, 0, 0); }
-    | KW_BYTE LIT_INTEGER 
-    | KW_SHORT LIT_INTEGER 
-    | KW_LONG LIT_INTEGER 
-    | KW_FLOAT LIT_INTEGER 
-    | KW_FLOAT LIT_REAL 
-    | KW_DOUBLE LIT_INTEGER 
-    | KW_BYTE '[' LIT_INTEGER ']' intlist 
-    | KW_BYTE '[' LIT_INTEGER ']' charlist
-    | KW_BYTE '[' LIT_INTEGER ']'  
-    | KW_SHORT '[' LIT_INTEGER ']' intlist
-    | KW_SHORT '[' LIT_INTEGER ']'
-    | KW_LONG '[' LIT_INTEGER ']' intlist 
-    | KW_LONG '[' LIT_INTEGER ']'  
-    | KW_FLOAT '[' LIT_INTEGER ']' floatlist 
-    | KW_FLOAT '[' LIT_INTEGER ']' intlist  
-    | KW_FLOAT '[' LIT_INTEGER ']' 
-    | KW_DOUBLE '[' LIT_INTEGER ']' intlist
-    | KW_DOUBLE '[' LIT_INTEGER ']' 
+vartypeandvalue: KW_BYTE LIT_CHAR { $$ = astreeCreate(ASTREE_KWBYTECHAR, $2, 0, 0, 0, 0); }
+    | KW_BYTE LIT_INTEGER  { $$ = astreeCreate(ASTREE_KWBYTEINT, $2, 0, 0, 0, 0); }
+    | KW_SHORT LIT_INTEGER { $$ = astreeCreate(ASTREE_KWSHORTINT, $2, 0, 0, 0, 0); }
+    | KW_LONG LIT_INTEGER { $$ = astreeCreate(ASTREE_KWLONGINT, $2, 0, 0, 0, 0); }
+    | KW_FLOAT LIT_INTEGER { $$ = astreeCreate(ASTREE_KWFLOATINT, $2, 0, 0, 0, 0); }
+    | KW_FLOAT LIT_REAL { $$ = astreeCreate(ASTREE_KWFLOATREAL, $2, 0, 0, 0, 0); }
+    | KW_DOUBLE LIT_INTEGER { $$ = astreeCreate(ASTREE_KWDOUBLEINT, $2, 0, 0, 0, 0); }
+    | KW_BYTE '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWBYTEARRAYINT, $3, $5, 0, 0, 0); }
+    | KW_BYTE '[' LIT_INTEGER ']' charlist { $$ = astreeCreate(ASTREE_KWBYTEARRAYCHAR, $3, $5, 0, 0, 0); }
+    | KW_BYTE '[' LIT_INTEGER ']'   { $$ = astreeCreate(ASTREE_KWBYTEARRAY, $3, 0, 0, 0, 0); }
+    | KW_SHORT '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWSHORTARRAYINT, $3, $5, 0, 0, 0); }
+    | KW_SHORT '[' LIT_INTEGER ']' { $$ = astreeCreate(ASTREE_KWSHORTARRAY, $3, 0, 0, 0, 0); }
+    | KW_LONG '[' LIT_INTEGER ']' intlist  { $$ = astreeCreate(ASTREE_KWLONGARRAYINT, $3, $5, 0, 0, 0); }
+    | KW_LONG '[' LIT_INTEGER ']'    { $$ = astreeCreate(ASTREE_KWLONGARRAY, $3, 0, 0, 0, 0); }
+    | KW_FLOAT '[' LIT_INTEGER ']' floatlist { $$ = astreeCreate(ASTREE_KWFLOATARRAYFLOAT, $3, $5, 0, 0, 0); }
+    | KW_FLOAT '[' LIT_INTEGER ']' intlist  { $$ = astreeCreate(ASTREE_KWFLOATARRAYINT, $3, $5, 0, 0, 0); }
+    | KW_FLOAT '[' LIT_INTEGER ']' { $$ = astreeCreate(ASTREE_KWFLOATARRAY, $3, 0, 0, 0, 0); }
+    | KW_DOUBLE '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWDOUBLEARRAYINT, $3, $5, 0, 0, 0); }
+    | KW_DOUBLE '[' LIT_INTEGER ']' { $$ = astreeCreate(ASTREE_KWDOUBLEARRAY, $3, 0, 0, 0, 0); }
     ;
-intlist: LIT_INTEGER intlist { $$ = astreeCreate(INTLIST, NULL, $1, $2, 0, 0); }
-    | LIT_INTEGER
-    ;
-
-charlist: LIT_CHAR charlist
-    | LIT_CHAR
+intlist: LIT_INTEGER intlist { $$ = astreeCreate(ASTREE_INTLIST, $1, $2, 0, 0, 0); }
+    | LIT_INTEGER { $$ = astreeCreate(ASTREE_LITINT, $1, 0, 0, 0, 0); }
     ;
 
-floatlist: LIT_REAL floatlist
-    | LIT_REAL
+charlist: LIT_CHAR charlist { $$ = astreeCreate(ASTREE_CHARLIST, $1, $2, 0, 0, 0); }
+    | LIT_CHAR { $$ = astreeCreate(ASTREE_LITCHAR, $1, 0, 0, 0, 0); }
     ;
 
-funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody ';'
+floatlist: LIT_REAL floatlist { $$ = astreeCreate(ASTREE_FLOATLIST, $1, $2, 0, 0, 0); }
+    | LIT_REAL { $$ = astreeCreate(ASTREE_LITREAL, $1, 0, 0, 0, 0); }
     ;
 
-parameters: paramlist
-    | /* nada */
+funcdec: vartype TK_IDENTIFIER '(' parameters ')' funcbody ';' { $$ = astreeCreate(ASTREE_FUNCDEC, $2, $1, $4, $6, 0); }
     ;
 
-paramlist: param ',' paramlist
-    | param
+parameters: paramlist  { $$ = $1; }
+    | /* nada */ { $$ = 0; }
     ;
 
-param:    vartype TK_IDENTIFIER
+paramlist: param ',' paramlist { $$ = astreeCreate(ASTREE_PARAMLIST, NULL, $1, $3, 0, 0); }
+    | param { $$ = $1; }
     ;
 
-vartype: KW_BYTE
-    | KW_SHORT
-    | KW_LONG
-    | KW_FLOAT
-    | KW_DOUBLE
+param: vartype TK_IDENTIFIER { $$ = astreeCreate(ASTREE_PARAM, $2, $1, 0, 0, 0); }
     ;
 
-funcbody: cmd
+vartype: KW_BYTE { $$ = astreeCreate(ASTREE_KWBYTE, NULL, 0, 0, 0, 0); }
+    | KW_SHORT { $$ = astreeCreate(ASTREE_KWSHORT, NULL, 0, 0, 0, 0); }
+    | KW_LONG { $$ = astreeCreate(ASTREE_KWLONG, NULL, 0, 0, 0, 0); }
+    | KW_FLOAT { $$ = astreeCreate(ASTREE_KWFLOAT, NULL, 0, 0, 0, 0); }
+    | KW_DOUBLE { $$ = astreeCreate(ASTREE_KWDOUBLE, NULL, 0, 0, 0, 0); }
     ;
 
-cmdlist : cmdlist cmd ';'
-    | /* nada */
+funcbody: cmd { $$ = $1; }
     ;
 
-cmd : atrib
-    | '{' cmdlist '}' 
-    | KW_READ TK_IDENTIFIER
-    | KW_PRINT printlist
-    | KW_RETURN expr
-    | control
-    |/* nada*/ 
-    ;
-	
-printlist: printelement printlist | printelement
+cmdlist : cmdlist cmd ';' { $$ = astreeCreate(ASTREE_CMDLIST, NULL, $1, $2, 0, 0); }
+    | /* nada */ { $$ = 0; }
     ;
 
-printelement: LIT_STRING | expr
+cmd : atrib  { $$ = $1; }
+    | '{' cmdlist '}'  { $$ = astreeCreate(ASTREE_CMDCOLCHETES, NULL, $1, 0, 0, 0); }
+    | KW_READ TK_IDENTIFIER  { $$ = astreeCreate(ASTREE_KWREAD, $2, 0, 0, 0, 0); }
+    | KW_PRINT printlist  { $$ = astreeCreate(ASTREE_KWPRINT, NULL, $2, 0, 0, 0); }
+    | KW_RETURN expr { $$ = astreeCreate(ASTREE_KWRETURN, NULL, $2, 0, 0, 0); }
+    | control { $$ = $1; }
+    |/* nada*/ { $$ = 0; }
     ;
 
-control: KW_WHEN '(' expr ')' KW_THEN cmd
-    | KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE cmd
-    | KW_WHILE '(' expr ')' cmd
-    | KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd
+printlist: printelement printlist { $$ = astreeCreate(ASTREE_PRINTLIST, NULL, $1, $2, 0, 0); }
+    | printelement { $$ = $1; }
     ;
 
-atrib: TK_IDENTIFIER '=' expr
-    | TK_IDENTIFIER '#' expr '=' expr
+printelement: LIT_STRING { $$ = astreeCreate(ASTREE_LITSTRING, $1, 0, 0, 0, 0); }
+    | expr { $$ = $1; }
+    ;
+
+control: KW_WHEN '(' expr ')' KW_THEN cmd { $$ = astreeCreate(ASTREE_KWWHENTHEN, NULL, $3, $6, 0, 0); }
+    | KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE cmd { $$ = astreeCreate(ASTREE_KWWHENTHENELSE, NULL, $3, $6, $8, 0); }
+    | KW_WHILE '(' expr ')' cmd { $$ = astreeCreate(ASTREE_KWWHILE, NULL, $3, $5, 0, 0); }
+    | KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd { $$ = astreeCreate(ASTREE_KWFOR, $3, $5, $7, $9, 0); }
+    ;
+
+atrib: TK_IDENTIFIER '=' expr { $$ = astreeCreate(ASTREE_ATRIB, $1, $3, 0, 0, 0); }
+    | TK_IDENTIFIER '#' expr '=' expr { $$ = astreeCreate(ASTREE_ATRIBARRAY, $1, $3, $5, 0, 0); }
     ;
 
 
-expr:  '(' expr ')' { $$ = $2; }
-    | TK_IDENTIFIER { $$ = $1; }
-    | TK_IDENTIFIER '[' expr ']'  { $$ = astreeCreate(ARRAY, NULL, astreeCreate(ARRAY, $1, 0, 0, 0, 0), $3, 0, 0);}
-    | TK_IDENTIFIER '(' args ')' { $$ = astreeCreate(ARRAY, NULL, astreeCreate(FUNCTION, $1, 0, 0, 0, 0), $3, 0, 0);}
-    | LIT_INTEGER 
-    | LIT_CHAR
-    | LIT_REAL
-    | expr  OPERATOR_LE expr
-    | expr OPERATOR_GE expr
-    | expr OPERATOR_EQ expr
-    | expr OPERATOR_NE expr
-    | expr OPERATOR_AND expr
-    | expr OPERATOR_OR expr
-    | expr '*' expr
-    | expr '+' expr
-    | expr '-' expr
-    | expr '/' expr
-    | expr '<' expr
-    | expr '>' expr
-    | expr '!' expr
+expr:  '(' expr ')' { $$ = astreeCreate(ASTREE_EXPRPARENTESIS, NULL, $2, 0, 0, 0); }
+    | TK_IDENTIFIER { $$ = astreeCreate(ASTREE_TKID, $1, 0, 0, 0, 0); }
+    | TK_IDENTIFIER '[' expr ']'  { $$ = astreeCreate(ASTREE_TKIDARRAY, $1, $3, 0, 0, 0); }
+    | TK_IDENTIFIER '(' args ')' { $$ = astreeCreate(ASTREE_TKIDFUNC, $1, $3, 0, 0, 0); }
+    | LIT_INTEGER { $$ = astreeCreate(ASTREE_LITINT, $1, 0, 0, 0, 0); }
+    | LIT_CHAR { $$ = astreeCreate(ASTREE_LITCHAR, $1, 0, 0, 0, 0); }
+    | LIT_REAL { $$ = astreeCreate(ASTREE_LITREAL, $1, 0, 0, 0, 0); }
+    | expr  OPERATOR_LE expr { $$ = astreeCreate(ASTREE_LESSEQUAL, NULL, $1, $3, 0, 0); }
+    | expr OPERATOR_GE expr { $$ = astreeCreate(ASTREE_GREATEREQUAL, NULL, $1, $3, 0, 0); }
+    | expr OPERATOR_EQ expr { $$ = astreeCreate(ASTREE_EQUAL, NULL, $1, $3, 0, 0); }
+    | expr OPERATOR_NE expr { $$ = astreeCreate(ASTREE_NOTEQUAL, NULL, $1, $3, 0, 0); }
+    | expr OPERATOR_AND expr { $$ = astreeCreate(ASTREE_AND, NULL, $1, $3, 0, 0); }
+    | expr OPERATOR_OR expr { $$ = astreeCreate(ASTREE_OR, NULL, $1, $3, 0, 0); }
+    | expr '*' expr { $$ = astreeCreate(ASTREE_MULT, NULL, $1, $3, 0, 0); }
+    | expr '+' expr { $$ = astreeCreate(ASTREE_ADD, NULL, $1, $3, 0, 0); }
+    | expr '-' expr { $$ = astreeCreate(ASTREE_SUB, NULL, $1, $3, 0, 0); }
+    | expr '/' expr { $$ = astreeCreate(ASTREE_DIV, NULL, $1, $3, 0, 0); }
+    | expr '<' expr { $$ = astreeCreate(ASTREE_LESS, NULL, $1, $3, 0, 0); }
+    | expr '>' expr { $$ = astreeCreate(ASTREE_GREATER, NULL, $1, $3, 0, 0); }
     ;
-	
-args: expr argstail
-    |  /* nada */
+
+args: expr argstail  { $$ = astreeCreate(ASTREE_ARGS, NULL, $1, $2, 0, 0); }
+    |  /* nada */ { $$ = 0; }
     ;
-	
-argstail: ',' expr argstail
-	|  /* nada */
+
+argstail: ',' expr argstail { $$ = astreeCreate(ASTREE_ARGSTAIL, NULL, $2, $3, 0, 0); }
+	|  /* nada */ { $$ = 0; }
 	;
 
 
@@ -197,6 +197,6 @@ void yyerror(char *s)
 {
     int lineNum = getLineNumber();
     fprintf(stdout, "ERROR\n%s\nna linha: %i\n\n   ", s, lineNum);
-    
+
     exit(3);
 }
