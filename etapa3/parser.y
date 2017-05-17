@@ -52,6 +52,20 @@
 %type <astree> intlist
 %type <astree> floatlist
 %type <astree> charlist
+%type <astree> vartype
+%type <astree> parameters
+%type <astree> funcbody
+%type <astree> paramlist
+%type <astree> param
+%type <astree> cmd
+%type <astree> cmdlist
+%type <astree> atrib
+%type <astree> printlist
+%type <astree> expr
+%type <astree> control
+%type <astree> printelement
+%type <astree> args
+%type <astree> argstail
 
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
@@ -133,7 +147,7 @@ cmdlist : cmdlist cmd ';' { $$ = astreeCreate(ASTREE_CMDLIST, NULL, $1, $2, 0, 0
     ;
 
 cmd : atrib  { $$ = $1; }
-    | '{' cmdlist '}'  { $$ = astreeCreate(ASTREE_CMDCOLCHETES, NULL, $1, 0, 0, 0); }
+    | '{' cmdlist '}'  { $$ = astreeCreate(ASTREE_CMDCOLCHETES, NULL, $2, 0, 0, 0); }
     | KW_READ TK_IDENTIFIER  { $$ = astreeCreate(ASTREE_KWREAD, $2, 0, 0, 0, 0); }
     | KW_PRINT printlist  { $$ = astreeCreate(ASTREE_KWPRINT, NULL, $2, 0, 0, 0); }
     | KW_RETURN expr { $$ = astreeCreate(ASTREE_KWRETURN, NULL, $2, 0, 0, 0); }
