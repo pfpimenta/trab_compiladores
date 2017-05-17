@@ -6,7 +6,6 @@
     #include "astree.h"
     void yyerror(char *s);
 
-    ASTREE* root;
 %}
 
 %start program
