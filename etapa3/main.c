@@ -37,11 +37,11 @@ int main(int argc, char** argv)
 
 		initMe();
 
-    yyparse();
+    		yyparse();
 
 		char* decompiledASTREE = astreeDecompile(root);
 
-	  writeToFile(argv[2],decompiledASTREE);
+	  	writeToFile(argv[2],decompiledASTREE);
 
     //se chegou ate aqui, o programa de input esta correto
     fprintf(stderr,"programa %s aceito\n", argv[1]);

@@ -79,7 +79,11 @@ char* astreeDecompile(ASTREE* ast)
 
 			case ASTREE_PROGRAM:
 			{
-
+				char* son0_source = astreeDecompile(ast->son[0]);
+				char* son1_source = astreeDecompile(ast->son[1]);
+				char* buffer = (char*)calloc(strlen(son0_source) + strlen(son1_source),sizeof(char));
+				sprintf(buffer,"%s%s",son0_source,son1_source);
+				return buffer;
 				break;
 			}
 
@@ -87,56 +91,73 @@ char* astreeDecompile(ASTREE* ast)
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(30 + 1 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"%d:%s;)",ast->symbol->text,son0_source);
+				sprintf(buffer,"%s:%s;",ast->symbol->text,son0_source);
 				return buffer;
 				break;
 			}
 
 			case ASTREE_KWBYTECHAR:
 			{
-
+				char* buffer = (char*)calloc(4 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"BYTE%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWBYTEINT:
 			{
-
+				char* buffer = (char*)calloc(4 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"BYTE%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWSHORTINT:
 			{
-
+				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"SHORT%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWLONGINT:
 			{
-
+				char* buffer = (char*)calloc(4 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"LONG%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWFLOATINT:
 			{
-
+				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"FLOAT%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWFLOATREAL:
 			{
-
+				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"FLOAT%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWDOUBLEINT:
 			{
-
+				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text),sizeof(char));
+				sprintf(buffer,"DOUBLE%s", ast->symbol->text);
+				return buffer;
 				break;
 			}
 
 			case ASTREE_KWBYTEARRAYINT:
 			{
-
+				char* son0_source = astreeDecompile(ast->son[0]);
+				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text) + 1 + strlen(son0_source) ,sizeof(char));
+				sprintf(buffer,"BYTE[%s]%s", ast->symbol->text, son0_source);
+				return buffer;
 				break;
 			}
 
@@ -333,6 +354,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
+
 			case ASTREE_KWWHENTHEN:
 			{
 
@@ -480,3 +502,4 @@ char* astreeDecompile(ASTREE* ast)
 		}
   }
 }
+
