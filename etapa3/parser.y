@@ -11,7 +11,7 @@
 
 %start program
 
-%union{ LINKED_LIST* symbol; ASTREE* astree;}
+%union{ HASH_NODE* symbol; ASTREE* astree;}
 
 %token KW_BYTE
 %token KW_SHORT
