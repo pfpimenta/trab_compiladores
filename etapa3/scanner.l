@@ -32,7 +32,7 @@
 "print"							{ return KW_PRINT; 	}
 
 "/*"							{ BEGIN(COMMENT);}
-"//"[^"\n"]*					{}
+"//"[^\n]*					{}
 
 "<="							{ return OPERATOR_LE;}
 ">="							{ return OPERATOR_GE; }
