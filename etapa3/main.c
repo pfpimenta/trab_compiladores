@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     		yyparse();
 
 		char* decompiledASTREE = astreeDecompile(root);
-		astreePrint(root, 0);
+		//astreePrint(root, 0);
 	  writeToFile(argv[2],decompiledASTREE);
 
     //se chegou ate aqui, o programa de input esta correto
