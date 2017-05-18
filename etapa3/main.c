@@ -40,11 +40,11 @@ int main(int argc, char** argv)
     		yyparse();
 
 		char* decompiledASTREE = astreeDecompile(root);
-
-	  	writeToFile(argv[2],decompiledASTREE);
+		astreePrint(root, 0);
+	  writeToFile(argv[2],decompiledASTREE);
 
     //se chegou ate aqui, o programa de input esta correto
-    fprintf(stderr,"programa %s aceito\n", argv[1]);
+    fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
     exit(0);
 
     return 1;

@@ -23,41 +23,824 @@ void astreePrint(ASTREE* node, int level)
     int i;
 
     if(!node) return;
+    fprintf(stderr, "\n");
     for(i=0; i < level; i++)
     {
         fprintf(stderr, "  ");
     }
 
-    fprintf(stderr, "ASTREE(");
     switch(node->type)
     {
-        case ASTREE_ADD:
-        {
-            fprintf(stderr,"ASTREE_ADD");
-            break;
-        }
+      case ASTREE_PROGRAM:
+      {
+          fprintf(stderr,"ASTREE_PROGRAM");
+          break;
+      }
+
+      case ASTREE_VARDEC:
+      {
+          fprintf(stderr,"ASTREE_VARDEC");
+          break;
+      }
+
+      case ASTREE_KWBYTECHAR:
+      {
+          fprintf(stderr,"ASTREE_KWBYTECHAR");
+          break;
+      }
+
+      case ASTREE_KWBYTEINT:
+      {
+          fprintf(stderr,"ASTREE_KWBYTEINT");
+          break;
+      }
+
+      case ASTREE_KWSHORTINT:
+      {
+          fprintf(stderr,"ASTREE_KWSHORTINT");
+          break;
+      }
+
+      case ASTREE_KWLONGINT:
+      {
+          fprintf(stderr,"ASTREE_KWLONGINT");
+          break;
+      }
+
+      case ASTREE_KWFLOATINT:
+      {
+          fprintf(stderr,"ASTREE_KWFLOATINT");
+          break;
+      }
+
+      case ASTREE_KWFLOATREAL:
+      {
+          fprintf(stderr,"ASTREE_KWFLOATREAL");
+          break;
+      }
+
+      case ASTREE_KWDOUBLEINT:
+      {
+          fprintf(stderr,"ASTREE_KWDOUBLEINT");
+          break;
+      }
+
+      case ASTREE_KWBYTEARRAYINT:
+      {
+          fprintf(stderr,"ASTREE_KWBYTEARRAYINT");
+          break;
+      }
+
+      case ASTREE_KWBYTEARRAYCHAR:
+      {
+          fprintf(stderr,"ASTREE_KWBYTEARRAYCHAR");
+          break;
+      }
+
+      case ASTREE_KWBYTEARRAY:
+      {
+          fprintf(stderr,"ASTREE_KWBYTEARRAY");
+          break;
+      }
+
+      case ASTREE_KWSHORTARRAYINT:
+      {
+          fprintf(stderr,"ASTREE_KWSHORTARRAYINT");
+          break;
+      }
+
+      case ASTREE_KWSHORTARRAY:
+      {
+          fprintf(stderr,"ASTREE_KWSHORTARRAY");
+          break;
+      }
+
+      case ASTREE_KWLONGARRAYINT:
+      {
+          fprintf(stderr,"ASTREE_KWLONGARRAYINT");
+          break;
+      }
+
+      case ASTREE_KWLONGARRAY:
+      {
+          fprintf(stderr,"ASTREE_KWLONGARRAY");
+          break;
+      }
+
+      case ASTREE_KWFLOATARRAYFLOAT:
+      {
+          fprintf(stderr,"ASTREE_KWFLOATARRAYFLOAT");
+          break;
+      }
+
+      case ASTREE_KWFLOATARRAYINT:
+      {
+          fprintf(stderr,"ASTREE_KWFLOATARRAYINT");
+          break;
+      }
+
+      case ASTREE_KWFLOATARRAY:
+      {
+          fprintf(stderr,"ASTREE_KWFLOATARRAY");
+          break;
+      }
+
+      case ASTREE_KWDOUBLEARRAYINT:
+      {
+          fprintf(stderr,"ASTREE_KWDOUBLEARRAYINT");
+          break;
+      }
+
+      case ASTREE_KWDOUBLEARRAY:
+      {
+          fprintf(stderr,"ASTREE_KWDOUBLEARRAY");
+          break;
+      }
+
+      case ASTREE_INTLIST:
+      {
+          fprintf(stderr,"ASTREE_INTLIST");
+          break;
+      }
+
+      case ASTREE_LITINT:
+      {
+          fprintf(stderr,"ASTREE_LITINT");
+          break;
+      }
+
+      case ASTREE_CHARLIST:
+      {
+          fprintf(stderr,"ASTREE_CHARLIST");
+          break;
+      }
+
+      case ASTREE_LITCHAR :
+      {
+          fprintf(stderr,"ASTREE_LITCHAR");
+          break;
+      }
+
+      case ASTREE_FLOATLIST:
+      {
+          fprintf(stderr,"ASTREE_FLOATLIST");
+          break;
+      }
+
+      case ASTREE_LITREAL:
+      {
+          fprintf(stderr,"ASTREE_LITREAL");
+          break;
+      }
+
+      case ASTREE_FUNCDEC :
+      {
+          fprintf(stderr,"ASTREE_FUNCDEC");
+          break;
+      }
+
+      case ASTREE_PARAMLIST:
+      {
+          fprintf(stderr,"ASTREE_PARAMLIST");
+          break;
+      }
+
+      case ASTREE_PARAM:
+      {
+          fprintf(stderr,"ASTREE_PARAM");
+          break;
+      }
+
+      case ASTREE_KWBYTE :
+      {
+          fprintf(stderr,"ASTREE_KWBYTE");
+          break;
+      }
+
+      case ASTREE_KWSHORT:
+      {
+          fprintf(stderr,"ASTREE_KWSHORT");
+          break;
+      }
+
+      case ASTREE_KWLONG:
+      {
+          fprintf(stderr,"ASTREE_KWLONG");
+          break;
+      }
+
+      case ASTREE_KWFLOAT:
+      {
+          fprintf(stderr,"ASTREE_KWFLOAT");
+          break;
+      }
+
+      case ASTREE_KWDOUBLE:
+      {
+          fprintf(stderr,"ASTREE_KWDOUBLE");
+          break;
+      }
+
+      case ASTREE_CMDLIST:
+      {
+          fprintf(stderr,"ASTREE_CMDLIST");
+          break;
+      }
+
+      case ASTREE_CMDCOLCHETES :
+      {
+          fprintf(stderr,"ASTREE_CMDCOLCHETES");
+          break;
+      }
+
+      case ASTREE_KWREAD:
+      {
+          fprintf(stderr,"ASTREE_KWREAD");
+          break;
+      }
+
+      case ASTREE_KWPRINT:
+      {
+          fprintf(stderr,"ASTREE_KWPRINT");
+          break;
+      }
+
+      case ASTREE_KWRETURN :
+      {
+          fprintf(stderr,"ASTREE_KWRETURN");
+          break;
+      }
+
+      case ASTREE_PRINTLIST:
+      {
+          fprintf(stderr,"ASTREE_PRINTLIST");
+          break;
+      }
+
+      case ASTREE_LITSTRING:
+      {
+          fprintf(stderr,"ASTREE_LITSTRING");
+          break;
+      }
+
+
+      case ASTREE_KWWHENTHEN:
+      {
+          fprintf(stderr,"ASTREE_KWWHENTHEN");
+          break;
+      }
+
+      case ASTREE_KWWHENTHENELSE:
+      {
+          fprintf(stderr,"ASTREE_KWWHENTHENELSE");
+          break;
+      }
+
+      case ASTREE_KWWHILE :
+      {
+          fprintf(stderr,"ASTREE_KWWHILE");
+          break;
+      }
+
+      case ASTREE_KWFOR:
+      {
+          fprintf(stderr,"ASTREE_KWFOR");
+          break;
+      }
+
+      case ASTREE_ATRIB:
+      {
+          fprintf(stderr,"ASTREE_ATRIB");
+          break;
+      }
+
+      case ASTREE_ATRIBARRAY:
+      {
+          fprintf(stderr,"ASTREE_ATRIBARRAY");
+          break;
+      }
+
+      case ASTREE_EXPRPARENTESIS:
+      {
+          fprintf(stderr,"ASTREE_EXPRPARENTESIS");
+          break;
+      }
+
+      case ASTREE_TKID:
+      {
+          fprintf(stderr,"ASTREE_TKID");
+          break;
+      }
+
+      case ASTREE_TKIDARRAY:
+      {
+          fprintf(stderr,"ASTREE_TKIDARRAY");
+          break;
+      }
+
+      case ASTREE_TKIDFUNC :
+      {
+          fprintf(stderr,"ASTREE_TKIDFUNC");
+          break;
+      }
+
+      case ASTREE_LESSEQUAL:
+      {
+          fprintf(stderr,"ASTREE_LESSEQUAL");
+          break;
+      }
+
+      case ASTREE_GREATEREQUAL:
+      {
+          fprintf(stderr,"ASTREE_GREATEREQUAL");
+          break;
+      }
+
+      case ASTREE_EQUAL :
+      {
+          fprintf(stderr,"ASTREE_EQUAL");
+          break;
+      }
+
+      case ASTREE_NOTEQUAL:
+      {
+          fprintf(stderr,"ASTREE_NOTEQUAL");
+          break;
+      }
+
+      case ASTREE_AND:
+      {
+          fprintf(stderr,"ASTREE_AND");
+          break;
+      }
+
+      case ASTREE_OR:
+      {
+          fprintf(stderr,"ASTREE_OR");
+          break;
+      }
+
+      case ASTREE_MULT:
+      {
+          fprintf(stderr,"ASTREE_MULT");
+          break;
+      }
+
+      case ASTREE_ADD:
+      {
+          fprintf(stderr,"ASTREE_ADD");
+          break;
+      }
+
+      case ASTREE_SUB:
+      {
+          fprintf(stderr,"ASTREE_SUB");
+          break;
+      }
+
+      case ASTREE_DIV:
+      {
+          fprintf(stderr,"ASTREE_DIV");
+          break;
+      }
+
+      case ASTREE_LESS:
+      {
+          fprintf(stderr,"ASTREE_LESS");
+          break;
+      }
+
+      case ASTREE_GREATER:
+      {
+          fprintf(stderr,"ASTREE_GREATER");
+          break;
+      }
+
+      case ASTREE_ARGS:
+      {
+          fprintf(stderr,"ASTREE_ARGS");
+          break;
+      }
+
+      case ASTREE_ARGSTAIL:
+      {
+          fprintf(stderr,"ASTREE_ARGSTAIL");
+          break;
+      }
     }
     if(node->symbol)
-        fprintf(stderr, ",%s", node->symbol->text); // CHECK print (?)
+        fprintf(stderr, ": %s", node->symbol->text);
     else
-        fprintf(stderr, ",");
+        fprintf(stderr, ": _");
     for(i=0; i < MAX_SONS; i++)
     {
-        astreePrint(node->son[i], level+1);
+        astreePrint(node->son[i], ++level);
     }
 };
 
 void astreeNodePrint(ASTREE* node)
 {
     if(!node) return;
-    fprintf(stderr, "ASTREE NODE(");
+    fprintf(stderr, "\nASTREE NODE(");
     switch(node->type)
     {
+        case ASTREE_PROGRAM:
+        {
+            fprintf(stderr,"ASTREE_PROGRAM");
+            break;
+        }
+
+        case ASTREE_VARDEC:
+        {
+            fprintf(stderr,"ASTREE_VARDEC");
+            break;
+        }
+
+        case ASTREE_KWBYTECHAR:
+        {
+            fprintf(stderr,"ASTREE_KWBYTECHAR");
+            break;
+        }
+
+        case ASTREE_KWBYTEINT:
+        {
+            fprintf(stderr,"ASTREE_KWBYTEINT");
+            break;
+        }
+
+        case ASTREE_KWSHORTINT:
+        {
+            fprintf(stderr,"ASTREE_KWSHORTINT");
+            break;
+        }
+
+        case ASTREE_KWLONGINT:
+        {
+            fprintf(stderr,"ASTREE_KWLONGINT");
+            break;
+        }
+
+        case ASTREE_KWFLOATINT:
+        {
+            fprintf(stderr,"ASTREE_KWFLOATINT");
+            break;
+        }
+
+        case ASTREE_KWFLOATREAL:
+        {
+            fprintf(stderr,"ASTREE_KWFLOATREAL");
+            break;
+        }
+
+        case ASTREE_KWDOUBLEINT:
+        {
+            fprintf(stderr,"ASTREE_KWDOUBLEINT");
+            break;
+        }
+
+        case ASTREE_KWBYTEARRAYINT:
+        {
+            fprintf(stderr,"ASTREE_KWBYTEARRAYINT");
+            break;
+        }
+
+        case ASTREE_KWBYTEARRAYCHAR:
+        {
+            fprintf(stderr,"ASTREE_KWBYTEARRAYCHAR");
+            break;
+        }
+
+        case ASTREE_KWBYTEARRAY:
+        {
+            fprintf(stderr,"ASTREE_KWBYTEARRAY");
+            break;
+        }
+
+        case ASTREE_KWSHORTARRAYINT:
+        {
+            fprintf(stderr,"ASTREE_KWSHORTARRAYINT");
+            break;
+        }
+
+        case ASTREE_KWSHORTARRAY:
+        {
+            fprintf(stderr,"ASTREE_KWSHORTARRAY");
+            break;
+        }
+
+        case ASTREE_KWLONGARRAYINT:
+        {
+            fprintf(stderr,"ASTREE_KWLONGARRAYINT");
+            break;
+        }
+
+        case ASTREE_KWLONGARRAY:
+        {
+            fprintf(stderr,"ASTREE_KWLONGARRAY");
+            break;
+        }
+
+        case ASTREE_KWFLOATARRAYFLOAT:
+        {
+            fprintf(stderr,"ASTREE_KWFLOATARRAYFLOAT");
+            break;
+        }
+
+        case ASTREE_KWFLOATARRAYINT:
+        {
+            fprintf(stderr,"ASTREE_KWFLOATARRAYINT");
+            break;
+        }
+
+        case ASTREE_KWFLOATARRAY:
+        {
+            fprintf(stderr,"ASTREE_KWFLOATARRAY");
+            break;
+        }
+
+        case ASTREE_KWDOUBLEARRAYINT:
+        {
+            fprintf(stderr,"ASTREE_KWDOUBLEARRAYINT");
+            break;
+        }
+
+        case ASTREE_KWDOUBLEARRAY:
+        {
+            fprintf(stderr,"ASTREE_KWDOUBLEARRAY");
+            break;
+        }
+
+        case ASTREE_INTLIST:
+        {
+            fprintf(stderr,"ASTREE_INTLIST");
+            break;
+        }
+
+        case ASTREE_LITINT:
+        {
+            fprintf(stderr,"ASTREE_LITINT");
+            break;
+        }
+
+        case ASTREE_CHARLIST:
+        {
+            fprintf(stderr,"ASTREE_CHARLIST");
+            break;
+        }
+
+        case ASTREE_LITCHAR :
+        {
+            fprintf(stderr,"ASTREE_LITCHAR");
+            break;
+        }
+
+        case ASTREE_FLOATLIST:
+        {
+            fprintf(stderr,"ASTREE_FLOATLIST");
+            break;
+        }
+
+        case ASTREE_LITREAL:
+        {
+            fprintf(stderr,"ASTREE_LITREAL");
+            break;
+        }
+
+        case ASTREE_FUNCDEC :
+        {
+            fprintf(stderr,"ASTREE_FUNCDEC");
+            break;
+        }
+
+        case ASTREE_PARAMLIST:
+        {
+            fprintf(stderr,"ASTREE_PARAMLIST");
+            break;
+        }
+
+        case ASTREE_PARAM:
+        {
+            fprintf(stderr,"ASTREE_PARAM");
+            break;
+        }
+
+        case ASTREE_KWBYTE :
+        {
+            fprintf(stderr,"ASTREE_KWBYTE");
+            break;
+        }
+
+        case ASTREE_KWSHORT:
+        {
+            fprintf(stderr,"ASTREE_KWSHORT");
+            break;
+        }
+
+        case ASTREE_KWLONG:
+        {
+            fprintf(stderr,"ASTREE_KWLONG");
+            break;
+        }
+
+        case ASTREE_KWFLOAT:
+        {
+            fprintf(stderr,"ASTREE_KWFLOAT");
+            break;
+        }
+
+        case ASTREE_KWDOUBLE:
+        {
+            fprintf(stderr,"ASTREE_KWDOUBLE");
+            break;
+        }
+
+        case ASTREE_CMDLIST:
+        {
+            fprintf(stderr,"ASTREE_CMDLIST");
+            break;
+        }
+
+        case ASTREE_CMDCOLCHETES :
+        {
+            fprintf(stderr,"ASTREE_CMDCOLCHETES");
+            break;
+        }
+
+        case ASTREE_KWREAD:
+        {
+            fprintf(stderr,"ASTREE_KWREAD");
+            break;
+        }
+
+        case ASTREE_KWPRINT:
+        {
+            fprintf(stderr,"ASTREE_KWPRINT");
+            break;
+        }
+
+        case ASTREE_KWRETURN :
+        {
+            fprintf(stderr,"ASTREE_KWRETURN");
+            break;
+        }
+
+        case ASTREE_PRINTLIST:
+        {
+            fprintf(stderr,"ASTREE_PRINTLIST");
+            break;
+        }
+
+        case ASTREE_LITSTRING:
+        {
+            fprintf(stderr,"ASTREE_LITSTRING");
+            break;
+        }
+
+
+        case ASTREE_KWWHENTHEN:
+        {
+            fprintf(stderr,"ASTREE_KWWHENTHEN");
+            break;
+        }
+
+        case ASTREE_KWWHENTHENELSE:
+        {
+            fprintf(stderr,"ASTREE_KWWHENTHENELSE");
+            break;
+        }
+
+        case ASTREE_KWWHILE :
+        {
+            fprintf(stderr,"ASTREE_KWWHILE");
+            break;
+        }
+
+        case ASTREE_KWFOR:
+        {
+            fprintf(stderr,"ASTREE_KWFOR");
+            break;
+        }
+
+        case ASTREE_ATRIB:
+        {
+            fprintf(stderr,"ASTREE_ATRIB");
+            break;
+        }
+
+        case ASTREE_ATRIBARRAY:
+        {
+            fprintf(stderr,"ASTREE_ATRIBARRAY");
+            break;
+        }
+
+        case ASTREE_EXPRPARENTESIS:
+        {
+            fprintf(stderr,"ASTREE_EXPRPARENTESIS");
+            break;
+        }
+
+        case ASTREE_TKID:
+        {
+            fprintf(stderr,"ASTREE_TKID");
+            break;
+        }
+
+        case ASTREE_TKIDARRAY:
+        {
+            fprintf(stderr,"ASTREE_TKIDARRAY");
+            break;
+        }
+
+        case ASTREE_TKIDFUNC :
+        {
+            fprintf(stderr,"ASTREE_TKIDFUNC");
+            break;
+        }
+
+        case ASTREE_LESSEQUAL:
+        {
+            fprintf(stderr,"ASTREE_LESSEQUAL");
+            break;
+        }
+
+        case ASTREE_GREATEREQUAL:
+        {
+            fprintf(stderr,"ASTREE_GREATEREQUAL");
+            break;
+        }
+
+        case ASTREE_EQUAL :
+        {
+            fprintf(stderr,"ASTREE_EQUAL");
+            break;
+        }
+
+        case ASTREE_NOTEQUAL:
+        {
+            fprintf(stderr,"ASTREE_NOTEQUAL");
+            break;
+        }
+
+        case ASTREE_AND:
+        {
+            fprintf(stderr,"ASTREE_AND");
+            break;
+        }
+
+        case ASTREE_OR:
+        {
+            fprintf(stderr,"ASTREE_OR");
+            break;
+        }
+
+        case ASTREE_MULT:
+        {
+            fprintf(stderr,"ASTREE_MULT");
+            break;
+        }
+
         case ASTREE_ADD:
         {
             fprintf(stderr,"ASTREE_ADD");
             break;
         }
+
+        case ASTREE_SUB:
+        {
+            fprintf(stderr,"ASTREE_SUB");
+            break;
+        }
+
+        case ASTREE_DIV:
+        {
+            fprintf(stderr,"ASTREE_DIV");
+            break;
+        }
+
+        case ASTREE_LESS:
+        {
+            fprintf(stderr,"ASTREE_LESS");
+            break;
+        }
+
+        case ASTREE_GREATER:
+        {
+            fprintf(stderr,"ASTREE_GREATER");
+            break;
+        }
+
+        case ASTREE_ARGS:
+        {
+            fprintf(stderr,"ASTREE_ARGS");
+            break;
+        }
+
+        case ASTREE_ARGSTAIL:
+        {
+            fprintf(stderr,"ASTREE_ARGSTAIL");
+            break;
+        }
+
     }
     if(node->symbol)
         fprintf(stderr, ",%s", node->symbol->text); // CHECK print (?)
