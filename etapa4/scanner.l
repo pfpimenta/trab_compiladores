@@ -45,12 +45,12 @@
 [-,;:(){}*+#/<>=!&$\]\[]		{ return (int)yytext[0]; }
 
 
-[0-9]+							{ yylval.symbol =  addSymbol(yytext, SYMBOL_LIT_INTEGER, NULL, NULL); return LIT_INTEGER; }
-[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_REAL,NULL, NULL); return LIT_REAL;  }
-\'[^']\'						{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_CHAR,NULL, NULL); return LIT_CHAR; 	}
-\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_STRING, NULL, NULL	); return LIT_STRING; 	}
+[0-9]+							{ yylval.symbol =  addSymbol(yytext, SYMBOL_LIT_INTEGER, 0, 0); return LIT_INTEGER; }
+[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_REAL,0, 0); return LIT_REAL;  }
+\'[^']\'						{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_CHAR,0, 0); return LIT_CHAR; 	}
+\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_STRING, 0, 0); return LIT_STRING; 	}
 
-[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, SYMBOL_TK_IDENTIFIER, NULL, NULL); return TK_IDENTIFIER; 	}
+[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, SYMBOL_TK_IDENTIFIER, 0, 0); return TK_IDENTIFIER; 	}
 
 "\n"							{ line_number++; }
 " "|"	"						{ 		}

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "hash.h"
 
 #define MAX_SONS 4
@@ -71,7 +70,8 @@ typedef struct astree
 {
     int type;
     HASH_NODE* symbol;
-    struct ASTREE* son[MAX_SONS];
+    struct astree* son[MAX_SONS];
+
 } ASTREE;
 
 ASTREE* root;
