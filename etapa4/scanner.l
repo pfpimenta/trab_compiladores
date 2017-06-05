@@ -2,6 +2,7 @@
 	#include <stdio.h>
 	#include "hash.h"
 	#include "astree.h"
+	#include "semantic.h"
 	#include "y.tab.h"
 
 	int token;
@@ -44,12 +45,12 @@
 [-,;:(){}*+#/<>=!&$\]\[]		{ return (int)yytext[0]; }
 
 
-[0-9]+							{ yylval.symbol =  addSymbol(yytext, LIT_INTEGER, NULL, NULL); return LIT_INTEGER; }
-[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, LIT_REAL,NULL, NULL); return LIT_REAL;  }
-\'[^']\'						{ yylval.symbol = addSymbol(yytext, LIT_CHAR,NULL, NULL); return LIT_CHAR; 	}
-\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, LIT_STRING, NULL, NULL	); return LIT_STRING; 	}
+[0-9]+							{ yylval.symbol =  addSymbol(yytext, SYMBOL_LIT_INTEGER, NULL, NULL); return LIT_INTEGER; }
+[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_REAL,NULL, NULL); return LIT_REAL;  }
+\'[^']\'						{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_CHAR,NULL, NULL); return LIT_CHAR; 	}
+\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_STRING, NULL, NULL	); return LIT_STRING; 	}
 
-[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, TK_IDENTIFIER, NULL, NULL); return TK_IDENTIFIER; 	}
+[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, SYMBOL_TK_IDENTIFIER, NULL, NULL); return TK_IDENTIFIER; 	}
 
 "\n"							{ line_number++; }
 " "|"	"						{ 		}

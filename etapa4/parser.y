@@ -4,6 +4,7 @@
     #include <string.h>
     #include "hash.h"
     #include "astree.h"
+    #include "semantic.h"
     void yyerror(char *s);
 
 %}

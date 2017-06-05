@@ -9,6 +9,17 @@
 #define SYMBOL_LIT_STRING 4
 #define SYMBOL_TK_IDENTIFIER 5
 
+#define DATATYPE_BYTE 1
+#define DATATYPE_SHORT 2
+#define DATATYPE_LONG 3
+#define DATATYPE_FLOAT 4
+#define DATATYPE_DOUBLE 5
+
+
+#define NATURE_VAR 1
+#define NATURE_ARRAY 2
+#define NATURE_FUNC 3
+
 typedef int type_t;
 typedef int DATATYPE;
 typedef int NATURE;

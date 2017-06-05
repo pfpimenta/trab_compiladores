@@ -33,20 +33,22 @@ int main(int argc, char** argv)
 
 	if(!open_input(argv[1])) {// couldn't open input file
        		printf("\nerror : couldn't open input file\n");
-		exit(1);}
+					exit(1);}
 
 
-		initMe();
+	initMe();
 
-    		yyparse();
+  yyparse();
 
-		char* decompiledASTREE = astreeDecompile(root);
-		//astreePrint(root, 0);
-	  writeToFile(argv[2],decompiledASTREE);
+	//char* decompiledASTREE = astreeDecompile(root);
+	//astreePrint(root, 0);
+ 	//writeToFile(argv[2],decompiledASTREE);
 
-    //se chegou ate aqui, o programa de input esta correto
-    fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
-    exit(0);
+	semanticSetDeclarations(root);
 
-    return 1;
+  //se chegou ate aqui, o programa de input esta correto
+  fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
+  exit(0);
+
+  return 1;
 }
