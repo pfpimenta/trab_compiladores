@@ -136,11 +136,53 @@ LINKED_LIST* findSymbol(HASH_NODE symbol)
 
 void printSymbol(HASH_NODE symbol)
 {
-	fprintf(stderr,"(");
-	fprintf(stderr,"%s",symbol.text);
-	fprintf(stderr," : ");
+	fprintf(stderr,"\nHASH_NODE:");
+	fprintf(stderr,"\ntext: %s",symbol.text);
+	fprintf(stderr,"\ntype: ");
 	printType(symbol.type);
-	fprintf(stderr,")");
+	fprintf(stderr,"\ndataType: ");
+	printDatatype(symbol.dataType);
+	fprintf(stderr,"\nnature: ");
+	printNature(symbol.nature);
+	fprintf(stderr,"\n\n");
+}
+
+void printNature(NATURE nature)
+{
+	switch(nature)
+	{
+		case NATURE_VAR:
+			fprintf(stderr,"var");
+			break;
+		case NATURE_ARRAY:
+			fprintf(stderr,"array");
+			break;
+		case NATURE_FUNC:
+			fprintf(stderr,"function");
+			break;
+	}
+}
+
+void printDatatype(DATATYPE dataType)
+{
+	switch(dataType)
+	{
+		case DATATYPE_BYTE:
+			fprintf(stderr,"byte");
+			break;
+		case DATATYPE_SHORT:
+			fprintf(stderr,"short");
+			break;
+		case DATATYPE_LONG:
+			fprintf(stderr,"long");
+			break;
+		case DATATYPE_FLOAT:
+			fprintf(stderr,"float");
+			break;
+		case DATATYPE_DOUBLE:
+			fprintf(stderr,"double");
+			break;
+	}
 }
 
 void printType(type_t type)

@@ -82,6 +82,10 @@ LINKED_LIST* findSymbol(HASH_NODE symbol);
 
 void printSymbol(HASH_NODE symbol);
 
+void printDatatype(DATATYPE dataType);
+
+void printNature(NATURE nature);
+
 void printType(type_t type);
 
 void printList(LINKED_LIST* list);

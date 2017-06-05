@@ -2,10 +2,8 @@
 
 
 void semanticVardec(ASTREE* node){
-  //struct ASTREE* son;
   if(node->symbol){
     if(node->symbol->type == SYMBOL_TK_IDENTIFIER && node->son[0]){
-      //son = node->son[0];
       switch (node->son[0]->type) {
         case ASTREE_KWCHAR:
         case ASTREE_KWINT:
@@ -19,16 +17,37 @@ void semanticVardec(ASTREE* node){
           node->symbol->nature = NATURE_ARRAY;
           break;
       }
+      //tem que consertar a parte da etapa3 que lidava com
+      //os filhos de 'vartypeandvalue', q tem 1 filho a mais agora
+      
+      //switch(node->son[0]->son[0]->type)
+      //case ASTREE_KWBYTE:
+        //node->symbol->dataType = DATATYPE_BYTE;
+      //case ASTREE_KWSHORT:
+      //case ASTREE_KWLONG:
+      //case ASTREE_KWFLOAT:
+      //case ASTREE_KWDOUBLE:
     }
   }
   else{
     fprintf(stderr, "astree foi gerada errada?? \n");
   }
+  //debug:
+  printSymbol(*node->symbol);
 }
 
 void semanticFuncdec(ASTREE* node)
 {
-  
+  if(node->symbol){
+    if(node->symbol->type == SYMBOL_TK_IDENTIFIER && node->son[0]){
+      node->symbol->nature = NATURE_FUNC;
+    }
+  }else{
+    fprintf(stderr, " erro que nao era pra acontecer???\n");
+  }
+
+  //debug:
+  printSymbol(*node->symbol);
 }
 
 
