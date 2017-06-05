@@ -10,11 +10,15 @@
 #define SYMBOL_TK_IDENTIFIER 5
 
 typedef int type_t;
+typedef int DATATYPE;
+typedef int NATURE;
 
 struct symbol_s
 {
 	char* text;
 	type_t type;
+	DATATYPE dataType;
+	NATURE nature;
 };
 
 struct linkedList_s
@@ -58,7 +62,7 @@ LINKED_LIST* findInTable(HASH_NODE symbol, hashTable_ref table, int tableSize);
 
 void initMe(void);
 
-LINKED_LIST* addSymbol(char* text, type_t type);
+LINKED_LIST* addSymbol(char* text, type_t type, DATATYPE dataType, NATURE nature);
 
 LINKED_LIST* findSymbol(HASH_NODE symbol);
 

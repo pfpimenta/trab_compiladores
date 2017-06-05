@@ -44,12 +44,12 @@
 [-,;:(){}*+#/<>=!&$\]\[]		{ return (int)yytext[0]; }
 
 
-[0-9]+							{ yylval.symbol =  addSymbol(yytext, LIT_INTEGER	); return LIT_INTEGER; }
-[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, LIT_REAL); return LIT_REAL;  }
-\'[^']\'						{ yylval.symbol = addSymbol(yytext, LIT_CHAR	); return LIT_CHAR; 	}
-\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, LIT_STRING	); return LIT_STRING; 	}
+[0-9]+							{ yylval.symbol =  addSymbol(yytext, LIT_INTEGER, NULL, NULL); return LIT_INTEGER; }
+[0-9]+\.[0-9]+					{ yylval.symbol = addSymbol(yytext, LIT_REAL,NULL, NULL); return LIT_REAL;  }
+\'[^']\'						{ yylval.symbol = addSymbol(yytext, LIT_CHAR,NULL, NULL); return LIT_CHAR; 	}
+\"[^"]*\"						{ yylval.symbol = addSymbol(yytext, LIT_STRING, NULL, NULL	); return LIT_STRING; 	}
 
-[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, TK_IDENTIFIER); return TK_IDENTIFIER; 	}
+[a-zA-Z_][a-zA-Z0-9_]*			{ yylval.symbol = addSymbol(yytext, TK_IDENTIFIER, NULL, NULL); return TK_IDENTIFIER; 	}
 
 "\n"							{ line_number++; }
 " "|"	"						{ 		}

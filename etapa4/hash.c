@@ -64,7 +64,7 @@ int hashFunction(char* text, int tableSize)
 	for(i = 0; i < strlen(text); i++)
 	{
 		index = ( (index * text[i]) % tableSize ) + 1;
-	}	
+	}
 
 	return index - 1;
 }
@@ -115,12 +115,14 @@ void initMe(void)
 	symbolTable = newHashTable(SYMBOL_TABLE_SIZE);
 }
 
-LINKED_LIST* addSymbol(char* text, type_t type)
+LINKED_LIST* addSymbol(char* text, type_t type, DATATYPE dataType, NATURE nature)
 {
 	HASH_NODE symbol;
 	symbol.text = (char*) calloc(strlen(text) + 1, sizeof(char));
 	strcpy(symbol.text, text);
 	symbol.type = type;
+	symbol.dataType = dataType;
+	symbol.nature = nature;
 
 	return addToTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
@@ -170,9 +172,9 @@ void printList(LINKED_LIST* list)
 	while( !isEmpty(aux) )
 	{
 		printSymbol(aux->symbol);
-		
+
 		fprintf(stderr," :: ");
-		
+
 		aux = aux->tail;
 	}
 
