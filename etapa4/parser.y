@@ -85,25 +85,13 @@ dec: funcdec  { $$ = $1; }
     ;
 vardec: TK_IDENTIFIER ':' vartypeandvalue ';' { $$ = astreeCreate(ASTREE_VARDEC, $1, $3, 0, 0, 0); }
     ;
-vartypeandvalue: KW_BYTE LIT_CHAR { $$ = astreeCreate(ASTREE_KWBYTECHAR, $2, 0, 0, 0, 0); }
-    | KW_BYTE LIT_INTEGER  { $$ = astreeCreate(ASTREE_KWBYTEINT, $2, 0, 0, 0, 0); }
-    | KW_SHORT LIT_INTEGER { $$ = astreeCreate(ASTREE_KWSHORTINT, $2, 0, 0, 0, 0); }
-    | KW_LONG LIT_INTEGER { $$ = astreeCreate(ASTREE_KWLONGINT, $2, 0, 0, 0, 0); }
-    | KW_FLOAT LIT_INTEGER { $$ = astreeCreate(ASTREE_KWFLOATINT, $2, 0, 0, 0, 0); }
-    | KW_FLOAT LIT_REAL { $$ = astreeCreate(ASTREE_KWFLOATREAL, $2, 0, 0, 0, 0); }
-    | KW_DOUBLE LIT_INTEGER { $$ = astreeCreate(ASTREE_KWDOUBLEINT, $2, 0, 0, 0, 0); }
-    | KW_BYTE '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWBYTEARRAYINT, $3, $5, 0, 0, 0); }
-    | KW_BYTE '[' LIT_INTEGER ']' charlist { $$ = astreeCreate(ASTREE_KWBYTEARRAYCHAR, $3, $5, 0, 0, 0); }
-    | KW_BYTE '[' LIT_INTEGER ']'   { $$ = astreeCreate(ASTREE_KWBYTEARRAY, $3, 0, 0, 0, 0); }
-    | KW_SHORT '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWSHORTARRAYINT, $3, $5, 0, 0, 0); }
-    | KW_SHORT '[' LIT_INTEGER ']' { $$ = astreeCreate(ASTREE_KWSHORTARRAY, $3, 0, 0, 0, 0); }
-    | KW_LONG '[' LIT_INTEGER ']' intlist  { $$ = astreeCreate(ASTREE_KWLONGARRAYINT, $3, $5, 0, 0, 0); }
-    | KW_LONG '[' LIT_INTEGER ']'    { $$ = astreeCreate(ASTREE_KWLONGARRAY, $3, 0, 0, 0, 0); }
-    | KW_FLOAT '[' LIT_INTEGER ']' floatlist { $$ = astreeCreate(ASTREE_KWFLOATARRAYFLOAT, $3, $5, 0, 0, 0); }
-    | KW_FLOAT '[' LIT_INTEGER ']' intlist  { $$ = astreeCreate(ASTREE_KWFLOATARRAYINT, $3, $5, 0, 0, 0); }
-    | KW_FLOAT '[' LIT_INTEGER ']' { $$ = astreeCreate(ASTREE_KWFLOATARRAY, $3, 0, 0, 0, 0); }
-    | KW_DOUBLE '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWDOUBLEARRAYINT, $3, $5, 0, 0, 0); }
-    | KW_DOUBLE '[' LIT_INTEGER ']' { $$ = astreeCreate(ASTREE_KWDOUBLEARRAY, $3, 0, 0, 0, 0); }
+vartypeandvalue: vartype LIT_CHAR { $$ = astreeCreate(ASTREE_KWCHAR, $2, 0, 0, 0, 0); }
+    | vartype LIT_INTEGER  { $$ = astreeCreate(ASTREE_KWINT, $2, 0, 0, 0, 0); }
+    | vartype LIT_REAL { $$ = astreeCreate(ASTREE_KWREAL, $2, 0, 0, 0, 0); }
+    | vartype '[' LIT_INTEGER ']' intlist { $$ = astreeCreate(ASTREE_KWARRAYINT, $3, $5, 0, 0, 0); }
+    | vartype '[' LIT_INTEGER ']' charlist { $$ = astreeCreate(ASTREE_KWARRAYCHAR, $3, $5, 0, 0, 0); }
+    | vartype '[' LIT_INTEGER ']' floatlist { $$ = astreeCreate(ASTREE_KWARRAYFLOAT, $3, $5, 0, 0, 0); }
+    | vartype '[' LIT_INTEGER ']'   { $$ = astreeCreate(ASTREE_KWARRAY, $3, 0, 0, 0, 0); }
     ;
 intlist: LIT_INTEGER intlist { $$ = astreeCreate(ASTREE_INTLIST, $1, $2, 0, 0, 0); }
     | LIT_INTEGER { $$ = astreeCreate(ASTREE_LITINT, $1, 0, 0, 0, 0); }

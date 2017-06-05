@@ -43,115 +43,46 @@ void astreePrint(ASTREE* node, int level)
           break;
       }
 
-      case ASTREE_KWBYTECHAR:
+      case ASTREE_KWCHAR:
       {
-          fprintf(stderr,"ASTREE_KWBYTECHAR");
+          fprintf(stderr,"ASTREE_KWCHAR");
           break;
       }
 
-      case ASTREE_KWBYTEINT:
+      case ASTREE_KWINT:
       {
-          fprintf(stderr,"ASTREE_KWBYTEINT");
+          fprintf(stderr,"ASTREE_KWINT");
           break;
       }
 
-      case ASTREE_KWSHORTINT:
+      case ASTREE_KWREAL:
       {
-          fprintf(stderr,"ASTREE_KWSHORTINT");
+          fprintf(stderr,"ASTREE_KWREAL");
           break;
       }
 
-      case ASTREE_KWLONGINT:
+      case ASTREE_KWARRAYINT:
       {
-          fprintf(stderr,"ASTREE_KWLONGINT");
+          fprintf(stderr,"ASTREE_KWARRAYINT");
           break;
       }
 
-      case ASTREE_KWFLOATINT:
+      case ASTREE_KWARRAYCHAR:
       {
-          fprintf(stderr,"ASTREE_KWFLOATINT");
+          fprintf(stderr,"ASTREE_KWARRAYCHAR");
           break;
       }
 
-      case ASTREE_KWFLOATREAL:
-      {
-          fprintf(stderr,"ASTREE_KWFLOATREAL");
-          break;
-      }
 
-      case ASTREE_KWDOUBLEINT:
-      {
-          fprintf(stderr,"ASTREE_KWDOUBLEINT");
-          break;
-      }
 
-      case ASTREE_KWBYTEARRAYINT:
-      {
-          fprintf(stderr,"ASTREE_KWBYTEARRAYINT");
-          break;
-      }
-
-      case ASTREE_KWBYTEARRAYCHAR:
-      {
-          fprintf(stderr,"ASTREE_KWBYTEARRAYCHAR");
-          break;
-      }
-
-      case ASTREE_KWBYTEARRAY:
-      {
-          fprintf(stderr,"ASTREE_KWBYTEARRAY");
-          break;
-      }
-
-      case ASTREE_KWSHORTARRAYINT:
-      {
-          fprintf(stderr,"ASTREE_KWSHORTARRAYINT");
-          break;
-      }
-
-      case ASTREE_KWSHORTARRAY:
-      {
-          fprintf(stderr,"ASTREE_KWSHORTARRAY");
-          break;
-      }
-
-      case ASTREE_KWLONGARRAYINT:
-      {
-          fprintf(stderr,"ASTREE_KWLONGARRAYINT");
-          break;
-      }
-
-      case ASTREE_KWLONGARRAY:
-      {
-          fprintf(stderr,"ASTREE_KWLONGARRAY");
-          break;
-      }
-
-      case ASTREE_KWFLOATARRAYFLOAT:
+      case ASTREE_KWARRAYFLOAT:
       {
           fprintf(stderr,"ASTREE_KWFLOATARRAYFLOAT");
           break;
       }
 
-      case ASTREE_KWFLOATARRAYINT:
-      {
-          fprintf(stderr,"ASTREE_KWFLOATARRAYINT");
-          break;
-      }
 
-      case ASTREE_KWFLOATARRAY:
-      {
-          fprintf(stderr,"ASTREE_KWFLOATARRAY");
-          break;
-      }
-
-      case ASTREE_KWDOUBLEARRAYINT:
-      {
-          fprintf(stderr,"ASTREE_KWDOUBLEARRAYINT");
-          break;
-      }
-
-      case ASTREE_KWDOUBLEARRAY:
+      case ASTREE_KWARRAY:
       {
           fprintf(stderr,"ASTREE_KWDOUBLEARRAY");
           break;
@@ -457,117 +388,45 @@ void astreeNodePrint(ASTREE* node)
             break;
         }
 
-        case ASTREE_KWBYTECHAR:
+        case ASTREE_KWCHAR:
         {
-            fprintf(stderr,"ASTREE_KWBYTECHAR");
+            fprintf(stderr,"ASTREE_KWCHAR");
             break;
         }
 
-        case ASTREE_KWBYTEINT:
+        case ASTREE_KWINT:
         {
-            fprintf(stderr,"ASTREE_KWBYTEINT");
+            fprintf(stderr,"ASTREE_KWINT");
             break;
         }
 
-        case ASTREE_KWSHORTINT:
+        case ASTREE_KWREAL:
         {
-            fprintf(stderr,"ASTREE_KWSHORTINT");
+            fprintf(stderr,"ASTREE_KWREAL");
             break;
         }
 
-        case ASTREE_KWLONGINT:
+        case ASTREE_KWARRAYINT:
         {
-            fprintf(stderr,"ASTREE_KWLONGINT");
+            fprintf(stderr,"ASTREE_KWARRAYINT");
             break;
         }
 
-        case ASTREE_KWFLOATINT:
+        case ASTREE_KWARRAYCHAR:
         {
-            fprintf(stderr,"ASTREE_KWFLOATINT");
+            fprintf(stderr,"ASTREE_KWARRAYCHAR");
             break;
         }
 
-        case ASTREE_KWFLOATREAL:
+        case ASTREE_KWARRAYFLOAT:
         {
-            fprintf(stderr,"ASTREE_KWFLOATREAL");
+            fprintf(stderr,"ASTREE_KWARRAYFLOAT");
             break;
         }
 
-        case ASTREE_KWDOUBLEINT:
+        case ASTREE_KWARRAY:
         {
-            fprintf(stderr,"ASTREE_KWDOUBLEINT");
-            break;
-        }
-
-        case ASTREE_KWBYTEARRAYINT:
-        {
-            fprintf(stderr,"ASTREE_KWBYTEARRAYINT");
-            break;
-        }
-
-        case ASTREE_KWBYTEARRAYCHAR:
-        {
-            fprintf(stderr,"ASTREE_KWBYTEARRAYCHAR");
-            break;
-        }
-
-        case ASTREE_KWBYTEARRAY:
-        {
-            fprintf(stderr,"ASTREE_KWBYTEARRAY");
-            break;
-        }
-
-        case ASTREE_KWSHORTARRAYINT:
-        {
-            fprintf(stderr,"ASTREE_KWSHORTARRAYINT");
-            break;
-        }
-
-        case ASTREE_KWSHORTARRAY:
-        {
-            fprintf(stderr,"ASTREE_KWSHORTARRAY");
-            break;
-        }
-
-        case ASTREE_KWLONGARRAYINT:
-        {
-            fprintf(stderr,"ASTREE_KWLONGARRAYINT");
-            break;
-        }
-
-        case ASTREE_KWLONGARRAY:
-        {
-            fprintf(stderr,"ASTREE_KWLONGARRAY");
-            break;
-        }
-
-        case ASTREE_KWFLOATARRAYFLOAT:
-        {
-            fprintf(stderr,"ASTREE_KWFLOATARRAYFLOAT");
-            break;
-        }
-
-        case ASTREE_KWFLOATARRAYINT:
-        {
-            fprintf(stderr,"ASTREE_KWFLOATARRAYINT");
-            break;
-        }
-
-        case ASTREE_KWFLOATARRAY:
-        {
-            fprintf(stderr,"ASTREE_KWFLOATARRAY");
-            break;
-        }
-
-        case ASTREE_KWDOUBLEARRAYINT:
-        {
-            fprintf(stderr,"ASTREE_KWDOUBLEARRAYINT");
-            break;
-        }
-
-        case ASTREE_KWDOUBLEARRAY:
-        {
-            fprintf(stderr,"ASTREE_KWDOUBLEARRAY");
+            fprintf(stderr,"ASTREE_KWARRAY");
             break;
         }
 
@@ -880,7 +739,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWBYTECHAR:
+			case ASTREE_KWCHAR:
 			{
 				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text)+1,sizeof(char));
 				sprintf(buffer,"byte %s", ast->symbol->text);
@@ -888,7 +747,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWBYTEINT:
+			case ASTREE_KWINT:
 			{
 				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text)+1,sizeof(char));
 				sprintf(buffer,"byte %s", ast->symbol->text);
@@ -896,23 +755,9 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWSHORTINT:
-			{
-				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text)+1,sizeof(char));
-				sprintf(buffer,"short %s", ast->symbol->text);
-				return buffer;
-				break;
-			}
 
-			case ASTREE_KWLONGINT:
-			{
-				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text)+1,sizeof(char));
-				sprintf(buffer,"long %s", ast->symbol->text);
-				return buffer;
-				break;
-			}
 
-			case ASTREE_KWFLOATINT:
+			case ASTREE_KWREAL:
 			{
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text)+1,sizeof(char));
 				sprintf(buffer,"float %s", ast->symbol->text);
@@ -920,23 +765,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWFLOATREAL:
-			{
-				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text)+1,sizeof(char));
-				sprintf(buffer,"float %s", ast->symbol->text);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWDOUBLEINT:
-			{
-				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 1,sizeof(char));
-				sprintf(buffer,"double %s", ast->symbol->text);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWBYTEARRAYINT:
+			case ASTREE_KWARRAYINT:
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
@@ -945,7 +774,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWBYTEARRAYCHAR:
+			case ASTREE_KWARRAYCHAR:
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1 ,sizeof(char));
@@ -954,50 +783,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWBYTEARRAY:
-			{
-
-				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 1 + 1,sizeof(char));
-				sprintf(buffer,"byte [%s]", ast->symbol->text);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWSHORTARRAYINT:
-			{
-				char* son0_source = astreeDecompile(ast->son[0]);
-				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"short [%s] %s", ast->symbol->text, son0_source);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWSHORTARRAY:
-			{
-				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 1 + 1,sizeof(char));
-				sprintf(buffer,"short [%s]", ast->symbol->text);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWLONGARRAYINT:
-			{
-				char* son0_source = astreeDecompile(ast->son[0]);
-				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"long [%s] %s", ast->symbol->text, son0_source);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWLONGARRAY:
-			{
-				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 1 + 1,sizeof(char));
-				sprintf(buffer,"long [%s]", ast->symbol->text);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWFLOATARRAYFLOAT:
+			case ASTREE_KWARRAYFLOAT:
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
@@ -1006,33 +792,7 @@ char* astreeDecompile(ASTREE* ast)
 				break;
 			}
 
-			case ASTREE_KWFLOATARRAYINT:
-			{
-				char* son0_source = astreeDecompile(ast->son[0]);
-				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 1 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"float [%s] %s", ast->symbol->text, son0_source);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWFLOATARRAY:
-			{
-				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 1 + 1,sizeof(char));
-				sprintf(buffer,"float [%s]", ast->symbol->text);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWDOUBLEARRAYINT:
-			{
-				char* son0_source = astreeDecompile(ast->son[0]);
-				char* buffer = (char*)calloc(8 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"double [%s] %s", ast->symbol->text, son0_source);
-				return buffer;
-				break;
-			}
-
-			case ASTREE_KWDOUBLEARRAY:
+			case ASTREE_KWARRAY:
 			{
 				char* buffer = (char*)calloc(8 + strlen(ast->symbol->text) + 1 + 1,sizeof(char));
 				sprintf(buffer,"double [%s]", ast->symbol->text);

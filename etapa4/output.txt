@@ -1,8 +1,8 @@
-a : short 0;
-a : short 0;
-i : short 0;
-v : float [10] 0 0 0 0 0 0 0 0 0 0;
-mat : byte [1000];
+a : byte 0;
+a : byte 0;
+i : byte 0;
+v : byte [10] 0 0 0 0 0 0 0 0 0 0;
+mat : double [1000];
 c : byte 'x';
 short incn (short x,short n){v # a + 2 = a;
 for(x = v [a + 2] * 2 to 10 - 8)
