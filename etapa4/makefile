@@ -1,13 +1,13 @@
 
-etapa4: y.tab.o lex.yy.o hash.o astree.o semantic.o main.o 
-	gcc -o etapa4 y.tab.o lex.yy.o hash.o astree.o main.o 
+etapa4: y.tab.o lex.yy.o hash.o astree.o semantic.o main.o
+	gcc -o etapa4 y.tab.o lex.yy.o hash.o astree.o semantic.o main.o 
 
 main.o: main.c
 	gcc -c main.c
 
 hash.o: hash.c
 	gcc -c hash.c
-    
+
 astree.o: astree.c
 	gcc -c astree.c
 

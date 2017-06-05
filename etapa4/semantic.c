@@ -13,9 +13,20 @@ void semanticSetDeclarations(ASTREE* node)
   ///* copiado da aula:
   if(node->type == ASTREE_VARDEC){
     if(node->symbol){
-
       if(node->symbol->type == SYMBOL_TK_IDENTIFIER){
-        //node->symbol->type = SYMBOL_VAR;
+        switch (node->son[0]->type) {
+          case ASTREE_KWCHAR:
+          case ASTREE_KWINT:
+          case ASTREE_KWREAL:
+            node->symbol->nature = NATURE_VAR;
+            break;
+          case ASTREE_KWARRAYINT:
+          case ASTREE_KWARRAYCHAR:
+          case ASTREE_KWARRAYFLOAT:
+          case ASTREE_KWARRAY:
+            node->symbol->nature = NATURE_ARRAY;
+            break;
+        }
       }
     }
     else{
