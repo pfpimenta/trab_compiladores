@@ -1,5 +1,14 @@
 #include "semantic.h"
 
+int getNumParameters(ASTREE* node)
+{
+  if(node->son[1]->type==ASTREE_PARAM)
+  {
+    return 1;
+  }else{
+    return 1 + getNumParameters(node->son[1]);
+  }
+}
 
 void semanticVardec(ASTREE* node){
   if(node->symbol){
@@ -98,7 +107,13 @@ void semanticFuncdec(ASTREE* node)
         //fprintf(stderr, "(semanticFuncdec)\n");
         break;
     }
-
+    //setando o numero de parametros
+    if(node->son[1] == 0)
+    {
+      node->symbol->numParameters = 0;
+    }else{
+      node->symbol->numParameters = getNumParameters(node->son[1]);
+    }
   }else{
     fprintf(stderr, " erro que nao era pra acontecer???\n");
   }
@@ -108,6 +123,49 @@ void semanticFuncdec(ASTREE* node)
   printSymbol(*node->symbol);
 }
 
+void semanticParam(ASTREE* node)
+{
+  if(node->symbol){
+    //vendo se ja foi declarada
+    if(node->symbol->isDeclared)
+    {
+      fprintf(stderr, "ERRO SEMANTICO\nvariavel de parametro ja declarada: %s\n", node->symbol->text);
+      exit(4);
+    }
+    node->symbol->isDeclared = 1;
+
+    //setando as natures
+    if(node->symbol->type == SYMBOL_TK_IDENTIFIER && node->son[0]){
+      node->symbol->nature = NATURE_VAR;
+    }
+    //setando as dataType
+    switch(node->son[0]->type){
+      case ASTREE_KWBYTE:
+        node->symbol->dataType = DATATYPE_BYTE;
+        break;
+      case ASTREE_KWSHORT:
+        node->symbol->dataType = DATATYPE_SHORT;
+        break;
+      case ASTREE_KWLONG:
+        node->symbol->dataType = DATATYPE_LONG;
+        break;
+      case ASTREE_KWFLOAT:
+        node->symbol->dataType = DATATYPE_FLOAT;
+        break;
+      case ASTREE_KWDOUBLE:
+        node->symbol->dataType = DATATYPE_DOUBLE;
+        break;
+      default:
+        //fprintf(stderr, "ERRO QUE NAO DEVIA ACONTECER\n");
+        //fprintf(stderr, "tipo da astree fora do switch case\n");
+        //fprintf(stderr, "(semanticFuncdec)\n");
+        break;
+    }
+
+    //debug
+    printSymbol(*node->symbol);
+  }
+}
 
 void semanticSetDeclarations(ASTREE* node)
 {
@@ -125,6 +183,10 @@ void semanticSetDeclarations(ASTREE* node)
       break;
     case ASTREE_FUNCDEC:
       semanticFuncdec(node);
+      break;
+    case ASTREE_PARAM:
+      semanticParam(node);
+      break;
     default:
       //fprintf(stderr, "ERRO QUE NAO DEVIA ACONTECER\n");
       //fprintf(stderr, "tipo da astree fora do switch case\n");
@@ -147,7 +209,18 @@ void semanticCheck(ASTREE* node)
   //verifica pra cada tipo
   switch (node->type) {
 
+    case ASTREE_VARDEC :
+    {
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
+      //verif. natureza
 
+      break;
+    }
     case ASTREE_LITCHAR :
     {
         //verificar tipos de dados nas expressões:
@@ -162,21 +235,36 @@ void semanticCheck(ASTREE* node)
 
     case ASTREE_FUNCDEC :
     {
-        //verif. variaveis nao declaradas:
-        //verif. natureza
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
+      //verif. natureza
 
-        break;
+      break;
     }
 
     case ASTREE_PARAM:
     {
-
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
         break;
     }
 
     case ASTREE_KWREAD:
     {
-
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
         break;
     }
 
@@ -194,7 +282,12 @@ void semanticCheck(ASTREE* node)
 
     case ASTREE_KWFOR:
     {
-
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
         break;
     }
 
@@ -207,17 +300,23 @@ void semanticCheck(ASTREE* node)
           exit(4);
         }
         //verif natureza
-        if(node->symbol->nature != node->son[0]->symbol->nature)
+        /*if(node->symbol->nature != getAstreeNature(node->son[0]))
         {
-          fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n", node->symbol->text, node->son[0]->symbol->nature, node->symbol->nature);
+          fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n",
+                  node->symbol->text, node->son[0]->symbol->nature, node->symbol->nature);
           exit(4);
-        }
+        }*/
         break;
     }
 
     case ASTREE_ATRIBARRAY:
     {
-
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
         break;
     }
 
@@ -229,20 +328,57 @@ void semanticCheck(ASTREE* node)
 
     case ASTREE_TKID:
     {
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
 
-        break;
+      //verifica natureza
+      if(node->symbol->nature != NATURE_VAR)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s eh da natureza: %i ,  esperado: %i\n",
+                node->symbol->text, node->symbol->nature, NATURE_VAR);
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_TKIDARRAY:
     {
-
-        break;
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
+      //verifica natureza
+      if(node->symbol->nature != NATURE_ARRAY)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n",
+                node->symbol->text, node->symbol->nature, NATURE_ARRAY);
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_TKIDFUNC :
     {
-
-        break;
+      //verif vars nao declaradas
+      if(!node->symbol->isDeclared)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
+      //verifica natureza
+      if(node->symbol->nature != NATURE_FUNC)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n",
+                node->symbol->text, node->symbol->nature, NATURE_FUNC);
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_LESSEQUAL:
