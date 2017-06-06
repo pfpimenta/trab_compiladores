@@ -19,7 +19,6 @@ void semanticVardec(ASTREE* node){
       }
       //tem que consertar a parte da etapa3 que lidava com
       //os filhos de 'vartypeandvalue', q tem 1 filho a mais agora
-	//obs: ja consertei astreePrint, falta a astreeDecompile?
       
       //switch(node->son[0]->son[0]->type)
       //case ASTREE_KWBYTE:

@@ -773,7 +773,7 @@ char* astreeDecompile(ASTREE* ast)
 				char* son0_source = astreeDecompile(ast->son[0]);
 				char* son1_source = astreeDecompile(ast->son[1]);
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"%s [%s] %s", son0_source, ast->symbol->text, son1_source);
+				sprintf(buffer,"byte [%s] %s", son0_source, ast->symbol->text, son1_source);
 				return buffer;
 				break;
 			}
