@@ -741,16 +741,18 @@ char* astreeDecompile(ASTREE* ast)
 
 			case ASTREE_KWCHAR:
 			{
+				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text)+1,sizeof(char));
-				sprintf(buffer,"byte %s", ast->symbol->text);
+				sprintf(buffer,"%s %s", son0_source, ast->symbol->text);
 				return buffer;
 				break;
 			}
 
 			case ASTREE_KWINT:
 			{
+				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(5 + strlen(ast->symbol->text)+1,sizeof(char));
-				sprintf(buffer,"byte %s", ast->symbol->text);
+				sprintf(buffer,"%s %s", son0_source, ast->symbol->text);
 				return buffer;
 				break;
 			}
@@ -759,8 +761,9 @@ char* astreeDecompile(ASTREE* ast)
 
 			case ASTREE_KWREAL:
 			{
+				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text)+1,sizeof(char));
-				sprintf(buffer,"float %s", ast->symbol->text);
+				sprintf(buffer,"%s %s", son0_source, ast->symbol->text);
 				return buffer;
 				break;
 			}
@@ -768,8 +771,9 @@ char* astreeDecompile(ASTREE* ast)
 			case ASTREE_KWARRAYINT:
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
+				char* son1_source = astreeDecompile(ast->son[1]);
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"byte [%s] %s", ast->symbol->text, son0_source);
+				sprintf(buffer,"byte [%s] %s", son0_source, ast->symbol->text, son1_source);
 				return buffer;
 				break;
 			}
@@ -777,8 +781,9 @@ char* astreeDecompile(ASTREE* ast)
 			case ASTREE_KWARRAYCHAR:
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
+				char* son1_source = astreeDecompile(ast->son[1]);
 				char* buffer = (char*)calloc(6 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1 ,sizeof(char));
-				sprintf(buffer,"byte [%s] %s", ast->symbol->text, son0_source);
+				sprintf(buffer,"%s [%s] %s", son0_source, ast->symbol->text, son1_source);
 				return buffer;
 				break;
 			}
@@ -786,16 +791,18 @@ char* astreeDecompile(ASTREE* ast)
 			case ASTREE_KWARRAYFLOAT:
 			{
 				char* son0_source = astreeDecompile(ast->son[0]);
+				char* son1_source = astreeDecompile(ast->son[1]);
 				char* buffer = (char*)calloc(7 + strlen(ast->symbol->text) + 2 + strlen(son0_source) + 1,sizeof(char));
-				sprintf(buffer,"float [%s] %s", ast->symbol->text, son0_source);
+				sprintf(buffer,"%s [%s] %s", son0_source, ast->symbol->text, son1_source);
 				return buffer;
 				break;
 			}
 
 			case ASTREE_KWARRAY:
 			{
+				char* son0_source = astreeDecompile(ast->son[0]);
 				char* buffer = (char*)calloc(8 + strlen(ast->symbol->text) + 1 + 1,sizeof(char));
-				sprintf(buffer,"double [%s]", ast->symbol->text);
+				sprintf(buffer,"%s [%s]", son0_source, ast->symbol->text);
 				return buffer;
 				break;
 			}
