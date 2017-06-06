@@ -4,6 +4,11 @@
 void semanticVardec(ASTREE* node){
   if(node->symbol){
     if(node->symbol->type == SYMBOL_TK_IDENTIFIER && node->son[0]){
+      if(node->symbol->nature)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nvariavel ja declarada: %s\n", node->symbol->text);
+        exit(4);
+      }
       //setando as natures
       switch (node->son[0]->type) {
         case ASTREE_KWCHAR:
@@ -105,7 +110,6 @@ void semanticSetDeclarations(ASTREE* node)
     semanticSetDeclarations(node->son[i]);
   }
 
-  ///* copiado da aula:
   switch (node->type) {
     case ASTREE_VARDEC:
       semanticVardec(node);
@@ -118,7 +122,33 @@ void semanticSetDeclarations(ASTREE* node)
       //fprintf(stderr, "(semanticSetDeclarations)\n");
       break;
   }
-  if(node->type == ASTREE_VARDEC){
-  }//*/
+}
 
+
+void semanticCheck(ASTREE* node)
+{
+  int i=0;
+  if(!node) return;
+  //checka recursivamente
+  for(i=0; i<MAX_SONS; i++)
+  {
+    semanticCheck(node->son[i]);
+  }
+
+  //verifica pra cada tipo
+  switch (node->type) {
+    case ASTREE_VARDEC:
+      //
+      break;
+    case ASTREE_FUNCDEC:
+      //
+    default:
+      //fprintf(stderr, "ERRO QUE NAO DEVIA ACONTECER\n");
+      //fprintf(stderr, "tipo da astree fora do switch case\n");
+      //fprintf(stderr, "(semanticSetDeclarations)\n");
+      break;
+  }
+
+  //nenhum erro semantico encontrado
+  return;
 }

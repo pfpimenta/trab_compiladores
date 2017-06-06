@@ -5,5 +5,6 @@
 void semanticVardec(ASTREE* node);
 void semanticFuncdec(ASTREE* node);
 void semanticSetDeclarations(ASTREE* node);
+void semanticCheck(ASTREE* node);
 
 #endif
