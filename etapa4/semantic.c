@@ -4,11 +4,12 @@
 void semanticVardec(ASTREE* node){
   if(node->symbol){
     if(node->symbol->type == SYMBOL_TK_IDENTIFIER && node->son[0]){
-      if(node->symbol->nature)
+      if(node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel ja declarada: %s\n", node->symbol->text);
         exit(4);
       }
+      node->symbol->isDeclared = 1;
       //setando as natures
       switch (node->son[0]->type) {
         case ASTREE_KWCHAR:
@@ -62,6 +63,14 @@ void semanticVardec(ASTREE* node){
 void semanticFuncdec(ASTREE* node)
 {
   if(node->symbol){
+    //vendo se ja foi declarada
+    if(node->symbol->isDeclared)
+    {
+      fprintf(stderr, "ERRO SEMANTICO\nfuncao ja declarada: %s\n", node->symbol->text);
+      exit(4);
+    }
+    node->symbol->isDeclared = 1;
+    
     //setando as natures
     if(node->symbol->type == SYMBOL_TK_IDENTIFIER && node->son[0]){
       node->symbol->nature = NATURE_FUNC;
@@ -137,11 +146,177 @@ void semanticCheck(ASTREE* node)
 
   //verifica pra cada tipo
   switch (node->type) {
-    case ASTREE_VARDEC:
-      //
-      break;
-    case ASTREE_FUNCDEC:
-      //
+
+
+    case ASTREE_LITCHAR :
+    {
+        //verificar tipos de dados nas expressões:
+        break;
+    }
+
+    case ASTREE_LITREAL:
+    {
+        fprintf(stderr,"ASTREE_LITREAL");
+        break;
+    }
+
+    case ASTREE_FUNCDEC :
+    {
+        //verif. variaveis nao declaradas:
+        //verif. natureza
+        fprintf(stderr,"ASTREE_FUNCDEC");
+        break;
+    }
+
+    case ASTREE_PARAM:
+    {
+        fprintf(stderr,"ASTREE_PARAM");
+        break;
+    }
+
+    case ASTREE_KWREAD:
+    {
+        fprintf(stderr,"ASTREE_KWREAD");
+        break;
+    }
+
+    case ASTREE_KWRETURN :
+    {
+        //verificar tipo do valor de retorno da função
+        break;
+    }
+
+    case ASTREE_LITSTRING:
+    {
+        fprintf(stderr,"ASTREE_LITSTRING");
+        break;
+    }
+
+    case ASTREE_KWFOR:
+    {
+        fprintf(stderr,"ASTREE_KWFOR");
+        break;
+    }
+
+    case ASTREE_ATRIB:
+    {
+        //verif vars nao declaradas
+        if(!node->symbol->isDeclared)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
+          exit(4);
+        }
+        //verif natureza
+        /*if(node->symbol->nature != )
+        {
+          fprintf(stderr, "ERRO SEMANTICO\n natureza incompativel: %s\n", node->symbol->text);
+          exit(4);
+        }*/
+        break;
+    }
+
+    case ASTREE_ATRIBARRAY:
+    {
+        fprintf(stderr,"ASTREE_ATRIBARRAY");
+        break;
+    }
+
+    case ASTREE_EXPRPARENTESIS:
+    {
+        fprintf(stderr,"ASTREE_EXPRPARENTESIS");
+        break;
+    }
+
+    case ASTREE_TKID:
+    {
+        fprintf(stderr,"ASTREE_TKID");
+        break;
+    }
+
+    case ASTREE_TKIDARRAY:
+    {
+        fprintf(stderr,"ASTREE_TKIDARRAY");
+        break;
+    }
+
+    case ASTREE_TKIDFUNC :
+    {
+        fprintf(stderr,"ASTREE_TKIDFUNC");
+        break;
+    }
+
+    case ASTREE_LESSEQUAL:
+    {
+        fprintf(stderr,"ASTREE_LESSEQUAL");
+        break;
+    }
+
+    case ASTREE_GREATEREQUAL:
+    {
+        fprintf(stderr,"ASTREE_GREATEREQUAL");
+        break;
+    }
+
+    case ASTREE_EQUAL :
+    {
+        fprintf(stderr,"ASTREE_EQUAL");
+        break;
+    }
+
+    case ASTREE_NOTEQUAL:
+    {
+        fprintf(stderr,"ASTREE_NOTEQUAL");
+        break;
+    }
+
+    case ASTREE_AND:
+    {
+        fprintf(stderr,"ASTREE_AND");
+        break;
+    }
+
+    case ASTREE_OR:
+    {
+        fprintf(stderr,"ASTREE_OR");
+        break;
+    }
+
+    case ASTREE_MULT:
+    {
+        fprintf(stderr,"ASTREE_MULT");
+        break;
+    }
+
+    case ASTREE_ADD:
+    {
+        fprintf(stderr,"ASTREE_ADD");
+        break;
+    }
+
+    case ASTREE_SUB:
+    {
+        fprintf(stderr,"ASTREE_SUB");
+        break;
+    }
+
+    case ASTREE_DIV:
+    {
+        fprintf(stderr,"ASTREE_DIV");
+        break;
+    }
+
+    case ASTREE_LESS:
+    {
+        fprintf(stderr,"ASTREE_LESS");
+        break;
+    }
+
+    case ASTREE_GREATER:
+    {
+        fprintf(stderr,"ASTREE_GREATER");
+        break;
+    }
+
     default:
       //fprintf(stderr, "ERRO QUE NAO DEVIA ACONTECER\n");
       //fprintf(stderr, "tipo da astree fora do switch case\n");

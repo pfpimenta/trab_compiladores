@@ -31,6 +31,7 @@ struct symbol_s
 	DATATYPE dataType;
 	NATURE nature;
 	int numParameters; //soh pra funcoes
+	int isDeclared; //se essa var/func ja foi declarada
 };
 
 struct linkedList_s

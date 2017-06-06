@@ -125,6 +125,7 @@ LINKED_LIST* addSymbol(char* text, type_t type, DATATYPE dataType, NATURE nature
 	symbol.nature = nature;
 	//numParameters nao é passado por parametro
 	symbol.numParameters = -1;
+	symbol.isDeclared = 0;
 
 	return addToTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
@@ -147,6 +148,7 @@ void printSymbol(HASH_NODE symbol)
 	fprintf(stderr,"\nnature: ");
 	printNature(symbol.nature);
 	fprintf(stderr,"\nnumParameters: %i", symbol.numParameters);
+	fprintf(stderr,"\nisDeclared: %i", symbol.isDeclared);
 	fprintf(stderr,"\n\n");
 }
 

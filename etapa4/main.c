@@ -45,7 +45,9 @@ int main(int argc, char** argv)
  	//writeToFile(argv[2],decompiledASTREE);
 
 	semanticSetDeclarations(root);
-	
+
+	semanticCheck(root);
+
 
   //se chegou ate aqui, o programa de input esta correto
   fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
