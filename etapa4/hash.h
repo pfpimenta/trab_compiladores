@@ -30,6 +30,7 @@ struct symbol_s
 	type_t type;
 	DATATYPE dataType;
 	NATURE nature;
+	int numParameters; //soh pra funcoes
 };
 
 struct linkedList_s
