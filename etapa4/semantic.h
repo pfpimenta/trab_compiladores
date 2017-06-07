@@ -7,6 +7,7 @@
 #include "astree.h"
 
 
+void findReturn(ASTREE* node);
 void checkArgsTypes(ASTREE* node);
 int getExprType(ASTREE* node);
 int getNumArgs(ASTREE* node);

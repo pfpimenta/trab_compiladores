@@ -225,12 +225,12 @@ void semanticVardec(ASTREE* node){
 }
 
 
-void findReturn(ASTREE* node, int dataT)
+void findReturn(ASTREE* node)
 {
     int i;
     if(!node) return;
     if (node->type == ASTREE_KWRETURN)
-    {  
+    {
 	if(getExprType(node->son[0]) == EXPR_BOOLEAN)     //Dúvida: os DataTypes são intercambiáveis? Exemplo: long a (byte x, long y) return x+y
 	{
         fprintf(stderr, "ERRO SEMANTICO\nretorno invalido \n");
@@ -239,10 +239,10 @@ void findReturn(ASTREE* node, int dataT)
     }
     for(i=0; i < MAX_SONS; i++)
     {
-        findReturn(node->son[i], dataT);
+        findReturn(node->son[i]);
     }
 }
- 
+
 void semanticFuncdec(ASTREE* node)
 {
   if(node->symbol){
@@ -262,23 +262,18 @@ void semanticFuncdec(ASTREE* node)
     switch(node->son[0]->type){
       case ASTREE_KWBYTE:
         node->symbol->dataType = DATATYPE_BYTE;
-        findReturn(node->son[2], DATATYPE_BYTE);
         break;
       case ASTREE_KWSHORT:
         node->symbol->dataType = DATATYPE_SHORT;
-	findReturn(node->son[2], DATATYPE_SHORT);
         break;
       case ASTREE_KWLONG:
         node->symbol->dataType = DATATYPE_LONG;
-	findReturn(node->son[2], DATATYPE_LONG);
         break;
       case ASTREE_KWFLOAT:
         node->symbol->dataType = DATATYPE_FLOAT;
-	findReturn(node->son[2], DATATYPE_FLOAT);
         break;
       case ASTREE_KWDOUBLE:
         node->symbol->dataType = DATATYPE_DOUBLE;
-	findReturn(node->son[2], DATATYPE_DOUBLE);
         break;
       default:
         //fprintf(stderr, "ERRO QUE NAO DEVIA ACONTECER\n");
@@ -426,6 +421,9 @@ void semanticCheck(ASTREE* node)
         exit(4);
       }
 
+      //verifica se o tipo do return esta correto
+      findReturn(node->son[2]);
+
       break;
     }
 
@@ -561,7 +559,7 @@ void semanticCheck(ASTREE* node)
 	{
 	fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
         exit(4);
-	}	
+	}
       break;
     }
 
