@@ -1,5 +1,34 @@
 #include "semantic.h"
 
+void checkArgsTypes(ASTREE* node)
+{
+  //node->type = ASTREE_ARGS
+  //node->type = ASTREE_ARGSTAIL
+  if(!node) return;
+  if(node->son[0]->symbol->exprType == EXPR_BOOLEAN)
+  {
+    fprintf(stderr, "ERRO SEMANTICO\nargumento %s nao pode ser booleano\n", node->son[0]->symbol->text);
+    exit(4);
+  }
+  if(node->son[0]->symbol->exprType == EXPR_STRING)
+  {
+    fprintf(stderr, "ERRO SEMANTICO\nargumento %s nao pode ser string\n", node->son[0]->symbol->text);
+    exit(4);
+  }
+  if(node->type == ASTREE_ARGS)
+  {
+    checkArgsTypes(node->son[1]);
+    return;
+  }
+  if(node->type == ASTREE_ARGSTAIL)
+  {
+    checkArgsTypes(node->son[1]);
+    return;
+  }
+  //nao é pra chegar ate aqui
+  fprintf(stderr, "ERRO Q N ERA PRA ACONTECER\ngetNumArgs");
+  return 0;
+}
 
 int getExprType(ASTREE* node)
 {
@@ -624,6 +653,9 @@ void semanticCheck(ASTREE* node)
                 node->symbol->text, node->symbol->nature, NATURE_FUNC);
         exit(4);
       }
+
+      //verifica tipo dos argumentos
+      checkArgsTypes(node->son[0]);
 
       //verifica num de argumentos
       int numParameters = node->symbol->numParameters;

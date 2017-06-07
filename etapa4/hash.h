@@ -35,7 +35,7 @@ struct symbol_s
 	type_t type;
 	DATATYPE dataType;
 	NATURE nature;
-	int exprType; //soh pra exprs
+	int exprType; 
 	int numParameters; //soh pra funcoes
 	int isDeclared; //se essa var/func ja foi declarada
 };
