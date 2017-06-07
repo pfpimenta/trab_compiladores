@@ -1,5 +1,7 @@
 #include "semantic.h"
 
+
+
 void checkArgsTypes(ASTREE* node)
 {
   //node->type = ASTREE_ARGS
@@ -393,17 +395,6 @@ void semanticCheck(ASTREE* node)
       }
       break;
     }
-    case ASTREE_LITCHAR :
-    {
-        //verificar tipos de dados nas expressões:
-        break;
-    }
-
-    case ASTREE_LITREAL:
-    {
-
-        break;
-    }
 
     case ASTREE_FUNCDEC :
     {
@@ -446,18 +437,6 @@ void semanticCheck(ASTREE* node)
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
         exit(4);
       }
-        break;
-    }
-
-    case ASTREE_KWRETURN :
-    {
-        //verificar tipo do valor de retorno da função
-        break;
-    }
-
-    case ASTREE_LITSTRING:
-    {
-
         break;
     }
 
@@ -507,16 +486,10 @@ void semanticCheck(ASTREE* node)
       }
      //verifica indice do vetor
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
-	{
-	fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
-        exit(4);
-	}
-        break;
-    }
-
-    case ASTREE_EXPRPARENTESIS:
-    {
-
+	     {
+	        fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
+          exit(4);
+	     }
         break;
     }
 
@@ -556,10 +529,10 @@ void semanticCheck(ASTREE* node)
       }
       //verifica indice do vetor
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
-	{
-	fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
-        exit(4);
-	}
+	     {
+	        fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
+          exit(4);
+	     }
       break;
     }
 
