@@ -483,6 +483,12 @@ void semanticCheck(ASTREE* node)
                 node->symbol->text, node->symbol->nature, NATURE_ARRAY);
         exit(4);
       }
+     //verifica indice do vetor
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
+	{
+	fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
+        exit(4);
+	}
         break;
     }
 
@@ -526,7 +532,12 @@ void semanticCheck(ASTREE* node)
                 node->symbol->text, node->symbol->nature, NATURE_ARRAY);
         exit(4);
       }
-
+      //verifica indice do vetor
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
+	{
+	fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
+        exit(4);
+	}	
       break;
     }
 
