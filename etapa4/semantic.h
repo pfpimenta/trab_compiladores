@@ -6,6 +6,8 @@
 #include "hash.h"
 #include "astree.h"
 
+
+int getExprType(ASTREE* node);
 int getNumParameters(ASTREE* node);
 void semanticVardec(ASTREE* node);
 void semanticFuncdec(ASTREE* node);

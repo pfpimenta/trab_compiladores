@@ -15,10 +15,15 @@
 #define DATATYPE_FLOAT 4
 #define DATATYPE_DOUBLE 5
 
-
 #define NATURE_VAR 1
 #define NATURE_ARRAY 2
 #define NATURE_FUNC 3
+
+#define EXPR_INTEGER 1
+#define EXPR_REAL 2
+#define EXPR_CHAR 3
+#define EXPR_STRING 4
+#define EXPR_BOOLEAN 5
 
 typedef int type_t;
 typedef int DATATYPE;
@@ -30,6 +35,7 @@ struct symbol_s
 	type_t type;
 	DATATYPE dataType;
 	NATURE nature;
+	int exprType; //soh pra exprs
 	int numParameters; //soh pra funcoes
 	int isDeclared; //se essa var/func ja foi declarada
 };

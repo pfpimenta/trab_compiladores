@@ -126,6 +126,7 @@ LINKED_LIST* addSymbol(char* text, type_t type, DATATYPE dataType, NATURE nature
 	//numParameters nao é passado por parametro
 	symbol.numParameters = -1;
 	symbol.isDeclared = 0;
+	symbol.exprType = 0;
 
 	return addToTable(symbol, symbolTable, SYMBOL_TABLE_SIZE);
 }
