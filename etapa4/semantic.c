@@ -27,7 +27,7 @@ void checkArgsTypes(ASTREE* node)
   }
   //nao é pra chegar ate aqui
   fprintf(stderr, "ERRO Q N ERA PRA ACONTECER\ngetNumArgs");
-  return 0;
+  return;
 }
 
 int getExprType(ASTREE* node)
@@ -58,88 +58,25 @@ int getExprType(ASTREE* node)
       return EXPR_STRING;
       break;
     case ASTREE_LESSEQUAL:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_GREATEREQUAL:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_EQUAL:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_NOTEQUAL:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_AND:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\nusando strings no lugar de booleanos");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) != EXPR_BOOLEAN || getExprType(node->son[1]) != EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\nusando numeros no lugar de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_OR:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\nusando strings no lugar de booleanos");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) != EXPR_BOOLEAN || getExprType(node->son[1]) != EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\nusando numeros no lugar de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_MULT:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\nmultiplicando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\n multiplicando booleanos");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_REAL)
+      if(getExprType(node->son[0]) == EXPR_REAL || getExprType(node->son[1]) == EXPR_REAL)
       {
         return EXPR_REAL;
       }else{
@@ -147,16 +84,7 @@ int getExprType(ASTREE* node)
       }
       break;
     case ASTREE_ADD:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\nsomando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\n somando booleanos");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_REAL)
+      if(getExprType(node->son[0]) == EXPR_REAL || getExprType(node->son[1]) == EXPR_REAL)
       {
         return EXPR_REAL;
       }else{
@@ -164,16 +92,7 @@ int getExprType(ASTREE* node)
       }
       break;
     case ASTREE_SUB:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\n subtraindo strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\n subtraindo booleanos");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_REAL)
+      if(getExprType(node->son[0]) == EXPR_REAL || getExprType(node->son[1]) == EXPR_REAL)
       {
         return EXPR_REAL;
       }else{
@@ -181,39 +100,12 @@ int getExprType(ASTREE* node)
       }
       break;
     case ASTREE_DIV:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\n dividindo strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\n dividindo booleanos");
-        exit(4);
-      }
       return EXPR_REAL;
       break;
     case ASTREE_LESS:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     case ASTREE_GREATER:
-      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-        exit(4);
-      }
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
-      {
-        fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-        exit(4);
-      }
       return EXPR_BOOLEAN;
       break;
     break;
@@ -329,7 +221,7 @@ void semanticVardec(ASTREE* node){
     fprintf(stderr, "astree foi gerada errada?? \n");
   }
   //debug:
-  printSymbol(*node->symbol);
+  //printSymbol(*node->symbol);
 }
 
 void semanticFuncdec(ASTREE* node)
@@ -383,7 +275,7 @@ void semanticFuncdec(ASTREE* node)
 
 
   //debug:
-  printSymbol(*node->symbol);
+  //printSymbol(*node->symbol);
 }
 
 void semanticParam(ASTREE* node)
@@ -426,7 +318,7 @@ void semanticParam(ASTREE* node)
     }
 
     //debug
-    printSymbol(*node->symbol);
+    //printSymbol(*node->symbol);
   }
 }
 
@@ -671,73 +563,169 @@ void semanticCheck(ASTREE* node)
 
     case ASTREE_LESSEQUAL:
     {
-
+        if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
+          exit(4);
+        }
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
+          exit(4);
+        }
         break;
     }
 
     case ASTREE_GREATEREQUAL:
     {
-
+        if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
+          exit(4);
+        }
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
+          exit(4);
+        }
         break;
     }
 
     case ASTREE_EQUAL :
     {
-
+        if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
+          exit(4);
+        }
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
+          exit(4);
+        }
         break;
     }
 
     case ASTREE_NOTEQUAL:
     {
-
+        if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
+          exit(4);
+        }
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
+          exit(4);
+        }
         break;
     }
 
     case ASTREE_AND:
     {
-
-        break;
+      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+        fprintf(stderr, "ERRO SEMANTICO\nusando strings no lugar de booleanos\n");
+        exit(4);
+      }
+      if(getExprType(node->son[0]) != EXPR_BOOLEAN || getExprType(node->son[1]) != EXPR_BOOLEAN)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nusando numeros no lugar de booleanos\n");
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_OR:
     {
-
-        break;
+      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+        fprintf(stderr, "ERRO SEMANTICO\nusando strings no lugar de booleanos\n");
+        exit(4);
+      }
+      if(getExprType(node->son[0]) != EXPR_BOOLEAN || getExprType(node->son[1]) != EXPR_BOOLEAN)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nusando numeros no lugar de booleanos\n");
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_MULT:
     {
-
-        break;
+      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+        fprintf(stderr, "ERRO SEMANTICO\nmultiplicando strings\n");
+        exit(4);
+      }
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n multiplicando booleanos\n");
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_ADD:
     {
-
-        break;
+      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+        fprintf(stderr, "ERRO SEMANTICO\nsomando strings\n");
+        exit(4);
+      }
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n somando booleanos\n");
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_SUB:
     {
-
-        break;
+      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+        fprintf(stderr, "ERRO SEMANTICO\n subtraindo strings\n");
+        exit(4);
+      }
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n subtraindo booleanos\n");
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_DIV:
     {
-
-        break;
+      if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+        fprintf(stderr, "ERRO SEMANTICO\n dividindo strings\n");
+        exit(4);
+      }
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n dividindo booleanos\n");
+        exit(4);
+      }
+      break;
     }
 
     case ASTREE_LESS:
     {
-
+        if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
+          exit(4);
+        }
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
+          exit(4);
+        }
         break;
     }
 
     case ASTREE_GREATER:
     {
-
+        if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
+          exit(4);
+        }
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
+          exit(4);
+        }
         break;
     }
 
