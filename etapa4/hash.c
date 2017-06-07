@@ -148,9 +148,33 @@ void printSymbol(HASH_NODE symbol)
 	printDatatype(symbol.dataType);
 	fprintf(stderr,"\nnature: ");
 	printNature(symbol.nature);
+	fprintf(stderr,"\nexprType: ");
+	printExprType(symbol.exprType);
 	fprintf(stderr,"\nnumParameters: %i", symbol.numParameters);
 	fprintf(stderr,"\nisDeclared: %i", symbol.isDeclared);
 	fprintf(stderr,"\n\n");
+}
+
+void printExprType(int exprType)
+{
+	switch(exprType)
+	{
+		case EXPR_INTEGER:
+			fprintf(stderr,"integer");
+			break;
+		case EXPR_REAL:
+			fprintf(stderr,"real");
+			break;
+		case EXPR_CHAR:
+			fprintf(stderr,"char");
+			break;
+		case EXPR_STRING:
+			fprintf(stderr,"string");
+			break;
+		case EXPR_BOOLEAN:
+			fprintf(stderr,"bool");
+			break;
+	}
 }
 
 void printNature(NATURE nature)

@@ -1,0 +1,2061 @@
+   0  $accept : program $end
+
+   1  program : declist
+
+   2  declist : dec declist
+   3          |
+
+   4  dec : funcdec
+   5      | vardec
+
+   6  vardec : TK_IDENTIFIER ':' vartypeandvalue ';'
+
+   7  vartypeandvalue : vartype LIT_CHAR
+   8                  | vartype LIT_INTEGER
+   9                  | vartype LIT_REAL
+  10                  | vartype '[' LIT_INTEGER ']' intlist
+  11                  | vartype '[' LIT_INTEGER ']' charlist
+  12                  | vartype '[' LIT_INTEGER ']' floatlist
+  13                  | vartype '[' LIT_INTEGER ']'
+
+  14  intlist : LIT_INTEGER intlist
+  15          | LIT_INTEGER
+
+  16  charlist : LIT_CHAR charlist
+  17           | LIT_CHAR
+
+  18  floatlist : LIT_REAL floatlist
+  19            | LIT_REAL
+
+  20  funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody ';'
+
+  21  parameters : paramlist
+  22             |
+
+  23  paramlist : param ',' paramlist
+  24            | param
+
+  25  param : vartype TK_IDENTIFIER
+
+  26  vartype : KW_BYTE
+  27          | KW_SHORT
+  28          | KW_LONG
+  29          | KW_FLOAT
+  30          | KW_DOUBLE
+
+  31  funcbody : cmd
+
+  32  cmdlist : cmdlist cmd ';'
+  33          |
+
+  34  cmd : atrib
+  35      | '{' cmdlist '}'
+  36      | KW_READ TK_IDENTIFIER
+  37      | KW_PRINT printlist
+  38      | KW_RETURN expr
+  39      | control
+  40      |
+
+  41  printlist : printelement printlist
+  42            | printelement
+
+  43  printelement : LIT_STRING
+  44               | expr
+
+  45  control : KW_WHEN '(' expr ')' KW_THEN cmd
+  46          | KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE cmd
+  47          | KW_WHILE '(' expr ')' cmd
+  48          | KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd
+
+  49  atrib : TK_IDENTIFIER '=' expr
+  50        | TK_IDENTIFIER '#' expr '=' expr
+
+  51  expr : '(' expr ')'
+  52       | TK_IDENTIFIER
+  53       | TK_IDENTIFIER '[' expr ']'
+  54       | TK_IDENTIFIER '(' args ')'
+  55       | LIT_INTEGER
+  56       | LIT_CHAR
+  57       | LIT_REAL
+  58       | expr OPERATOR_LE expr
+  59       | expr OPERATOR_GE expr
+  60       | expr OPERATOR_EQ expr
+  61       | expr OPERATOR_NE expr
+  62       | expr OPERATOR_AND expr
+  63       | expr OPERATOR_OR expr
+  64       | expr '*' expr
+  65       | expr '+' expr
+  66       | expr '-' expr
+  67       | expr '/' expr
+  68       | expr '<' expr
+  69       | expr '>' expr
+
+  70  args : expr argstail
+  71       |
+
+  72  argstail : ',' expr argstail
+  73           |
+
+state 0
+	$accept : . program $end  (0)
+	declist : .  (3)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	TK_IDENTIFIER  shift 6
+	$end  reduce 3
+
+	program  goto 7
+	declist  goto 8
+	dec  goto 9
+	vardec  goto 10
+	funcdec  goto 11
+	vartype  goto 12
+
+
+state 1
+	vartype : KW_BYTE .  (26)
+
+	.  reduce 26
+
+
+state 2
+	vartype : KW_SHORT .  (27)
+
+	.  reduce 27
+
+
+state 3
+	vartype : KW_LONG .  (28)
+
+	.  reduce 28
+
+
+state 4
+	vartype : KW_FLOAT .  (29)
+
+	.  reduce 29
+
+
+state 5
+	vartype : KW_DOUBLE .  (30)
+
+	.  reduce 30
+
+
+state 6
+	vardec : TK_IDENTIFIER . ':' vartypeandvalue ';'  (6)
+
+	':'  shift 13
+	.  error
+
+
+state 7
+	$accept : program . $end  (0)
+
+	$end  accept
+
+
+state 8
+	program : declist .  (1)
+
+	.  reduce 1
+
+
+state 9
+	declist : dec . declist  (2)
+	declist : .  (3)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	TK_IDENTIFIER  shift 6
+	$end  reduce 3
+
+	declist  goto 14
+	dec  goto 9
+	vardec  goto 10
+	funcdec  goto 11
+	vartype  goto 12
+
+
+state 10
+	dec : vardec .  (5)
+
+	.  reduce 5
+
+
+state 11
+	dec : funcdec .  (4)
+
+	.  reduce 4
+
+
+state 12
+	funcdec : vartype . TK_IDENTIFIER '(' parameters ')' funcbody ';'  (20)
+
+	TK_IDENTIFIER  shift 15
+	.  error
+
+
+state 13
+	vardec : TK_IDENTIFIER ':' . vartypeandvalue ';'  (6)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	.  error
+
+	vartypeandvalue  goto 16
+	vartype  goto 17
+
+
+state 14
+	declist : dec declist .  (2)
+
+	.  reduce 2
+
+
+state 15
+	funcdec : vartype TK_IDENTIFIER . '(' parameters ')' funcbody ';'  (20)
+
+	'('  shift 18
+	.  error
+
+
+state 16
+	vardec : TK_IDENTIFIER ':' vartypeandvalue . ';'  (6)
+
+	';'  shift 19
+	.  error
+
+
+state 17
+	vartypeandvalue : vartype . LIT_CHAR  (7)
+	vartypeandvalue : vartype . LIT_INTEGER  (8)
+	vartypeandvalue : vartype . LIT_REAL  (9)
+	vartypeandvalue : vartype . '[' LIT_INTEGER ']' intlist  (10)
+	vartypeandvalue : vartype . '[' LIT_INTEGER ']' charlist  (11)
+	vartypeandvalue : vartype . '[' LIT_INTEGER ']' floatlist  (12)
+	vartypeandvalue : vartype . '[' LIT_INTEGER ']'  (13)
+
+	LIT_INTEGER  shift 20
+	LIT_REAL  shift 21
+	LIT_CHAR  shift 22
+	'['  shift 23
+	.  error
+
+
+state 18
+	funcdec : vartype TK_IDENTIFIER '(' . parameters ')' funcbody ';'  (20)
+	parameters : .  (22)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	')'  reduce 22
+
+	vartype  goto 24
+	parameters  goto 25
+	paramlist  goto 26
+	param  goto 27
+
+
+state 19
+	vardec : TK_IDENTIFIER ':' vartypeandvalue ';' .  (6)
+
+	.  reduce 6
+
+
+state 20
+	vartypeandvalue : vartype LIT_INTEGER .  (8)
+
+	.  reduce 8
+
+
+state 21
+	vartypeandvalue : vartype LIT_REAL .  (9)
+
+	.  reduce 9
+
+
+state 22
+	vartypeandvalue : vartype LIT_CHAR .  (7)
+
+	.  reduce 7
+
+
+state 23
+	vartypeandvalue : vartype '[' . LIT_INTEGER ']' intlist  (10)
+	vartypeandvalue : vartype '[' . LIT_INTEGER ']' charlist  (11)
+	vartypeandvalue : vartype '[' . LIT_INTEGER ']' floatlist  (12)
+	vartypeandvalue : vartype '[' . LIT_INTEGER ']'  (13)
+
+	LIT_INTEGER  shift 28
+	.  error
+
+
+state 24
+	param : vartype . TK_IDENTIFIER  (25)
+
+	TK_IDENTIFIER  shift 29
+	.  error
+
+
+state 25
+	funcdec : vartype TK_IDENTIFIER '(' parameters . ')' funcbody ';'  (20)
+
+	')'  shift 30
+	.  error
+
+
+state 26
+	parameters : paramlist .  (21)
+
+	.  reduce 21
+
+
+state 27
+	paramlist : param . ',' paramlist  (23)
+	paramlist : param .  (24)
+
+	','  shift 31
+	')'  reduce 24
+
+
+state 28
+	vartypeandvalue : vartype '[' LIT_INTEGER . ']' intlist  (10)
+	vartypeandvalue : vartype '[' LIT_INTEGER . ']' charlist  (11)
+	vartypeandvalue : vartype '[' LIT_INTEGER . ']' floatlist  (12)
+	vartypeandvalue : vartype '[' LIT_INTEGER . ']'  (13)
+
+	']'  shift 32
+	.  error
+
+
+state 29
+	param : vartype TK_IDENTIFIER .  (25)
+
+	.  reduce 25
+
+
+state 30
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' . funcbody ';'  (20)
+	cmd : .  (40)
+
+	KW_WHEN  shift 33
+	KW_WHILE  shift 34
+	KW_FOR  shift 35
+	KW_READ  shift 36
+	KW_RETURN  shift 37
+	KW_PRINT  shift 38
+	TK_IDENTIFIER  shift 39
+	'{'  shift 40
+	';'  reduce 40
+
+	funcbody  goto 41
+	cmd  goto 42
+	atrib  goto 43
+	control  goto 44
+
+
+state 31
+	paramlist : param ',' . paramlist  (23)
+
+	KW_BYTE  shift 1
+	KW_SHORT  shift 2
+	KW_LONG  shift 3
+	KW_FLOAT  shift 4
+	KW_DOUBLE  shift 5
+	.  error
+
+	vartype  goto 24
+	paramlist  goto 45
+	param  goto 27
+
+
+state 32
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' . intlist  (10)
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' . charlist  (11)
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' . floatlist  (12)
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' .  (13)
+
+	LIT_INTEGER  shift 46
+	LIT_REAL  shift 47
+	LIT_CHAR  shift 48
+	';'  reduce 13
+
+	intlist  goto 49
+	floatlist  goto 50
+	charlist  goto 51
+
+
+state 33
+	control : KW_WHEN . '(' expr ')' KW_THEN cmd  (45)
+	control : KW_WHEN . '(' expr ')' KW_THEN cmd KW_ELSE cmd  (46)
+
+	'('  shift 52
+	.  error
+
+
+state 34
+	control : KW_WHILE . '(' expr ')' cmd  (47)
+
+	'('  shift 53
+	.  error
+
+
+state 35
+	control : KW_FOR . '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd  (48)
+
+	'('  shift 54
+	.  error
+
+
+state 36
+	cmd : KW_READ . TK_IDENTIFIER  (36)
+
+	TK_IDENTIFIER  shift 55
+	.  error
+
+
+state 37
+	cmd : KW_RETURN . expr  (38)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 61
+
+
+state 38
+	cmd : KW_PRINT . printlist  (37)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	LIT_STRING  shift 62
+	'('  shift 60
+	.  error
+
+	printlist  goto 63
+	expr  goto 64
+	printelement  goto 65
+
+
+state 39
+	atrib : TK_IDENTIFIER . '=' expr  (49)
+	atrib : TK_IDENTIFIER . '#' expr '=' expr  (50)
+
+	'='  shift 66
+	'#'  shift 67
+	.  error
+
+
+state 40
+	cmd : '{' . cmdlist '}'  (35)
+	cmdlist : .  (33)
+
+	.  reduce 33
+
+	cmdlist  goto 68
+
+
+state 41
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody . ';'  (20)
+
+	';'  shift 69
+	.  error
+
+
+state 42
+	funcbody : cmd .  (31)
+
+	.  reduce 31
+
+
+state 43
+	cmd : atrib .  (34)
+
+	.  reduce 34
+
+
+state 44
+	cmd : control .  (39)
+
+	.  reduce 39
+
+
+state 45
+	paramlist : param ',' paramlist .  (23)
+
+	.  reduce 23
+
+
+state 46
+	intlist : LIT_INTEGER . intlist  (14)
+	intlist : LIT_INTEGER .  (15)
+
+	LIT_INTEGER  shift 46
+	';'  reduce 15
+
+	intlist  goto 70
+
+
+state 47
+	floatlist : LIT_REAL . floatlist  (18)
+	floatlist : LIT_REAL .  (19)
+
+	LIT_REAL  shift 47
+	';'  reduce 19
+
+	floatlist  goto 71
+
+
+state 48
+	charlist : LIT_CHAR . charlist  (16)
+	charlist : LIT_CHAR .  (17)
+
+	LIT_CHAR  shift 48
+	';'  reduce 17
+
+	charlist  goto 72
+
+
+state 49
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' intlist .  (10)
+
+	.  reduce 10
+
+
+state 50
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' floatlist .  (12)
+
+	.  reduce 12
+
+
+state 51
+	vartypeandvalue : vartype '[' LIT_INTEGER ']' charlist .  (11)
+
+	.  reduce 11
+
+
+state 52
+	control : KW_WHEN '(' . expr ')' KW_THEN cmd  (45)
+	control : KW_WHEN '(' . expr ')' KW_THEN cmd KW_ELSE cmd  (46)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 73
+
+
+state 53
+	control : KW_WHILE '(' . expr ')' cmd  (47)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 74
+
+
+state 54
+	control : KW_FOR '(' . TK_IDENTIFIER '=' expr KW_TO expr ')' cmd  (48)
+
+	TK_IDENTIFIER  shift 75
+	.  error
+
+
+state 55
+	cmd : KW_READ TK_IDENTIFIER .  (36)
+
+	.  reduce 36
+
+
+56: shift/reduce conflict (shift 77, reduce 52) on '('
+state 56
+	expr : TK_IDENTIFIER .  (52)
+	expr : TK_IDENTIFIER . '[' expr ']'  (53)
+	expr : TK_IDENTIFIER . '(' args ')'  (54)
+
+	'['  shift 76
+	'('  shift 77
+	KW_ELSE  reduce 52
+	KW_TO  reduce 52
+	OPERATOR_LE  reduce 52
+	OPERATOR_GE  reduce 52
+	OPERATOR_EQ  reduce 52
+	OPERATOR_NE  reduce 52
+	OPERATOR_AND  reduce 52
+	OPERATOR_OR  reduce 52
+	TK_IDENTIFIER  reduce 52
+	LIT_INTEGER  reduce 52
+	LIT_REAL  reduce 52
+	LIT_CHAR  reduce 52
+	LIT_STRING  reduce 52
+	'<'  reduce 52
+	'>'  reduce 52
+	'-'  reduce 52
+	'+'  reduce 52
+	'*'  reduce 52
+	'/'  reduce 52
+	';'  reduce 52
+	']'  reduce 52
+	')'  reduce 52
+	','  reduce 52
+	'='  reduce 52
+
+
+state 57
+	expr : LIT_INTEGER .  (55)
+
+	.  reduce 55
+
+
+state 58
+	expr : LIT_REAL .  (57)
+
+	.  reduce 57
+
+
+state 59
+	expr : LIT_CHAR .  (56)
+
+	.  reduce 56
+
+
+state 60
+	expr : '(' . expr ')'  (51)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 78
+
+
+state 61
+	cmd : KW_RETURN expr .  (38)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 38
+	';'  reduce 38
+
+
+state 62
+	printelement : LIT_STRING .  (43)
+
+	.  reduce 43
+
+
+state 63
+	cmd : KW_PRINT printlist .  (37)
+
+	.  reduce 37
+
+
+state 64
+	printelement : expr .  (44)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 44
+	TK_IDENTIFIER  reduce 44
+	LIT_INTEGER  reduce 44
+	LIT_REAL  reduce 44
+	LIT_CHAR  reduce 44
+	LIT_STRING  reduce 44
+	';'  reduce 44
+	'('  reduce 44
+
+
+state 65
+	printlist : printelement . printlist  (41)
+	printlist : printelement .  (42)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	LIT_STRING  shift 62
+	'('  shift 60
+	KW_ELSE  reduce 42
+	';'  reduce 42
+
+	printlist  goto 91
+	expr  goto 64
+	printelement  goto 65
+
+
+state 66
+	atrib : TK_IDENTIFIER '=' . expr  (49)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 92
+
+
+state 67
+	atrib : TK_IDENTIFIER '#' . expr '=' expr  (50)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 93
+
+
+state 68
+	cmdlist : cmdlist . cmd ';'  (32)
+	cmd : '{' cmdlist . '}'  (35)
+	cmd : .  (40)
+
+	KW_WHEN  shift 33
+	KW_WHILE  shift 34
+	KW_FOR  shift 35
+	KW_READ  shift 36
+	KW_RETURN  shift 37
+	KW_PRINT  shift 38
+	TK_IDENTIFIER  shift 39
+	'{'  shift 40
+	'}'  shift 94
+	';'  reduce 40
+
+	cmd  goto 95
+	atrib  goto 43
+	control  goto 44
+
+
+state 69
+	funcdec : vartype TK_IDENTIFIER '(' parameters ')' funcbody ';' .  (20)
+
+	.  reduce 20
+
+
+state 70
+	intlist : LIT_INTEGER intlist .  (14)
+
+	.  reduce 14
+
+
+state 71
+	floatlist : LIT_REAL floatlist .  (18)
+
+	.  reduce 18
+
+
+state 72
+	charlist : LIT_CHAR charlist .  (16)
+
+	.  reduce 16
+
+
+state 73
+	control : KW_WHEN '(' expr . ')' KW_THEN cmd  (45)
+	control : KW_WHEN '(' expr . ')' KW_THEN cmd KW_ELSE cmd  (46)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	')'  shift 96
+	.  error
+
+
+state 74
+	control : KW_WHILE '(' expr . ')' cmd  (47)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	')'  shift 97
+	.  error
+
+
+state 75
+	control : KW_FOR '(' TK_IDENTIFIER . '=' expr KW_TO expr ')' cmd  (48)
+
+	'='  shift 98
+	.  error
+
+
+state 76
+	expr : TK_IDENTIFIER '[' . expr ']'  (53)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 99
+
+
+state 77
+	expr : TK_IDENTIFIER '(' . args ')'  (54)
+	args : .  (71)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	')'  reduce 71
+
+	expr  goto 100
+	args  goto 101
+
+
+state 78
+	expr : '(' expr . ')'  (51)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	')'  shift 102
+	.  error
+
+
+state 79
+	expr : expr OPERATOR_LE . expr  (58)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 103
+
+
+state 80
+	expr : expr OPERATOR_GE . expr  (59)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 104
+
+
+state 81
+	expr : expr OPERATOR_EQ . expr  (60)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 105
+
+
+state 82
+	expr : expr OPERATOR_NE . expr  (61)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 106
+
+
+state 83
+	expr : expr OPERATOR_AND . expr  (62)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 107
+
+
+state 84
+	expr : expr OPERATOR_OR . expr  (63)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 108
+
+
+state 85
+	expr : expr '<' . expr  (68)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 109
+
+
+state 86
+	expr : expr '>' . expr  (69)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 110
+
+
+state 87
+	expr : expr '-' . expr  (66)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 111
+
+
+state 88
+	expr : expr '+' . expr  (65)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 112
+
+
+state 89
+	expr : expr '*' . expr  (64)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 113
+
+
+state 90
+	expr : expr '/' . expr  (67)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 114
+
+
+state 91
+	printlist : printelement printlist .  (41)
+
+	.  reduce 41
+
+
+state 92
+	atrib : TK_IDENTIFIER '=' expr .  (49)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 49
+	';'  reduce 49
+
+
+state 93
+	atrib : TK_IDENTIFIER '#' expr . '=' expr  (50)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	'='  shift 115
+	.  error
+
+
+state 94
+	cmd : '{' cmdlist '}' .  (35)
+
+	.  reduce 35
+
+
+state 95
+	cmdlist : cmdlist cmd . ';'  (32)
+
+	';'  shift 116
+	.  error
+
+
+state 96
+	control : KW_WHEN '(' expr ')' . KW_THEN cmd  (45)
+	control : KW_WHEN '(' expr ')' . KW_THEN cmd KW_ELSE cmd  (46)
+
+	KW_THEN  shift 117
+	.  error
+
+
+state 97
+	control : KW_WHILE '(' expr ')' . cmd  (47)
+	cmd : .  (40)
+
+	KW_WHEN  shift 33
+	KW_WHILE  shift 34
+	KW_FOR  shift 35
+	KW_READ  shift 36
+	KW_RETURN  shift 37
+	KW_PRINT  shift 38
+	TK_IDENTIFIER  shift 39
+	'{'  shift 40
+	KW_ELSE  reduce 40
+	';'  reduce 40
+
+	cmd  goto 118
+	atrib  goto 43
+	control  goto 44
+
+
+state 98
+	control : KW_FOR '(' TK_IDENTIFIER '=' . expr KW_TO expr ')' cmd  (48)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 119
+
+
+state 99
+	expr : TK_IDENTIFIER '[' expr . ']'  (53)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	']'  shift 120
+	.  error
+
+
+state 100
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+	args : expr . argstail  (70)
+	argstail : .  (73)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	','  shift 121
+	')'  reduce 73
+
+	argstail  goto 122
+
+
+state 101
+	expr : TK_IDENTIFIER '(' args . ')'  (54)
+
+	')'  shift 123
+	.  error
+
+
+state 102
+	expr : '(' expr ')' .  (51)
+
+	.  reduce 51
+
+
+state 103
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr OPERATOR_LE expr .  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 58
+	KW_TO  reduce 58
+	OPERATOR_LE  reduce 58
+	OPERATOR_GE  reduce 58
+	OPERATOR_EQ  reduce 58
+	OPERATOR_NE  reduce 58
+	OPERATOR_AND  reduce 58
+	OPERATOR_OR  reduce 58
+	TK_IDENTIFIER  reduce 58
+	LIT_INTEGER  reduce 58
+	LIT_REAL  reduce 58
+	LIT_CHAR  reduce 58
+	LIT_STRING  reduce 58
+	';'  reduce 58
+	']'  reduce 58
+	'('  reduce 58
+	')'  reduce 58
+	','  reduce 58
+	'='  reduce 58
+
+
+state 104
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr OPERATOR_GE expr .  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 59
+	KW_TO  reduce 59
+	OPERATOR_LE  reduce 59
+	OPERATOR_GE  reduce 59
+	OPERATOR_EQ  reduce 59
+	OPERATOR_NE  reduce 59
+	OPERATOR_AND  reduce 59
+	OPERATOR_OR  reduce 59
+	TK_IDENTIFIER  reduce 59
+	LIT_INTEGER  reduce 59
+	LIT_REAL  reduce 59
+	LIT_CHAR  reduce 59
+	LIT_STRING  reduce 59
+	';'  reduce 59
+	']'  reduce 59
+	'('  reduce 59
+	')'  reduce 59
+	','  reduce 59
+	'='  reduce 59
+
+
+state 105
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr OPERATOR_EQ expr .  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 60
+	KW_TO  reduce 60
+	OPERATOR_LE  reduce 60
+	OPERATOR_GE  reduce 60
+	OPERATOR_EQ  reduce 60
+	OPERATOR_NE  reduce 60
+	OPERATOR_AND  reduce 60
+	OPERATOR_OR  reduce 60
+	TK_IDENTIFIER  reduce 60
+	LIT_INTEGER  reduce 60
+	LIT_REAL  reduce 60
+	LIT_CHAR  reduce 60
+	LIT_STRING  reduce 60
+	';'  reduce 60
+	']'  reduce 60
+	'('  reduce 60
+	')'  reduce 60
+	','  reduce 60
+	'='  reduce 60
+
+
+state 106
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr OPERATOR_NE expr .  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 61
+	KW_TO  reduce 61
+	OPERATOR_LE  reduce 61
+	OPERATOR_GE  reduce 61
+	OPERATOR_EQ  reduce 61
+	OPERATOR_NE  reduce 61
+	OPERATOR_AND  reduce 61
+	OPERATOR_OR  reduce 61
+	TK_IDENTIFIER  reduce 61
+	LIT_INTEGER  reduce 61
+	LIT_REAL  reduce 61
+	LIT_CHAR  reduce 61
+	LIT_STRING  reduce 61
+	';'  reduce 61
+	']'  reduce 61
+	'('  reduce 61
+	')'  reduce 61
+	','  reduce 61
+	'='  reduce 61
+
+
+state 107
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr OPERATOR_AND expr .  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 62
+	KW_TO  reduce 62
+	OPERATOR_AND  reduce 62
+	OPERATOR_OR  reduce 62
+	TK_IDENTIFIER  reduce 62
+	LIT_INTEGER  reduce 62
+	LIT_REAL  reduce 62
+	LIT_CHAR  reduce 62
+	LIT_STRING  reduce 62
+	';'  reduce 62
+	']'  reduce 62
+	'('  reduce 62
+	')'  reduce 62
+	','  reduce 62
+	'='  reduce 62
+
+
+state 108
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr OPERATOR_OR expr .  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 63
+	KW_TO  reduce 63
+	OPERATOR_AND  reduce 63
+	OPERATOR_OR  reduce 63
+	TK_IDENTIFIER  reduce 63
+	LIT_INTEGER  reduce 63
+	LIT_REAL  reduce 63
+	LIT_CHAR  reduce 63
+	LIT_STRING  reduce 63
+	';'  reduce 63
+	']'  reduce 63
+	'('  reduce 63
+	')'  reduce 63
+	','  reduce 63
+	'='  reduce 63
+
+
+state 109
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr '<' expr .  (68)
+	expr : expr . '>' expr  (69)
+
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 68
+	KW_TO  reduce 68
+	OPERATOR_LE  reduce 68
+	OPERATOR_GE  reduce 68
+	OPERATOR_EQ  reduce 68
+	OPERATOR_NE  reduce 68
+	OPERATOR_AND  reduce 68
+	OPERATOR_OR  reduce 68
+	TK_IDENTIFIER  reduce 68
+	LIT_INTEGER  reduce 68
+	LIT_REAL  reduce 68
+	LIT_CHAR  reduce 68
+	LIT_STRING  reduce 68
+	'<'  reduce 68
+	'>'  reduce 68
+	';'  reduce 68
+	']'  reduce 68
+	'('  reduce 68
+	')'  reduce 68
+	','  reduce 68
+	'='  reduce 68
+
+
+state 110
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+	expr : expr '>' expr .  (69)
+
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 69
+	KW_TO  reduce 69
+	OPERATOR_LE  reduce 69
+	OPERATOR_GE  reduce 69
+	OPERATOR_EQ  reduce 69
+	OPERATOR_NE  reduce 69
+	OPERATOR_AND  reduce 69
+	OPERATOR_OR  reduce 69
+	TK_IDENTIFIER  reduce 69
+	LIT_INTEGER  reduce 69
+	LIT_REAL  reduce 69
+	LIT_CHAR  reduce 69
+	LIT_STRING  reduce 69
+	'<'  reduce 69
+	'>'  reduce 69
+	';'  reduce 69
+	']'  reduce 69
+	'('  reduce 69
+	')'  reduce 69
+	','  reduce 69
+	'='  reduce 69
+
+
+state 111
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr '-' expr .  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 66
+	KW_TO  reduce 66
+	OPERATOR_LE  reduce 66
+	OPERATOR_GE  reduce 66
+	OPERATOR_EQ  reduce 66
+	OPERATOR_NE  reduce 66
+	OPERATOR_AND  reduce 66
+	OPERATOR_OR  reduce 66
+	TK_IDENTIFIER  reduce 66
+	LIT_INTEGER  reduce 66
+	LIT_REAL  reduce 66
+	LIT_CHAR  reduce 66
+	LIT_STRING  reduce 66
+	'<'  reduce 66
+	'>'  reduce 66
+	'-'  reduce 66
+	'+'  reduce 66
+	';'  reduce 66
+	']'  reduce 66
+	'('  reduce 66
+	')'  reduce 66
+	','  reduce 66
+	'='  reduce 66
+
+
+state 112
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr '+' expr .  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 65
+	KW_TO  reduce 65
+	OPERATOR_LE  reduce 65
+	OPERATOR_GE  reduce 65
+	OPERATOR_EQ  reduce 65
+	OPERATOR_NE  reduce 65
+	OPERATOR_AND  reduce 65
+	OPERATOR_OR  reduce 65
+	TK_IDENTIFIER  reduce 65
+	LIT_INTEGER  reduce 65
+	LIT_REAL  reduce 65
+	LIT_CHAR  reduce 65
+	LIT_STRING  reduce 65
+	'<'  reduce 65
+	'>'  reduce 65
+	'-'  reduce 65
+	'+'  reduce 65
+	';'  reduce 65
+	']'  reduce 65
+	'('  reduce 65
+	')'  reduce 65
+	','  reduce 65
+	'='  reduce 65
+
+
+state 113
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr '*' expr .  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	.  reduce 64
+
+
+state 114
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr '/' expr .  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	.  reduce 67
+
+
+state 115
+	atrib : TK_IDENTIFIER '#' expr '=' . expr  (50)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 124
+
+
+state 116
+	cmdlist : cmdlist cmd ';' .  (32)
+
+	.  reduce 32
+
+
+state 117
+	control : KW_WHEN '(' expr ')' KW_THEN . cmd  (45)
+	control : KW_WHEN '(' expr ')' KW_THEN . cmd KW_ELSE cmd  (46)
+	cmd : .  (40)
+
+	KW_WHEN  shift 33
+	KW_WHILE  shift 34
+	KW_FOR  shift 35
+	KW_READ  shift 36
+	KW_RETURN  shift 37
+	KW_PRINT  shift 38
+	TK_IDENTIFIER  shift 39
+	'{'  shift 40
+	KW_ELSE  reduce 40
+	';'  reduce 40
+
+	cmd  goto 125
+	atrib  goto 43
+	control  goto 44
+
+
+state 118
+	control : KW_WHILE '(' expr ')' cmd .  (47)
+
+	.  reduce 47
+
+
+state 119
+	control : KW_FOR '(' TK_IDENTIFIER '=' expr . KW_TO expr ')' cmd  (48)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	KW_TO  shift 126
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	.  error
+
+
+state 120
+	expr : TK_IDENTIFIER '[' expr ']' .  (53)
+
+	.  reduce 53
+
+
+state 121
+	argstail : ',' . expr argstail  (72)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 127
+
+
+state 122
+	args : expr argstail .  (70)
+
+	.  reduce 70
+
+
+state 123
+	expr : TK_IDENTIFIER '(' args ')' .  (54)
+
+	.  reduce 54
+
+
+state 124
+	atrib : TK_IDENTIFIER '#' expr '=' expr .  (50)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	KW_ELSE  reduce 50
+	';'  reduce 50
+
+
+125: shift/reduce conflict (shift 128, reduce 45) on KW_ELSE
+state 125
+	control : KW_WHEN '(' expr ')' KW_THEN cmd .  (45)
+	control : KW_WHEN '(' expr ')' KW_THEN cmd . KW_ELSE cmd  (46)
+
+	KW_ELSE  shift 128
+	';'  reduce 45
+
+
+state 126
+	control : KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO . expr ')' cmd  (48)
+
+	TK_IDENTIFIER  shift 56
+	LIT_INTEGER  shift 57
+	LIT_REAL  shift 58
+	LIT_CHAR  shift 59
+	'('  shift 60
+	.  error
+
+	expr  goto 129
+
+
+state 127
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+	argstail : ',' expr . argstail  (72)
+	argstail : .  (73)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	','  shift 121
+	')'  reduce 73
+
+	argstail  goto 130
+
+
+state 128
+	control : KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE . cmd  (46)
+	cmd : .  (40)
+
+	KW_WHEN  shift 33
+	KW_WHILE  shift 34
+	KW_FOR  shift 35
+	KW_READ  shift 36
+	KW_RETURN  shift 37
+	KW_PRINT  shift 38
+	TK_IDENTIFIER  shift 39
+	'{'  shift 40
+	KW_ELSE  reduce 40
+	';'  reduce 40
+
+	cmd  goto 131
+	atrib  goto 43
+	control  goto 44
+
+
+state 129
+	control : KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr . ')' cmd  (48)
+	expr : expr . OPERATOR_LE expr  (58)
+	expr : expr . OPERATOR_GE expr  (59)
+	expr : expr . OPERATOR_EQ expr  (60)
+	expr : expr . OPERATOR_NE expr  (61)
+	expr : expr . OPERATOR_AND expr  (62)
+	expr : expr . OPERATOR_OR expr  (63)
+	expr : expr . '*' expr  (64)
+	expr : expr . '+' expr  (65)
+	expr : expr . '-' expr  (66)
+	expr : expr . '/' expr  (67)
+	expr : expr . '<' expr  (68)
+	expr : expr . '>' expr  (69)
+
+	OPERATOR_LE  shift 79
+	OPERATOR_GE  shift 80
+	OPERATOR_EQ  shift 81
+	OPERATOR_NE  shift 82
+	OPERATOR_AND  shift 83
+	OPERATOR_OR  shift 84
+	'<'  shift 85
+	'>'  shift 86
+	'-'  shift 87
+	'+'  shift 88
+	'*'  shift 89
+	'/'  shift 90
+	')'  shift 132
+	.  error
+
+
+state 130
+	argstail : ',' expr argstail .  (72)
+
+	.  reduce 72
+
+
+state 131
+	control : KW_WHEN '(' expr ')' KW_THEN cmd KW_ELSE cmd .  (46)
+
+	.  reduce 46
+
+
+state 132
+	control : KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' . cmd  (48)
+	cmd : .  (40)
+
+	KW_WHEN  shift 33
+	KW_WHILE  shift 34
+	KW_FOR  shift 35
+	KW_READ  shift 36
+	KW_RETURN  shift 37
+	KW_PRINT  shift 38
+	TK_IDENTIFIER  shift 39
+	'{'  shift 40
+	KW_ELSE  reduce 40
+	';'  reduce 40
+
+	cmd  goto 133
+	atrib  goto 43
+	control  goto 44
+
+
+state 133
+	control : KW_FOR '(' TK_IDENTIFIER '=' expr KW_TO expr ')' cmd .  (48)
+
+	.  reduce 48
+
+
+State 56 contains 1 shift/reduce conflict.
+State 125 contains 1 shift/reduce conflict.
+
+
+46 terminals, 24 nonterminals
+74 grammar rules, 134 states
