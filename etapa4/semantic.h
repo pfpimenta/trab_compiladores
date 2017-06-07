@@ -8,6 +8,7 @@
 
 
 int getExprType(ASTREE* node);
+int getNumArgs(ASTREE* node);
 int getNumParameters(ASTREE* node);
 void semanticVardec(ASTREE* node);
 void semanticFuncdec(ASTREE* node);

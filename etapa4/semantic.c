@@ -191,13 +191,39 @@ int getExprType(ASTREE* node)
   }
 }
 
+int getNumArgs(ASTREE* node)
+{
+    //node->type = ASTREE_ARGS
+    //node->type = ASTREE_ARGSTAIL
+    if(!node) return 0;
+    if(node->type == ASTREE_ARGS)
+    {
+      return 1 + getNumArgs(node->son[1]);
+    }
+    if(node->type == ASTREE_ARGSTAIL)
+    {
+      return 1 + getNumArgs(node->son[1]);
+    }
+    //nao é pra chegar ate aqui
+    fprintf(stderr, "ERRO Q N ERA PRA ACONTECER\ngetNumArgs");
+    return 0;
+}
+
 int getNumParameters(ASTREE* node)
 {
-  if(node->son[1]->type==ASTREE_PARAM)
+  if(node->type==ASTREE_PARAM)
   {
     return 1;
-  }else{
+  }
+  if(node->son[1]->type==ASTREE_PARAM)
+  {
+    return 2;
+  }
+  if (node->son[1]->type==ASTREE_PARAMLIST)
+  {
     return 1 + getNumParameters(node->son[1]);
+  }else{
+    fprintf(stderr, "ERRO QUE N DEVIA ACONTECER\ngetNumParameters\n" );
   }
 }
 
@@ -579,6 +605,7 @@ void semanticCheck(ASTREE* node)
                 node->symbol->text, node->symbol->nature, NATURE_ARRAY);
         exit(4);
       }
+
       break;
     }
 
@@ -595,6 +622,16 @@ void semanticCheck(ASTREE* node)
       {
         fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n",
                 node->symbol->text, node->symbol->nature, NATURE_FUNC);
+        exit(4);
+      }
+
+      //verifica num de argumentos
+      int numParameters = node->symbol->numParameters;
+      int numArgs = getNumArgs(node->son[0]);
+      if(numArgs != numParameters)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\n numero de errado argumentos: %s é deveria receber %i argumentos,  mas recebeu %i\n",
+                node->symbol->text, numParameters, numArgs);
         exit(4);
       }
       break;

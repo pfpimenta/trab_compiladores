@@ -20,6 +20,8 @@ long main()
 
   for (i = 1 to 10)
     print i " ";
+  
+  d = incn(d, d);
 
   print " Digite um numero: \n";
   read i;
@@ -44,3 +46,9 @@ long incn (long x, long n)
   return x+n;
 
 short voidfunc() ;
+
+byte otherFunc (byte a1, byte a2, byte a3, byte a4, byte a5)
+    return a1 + a2 + a3 + a4 + a5;
+
+double idFunc (double id)
+    return id;
