@@ -6,6 +6,7 @@
 #include "y.tab.h"
 
 extern ASTREE* root;
+extern int semanticErrorFlag;
 
 int writeToFile(char* path, char* programString)
 {
@@ -41,13 +42,17 @@ int main(int argc, char** argv)
   yyparse();
 
 	//char* decompiledASTREE = astreeDecompile(root);
-	astreePrint(root, 0);
+	//astreePrint(root, 0);
  	//writeToFile(argv[2],decompiledASTREE);
 
+	semanticErrorFlag = 0;
 	semanticSetDeclarations(root);
-
 	semanticCheck(root);
-
+	if(semanticErrorFlag)
+	{
+		//fprintf(stderr, "\ndebug: deu exit(4)\n");
+		exit(4);
+	}
 
   //se chegou ate aqui, o programa de input esta correto
   fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);

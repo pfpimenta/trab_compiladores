@@ -1,6 +1,7 @@
 #include "semantic.h"
 
 
+int semanticErrorFlag = 0;
 
 void checkArgsTypes(ASTREE* node)
 {
@@ -10,12 +11,14 @@ void checkArgsTypes(ASTREE* node)
   if(node->son[0]->symbol->exprType == EXPR_BOOLEAN)
   {
     fprintf(stderr, "ERRO SEMANTICO\nargumento %s nao pode ser booleano\n", node->son[0]->symbol->text);
-    exit(4);
+    //exit(4);
+    semanticErrorFlag = 1;
   }
   if(node->son[0]->symbol->exprType == EXPR_STRING)
   {
     fprintf(stderr, "ERRO SEMANTICO\nargumento %s nao pode ser string\n", node->son[0]->symbol->text);
-    exit(4);
+    //exit(4);
+    semanticErrorFlag = 1;
   }
   if(node->type == ASTREE_ARGS)
   {
@@ -156,7 +159,8 @@ void semanticVardec(ASTREE* node){
       if(node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel ja declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       node->symbol->isDeclared = 1;
       //setando as natures e exprTypes
@@ -236,7 +240,8 @@ void findReturn(ASTREE* node)
 	      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0]) == EXPR_STRING)     //Dúvida: os DataTypes são intercambiáveis? Exemplo: long a (byte x, long y) return x+y
 	      {
           fprintf(stderr, "ERRO SEMANTICO\nretorno invalido \n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
     }
     for(i=0; i < MAX_SONS; i++)
@@ -252,7 +257,8 @@ void semanticFuncdec(ASTREE* node)
     if(node->symbol->isDeclared)
     {
       fprintf(stderr, "ERRO SEMANTICO\nfuncao ja declarada: %s\n", node->symbol->text);
-      exit(4);
+      //exit(4);
+      semanticErrorFlag = 1;
     }
     node->symbol->isDeclared = 1;
 
@@ -306,7 +312,8 @@ void semanticParam(ASTREE* node)
     if(node->symbol->isDeclared)
     {
       fprintf(stderr, "ERRO SEMANTICO\nvariavel de parametro ja declarada: %s\n", node->symbol->text);
-      exit(4);
+      //exit(4);
+      semanticErrorFlag = 1;
     }
     node->symbol->isDeclared = 1;
 
@@ -391,7 +398,8 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -402,14 +410,16 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       //verifica natureza
-      if(node->symbol->nature != NATURE_FUNC)
+      if(node->symbol->nature != NATURE_FUNC && node->symbol->nature != 0)
       {
         fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s eh da natureza: %i ,  esperado: %i\n",
                 node->symbol->text, node->symbol->nature, NATURE_FUNC);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
 
       //verifica se o tipo do return esta correto
@@ -424,7 +434,8 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
         break;
     }
@@ -435,7 +446,8 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
         break;
     }
@@ -446,7 +458,8 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
         break;
     }
@@ -457,14 +470,16 @@ void semanticCheck(ASTREE* node)
         if(!node->symbol->isDeclared)
         {
           fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         //verifica natureza
-        if(node->symbol->nature != NATURE_VAR)
+        if(node->symbol->nature != NATURE_VAR && node->symbol->nature != 0)
         {
           fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s eh da natureza: %i ,  esperado: %i\n",
                   node->symbol->text, node->symbol->nature, NATURE_VAR);
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
@@ -475,20 +490,23 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       //verifica natureza
-      if(node->symbol->nature != NATURE_ARRAY)
+      if(node->symbol->nature != NATURE_ARRAY && node->symbol->nature != 0)
       {
         fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s eh da natureza: %i ,  esperado: %i\n",
                 node->symbol->text, node->symbol->nature, NATURE_ARRAY);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
      //verifica indice do vetor
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
 	     {
 	        fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
 	     }
         break;
     }
@@ -499,15 +517,17 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
 
       //verifica natureza
-      if(node->symbol->nature != NATURE_VAR)
+      if(node->symbol->nature != NATURE_VAR && node->symbol->nature != 0)
       {
         fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s eh da natureza: %i ,  esperado: %i\n",
                 node->symbol->text, node->symbol->nature, NATURE_VAR);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -518,20 +538,23 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       //verifica natureza
-      if(node->symbol->nature != NATURE_ARRAY)
+      if(node->symbol->nature != NATURE_ARRAY && node->symbol->nature != 0)
       {
         fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n",
                 node->symbol->text, node->symbol->nature, NATURE_ARRAY);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       //verifica indice do vetor
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
 	     {
 	        fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
 	     }
       break;
     }
@@ -542,14 +565,16 @@ void semanticCheck(ASTREE* node)
       if(!node->symbol->isDeclared)
       {
         fprintf(stderr, "ERRO SEMANTICO\nvariavel nao declarada: %s\n", node->symbol->text);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       //verifica natureza
-      if(node->symbol->nature != NATURE_FUNC)
+      if(node->symbol->nature != NATURE_FUNC && node->symbol->nature != 0)
       {
         fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s é da natureza %i ,  esperado %i\n",
                 node->symbol->text, node->symbol->nature, NATURE_FUNC);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
 
       //verifica tipo dos argumentos
@@ -562,7 +587,8 @@ void semanticCheck(ASTREE* node)
       {
         fprintf(stderr, "ERRO SEMANTICO\n numero de errado argumentos: %s é deveria receber %i argumentos,  mas recebeu %i\n",
                 node->symbol->text, numParameters, numArgs);
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -571,12 +597,14 @@ void semanticCheck(ASTREE* node)
     {
         if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
           fprintf(stderr, "ERRO SEMANTICO\ncomparando strings");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
         {
           fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
@@ -585,12 +613,14 @@ void semanticCheck(ASTREE* node)
     {
         if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
           fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
         {
           fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
@@ -599,12 +629,14 @@ void semanticCheck(ASTREE* node)
     {
         if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
           fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
         {
           fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
@@ -613,12 +645,14 @@ void semanticCheck(ASTREE* node)
     {
         if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
           fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
         {
           fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
@@ -627,12 +661,14 @@ void semanticCheck(ASTREE* node)
     {
       if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
         fprintf(stderr, "ERRO SEMANTICO\nusando strings no lugar de booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       if(getExprType(node->son[0]) != EXPR_BOOLEAN || getExprType(node->son[1]) != EXPR_BOOLEAN)
       {
         fprintf(stderr, "ERRO SEMANTICO\nusando numeros no lugar de booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -641,12 +677,14 @@ void semanticCheck(ASTREE* node)
     {
       if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
         fprintf(stderr, "ERRO SEMANTICO\nusando strings no lugar de booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       if(getExprType(node->son[0]) != EXPR_BOOLEAN || getExprType(node->son[1]) != EXPR_BOOLEAN)
       {
         fprintf(stderr, "ERRO SEMANTICO\nusando numeros no lugar de booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -655,12 +693,14 @@ void semanticCheck(ASTREE* node)
     {
       if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
         fprintf(stderr, "ERRO SEMANTICO\nmultiplicando strings\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
       {
         fprintf(stderr, "ERRO SEMANTICO\n multiplicando booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -669,12 +709,14 @@ void semanticCheck(ASTREE* node)
     {
       if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
         fprintf(stderr, "ERRO SEMANTICO\nsomando strings\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
       {
         fprintf(stderr, "ERRO SEMANTICO\n somando booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -683,12 +725,14 @@ void semanticCheck(ASTREE* node)
     {
       if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
         fprintf(stderr, "ERRO SEMANTICO\n subtraindo strings\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
       {
         fprintf(stderr, "ERRO SEMANTICO\n subtraindo booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -697,12 +741,14 @@ void semanticCheck(ASTREE* node)
     {
       if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
         fprintf(stderr, "ERRO SEMANTICO\n dividindo strings\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
       {
         fprintf(stderr, "ERRO SEMANTICO\n dividindo booleanos\n");
-        exit(4);
+        //exit(4);
+        semanticErrorFlag = 1;
       }
       break;
     }
@@ -711,12 +757,14 @@ void semanticCheck(ASTREE* node)
     {
         if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
           fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
         {
           fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
@@ -725,12 +773,14 @@ void semanticCheck(ASTREE* node)
     {
         if(getExprType(node->son[0]) == EXPR_STRING || getExprType(node->son[1]) == EXPR_STRING){
           fprintf(stderr, "ERRO SEMANTICO\ncomparando strings\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[1]) == EXPR_BOOLEAN)
         {
           fprintf(stderr, "ERRO SEMANTICO\ncomparando tamanhos de booleanos\n");
-          exit(4);
+          //exit(4);
+          semanticErrorFlag = 1;
         }
         break;
     }
