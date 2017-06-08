@@ -233,10 +233,10 @@ void findReturn(ASTREE* node)
     if(!node) return;
     if (node->type == ASTREE_KWRETURN)
     {
-	if(getExprType(node->son[0]) == EXPR_BOOLEAN)     //Dúvida: os DataTypes são intercambiáveis? Exemplo: long a (byte x, long y) return x+y
-	{
-        fprintf(stderr, "ERRO SEMANTICO\nretorno invalido \n");
-        exit(4);
+	      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0]) == EXPR_STRING)     //Dúvida: os DataTypes são intercambiáveis? Exemplo: long a (byte x, long y) return x+y
+	      {
+          fprintf(stderr, "ERRO SEMANTICO\nretorno invalido \n");
+          exit(4);
         }
     }
     for(i=0; i < MAX_SONS; i++)
