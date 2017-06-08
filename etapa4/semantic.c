@@ -452,6 +452,84 @@ void semanticCheck(ASTREE* node)
         break;
     }
 
+    case ASTREE_KWPRINT:
+    {
+      //verifica tipo das expr
+      if(node->son[0] != ASTREE_LITSTRING && node->son[0] != ASTREE_PRINTLIST){
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_STRING)
+  	     {
+  	        fprintf(stderr, "ERRO SEMANTICO\nPrint com tipo(s) invalido(s).\n", node->symbol->text);
+            //exit(4);
+            semanticErrorFlag = 1;
+  	     }
+      }
+      break;
+    }
+
+    case ASTREE_KWRETURN:
+    {
+      //verifica tipo das expr
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_STRING)
+	     {
+	        fprintf(stderr, "ERRO SEMANTICO\nRetorno invalido.\n", node->symbol->text);
+          //exit(4);
+          semanticErrorFlag = 1;
+	     }
+      break;
+    }
+
+    case ASTREE_PRINTLIST:
+    {
+      //verifica tipo das expr
+      if(node->son[0] != ASTREE_LITSTRING){
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_STRING)
+  	     {
+  	        fprintf(stderr, "ERRO SEMANTICO\nPrint com tipo(s) invalido(s).\n", node->symbol->text);
+            //exit(4);
+            semanticErrorFlag = 1;
+  	     }
+      }
+      break;
+    }
+
+    case ASTREE_KWWHENTHEN:
+    {
+      //verifica tipo das expr
+      if(getExprType(node->son[0]) != EXPR_BOOLEAN)
+       {
+          fprintf(stderr, "ERRO SEMANTICO\nWhen com tipo(s) invalido(s) (nao booleanos).\n", node->symbol->text);
+          //exit(4);
+          semanticErrorFlag = 1;
+       }
+      break;
+    }
+
+    case ASTREE_KWWHENTHENELSE:
+    {
+      //verifica tipo das expr
+      if(getExprType(node->son[0]) != EXPR_BOOLEAN)
+       {
+          fprintf(stderr, "ERRO SEMANTICO\nWhen com tipo(s) invalido(s) (nao booleanos).\n", node->symbol->text);
+          //exit(4);
+          semanticErrorFlag = 1;
+       }
+      break;
+    }
+
+    case ASTREE_KWWHILE:
+    {
+      //verifica tipo das expr
+      if(getExprType(node->son[0]) != EXPR_BOOLEAN)
+       {
+          fprintf(stderr, "ERRO SEMANTICO\nWhile com tipo(s) invalido(s) (nao booleanos).\n", node->symbol->text);
+          //exit(4);
+          semanticErrorFlag = 1;
+       }
+      break;
+    }
+
+
+
     case ASTREE_KWFOR:
     {
       //verif vars nao declaradas
@@ -461,7 +539,20 @@ void semanticCheck(ASTREE* node)
         //exit(4);
         semanticErrorFlag = 1;
       }
-        break;
+      //verifica tipo das expr
+      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_STRING)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nFor com tipo(s) invalido(s).\n", node->symbol->text);
+        //exit(4);
+        semanticErrorFlag = 1;
+      }
+      if(getExprType(node->son[1]) == EXPR_BOOLEAN || getExprType(node->son[1])== EXPR_STRING)
+      {
+        fprintf(stderr, "ERRO SEMANTICO\nFor com tipo(s) invalido(s).\n", node->symbol->text);
+        //exit(4);
+        semanticErrorFlag = 1;
+      }
+      break;
     }
 
     case ASTREE_ATRIB:
@@ -478,6 +569,13 @@ void semanticCheck(ASTREE* node)
         {
           fprintf(stderr, "ERRO SEMANTICO\n Natureza incompativel: %s eh da natureza: %i ,  esperado: %i\n",
                   node->symbol->text, node->symbol->nature, NATURE_VAR);
+          //exit(4);
+          semanticErrorFlag = 1;
+        }
+        //verifica tipo das expr
+        if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_STRING)
+        {
+          fprintf(stderr, "ERRO SEMANTICO\nAtribuiçao com tipo(s) invalido(s) (nao booleanos).\n", node->symbol->text);
           //exit(4);
           semanticErrorFlag = 1;
         }
@@ -508,6 +606,13 @@ void semanticCheck(ASTREE* node)
           //exit(4);
           semanticErrorFlag = 1;
 	     }
+       //verifica tipo das expr
+       if(getExprType(node->son[1]) == EXPR_BOOLEAN || getExprType(node->son[1])== EXPR_STRING)
+       {
+         fprintf(stderr, "ERRO SEMANTICO\nAtribuiçao com tipo(s) invalido(s) (nao booleanos).\n", node->symbol->text);
+         //exit(4);
+         semanticErrorFlag = 1;
+       }
         break;
     }
 
