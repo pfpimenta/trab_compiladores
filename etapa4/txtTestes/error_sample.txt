@@ -20,11 +20,12 @@ long main()
 
   for (i = 1 to 10)
     print i " ";
-  
+
   d = incn(d, d);
   //d = idFunc(d, d);   // ERRO SEMANTICO
   d = otherFunc(d,d,d,d,d);
-  d = otherFunc(d,d); // ERRO SEMANTICO
+  //d = otherFunc(d,d); // ERRO SEMANTICO
+  d =
 
   print " Digite um numero: \n";
   read i;

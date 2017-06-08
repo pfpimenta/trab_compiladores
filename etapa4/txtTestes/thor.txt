@@ -1,0 +1,29 @@
+a: short 0;
+v: byte[2];
+v: byte[2] 2 4;
+long main(byte a)
+  {
+
+  a = 10;
+  main#2 = v; //using function as vector / vector as scalar
+  v = main; //using as vector as scalar / function as scalar
+  v#2 = v[10-1];
+  for (a = 1 to 10)
+    print "i" " " a;
+
+  a = main(1); 
+  when(2.1+2 > 12) then
+    a = 1;
+
+
+  a = v[2/3]; //valid
+  a = v[2/3.1]; //invalid
+  a = 1+b; //undeclared b
+  a = main(1,2);//wrong parameter number  
+  a = main(2>2);//wrong parameter type
+  when(3) then; //not a boolean inside when
+  when((1>2)+2) then;
+
+  return 1==1;//wrong return type
+  };
+a: long 2;
