@@ -4,8 +4,9 @@
 #include "hash.h"
 #include "astree.h"
 
-#define TAC_RETURN
-#define TAC_BEGGINFUN
+#define TAC_SYMBOL 1
+#define TAC_RETURN 2
+#define TAC_BEGGINFUN 3
 #define TAC_ENDFUN
 #define TAC_VECREAD
 #define TAC_VECWRITE
