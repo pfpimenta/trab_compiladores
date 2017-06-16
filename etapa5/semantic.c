@@ -600,7 +600,7 @@ void semanticCheck(ASTREE* node)
         semanticErrorFlag = 1;
       }
      //verifica indice do vetor
-      if(getExprType(node->son[0]) == EXPR_BOOLEAN || getExprType(node->son[0])== EXPR_REAL)
+      if(getExprType(node->son[0]) != EXPR_INTEGER)
 	     {
 	        fprintf(stderr, "ERRO SEMANTICO\nIndice do vetor %s invalido.\n", node->symbol->text);
           //exit(4);

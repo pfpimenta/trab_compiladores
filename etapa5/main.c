@@ -3,6 +3,7 @@
 #include "hash.h"
 #include "astree.h"
 #include "semantic.h"
+#include "tac.h"
 #include "y.tab.h"
 
 extern ASTREE* root;

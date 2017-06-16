@@ -8,6 +8,7 @@
 #define SYMBOL_LIT_CHAR 3
 #define SYMBOL_LIT_STRING 4
 #define SYMBOL_TK_IDENTIFIER 5
+#define SYMBOL_LABEL 6//etapa5
 
 #define DATATYPE_BYTE 1
 #define DATATYPE_SHORT 2
@@ -35,7 +36,7 @@ struct symbol_s
 	type_t type;
 	DATATYPE dataType;
 	NATURE nature;
-	int exprType; 
+	int exprType;
 	int numParameters; //soh pra funcoes
 	int isDeclared; //se essa var/func ja foi declarada
 };
