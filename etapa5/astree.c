@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "astree.h"
 
-ASTREE* astreeCreate(int type, HASH_NODE* symbol,
+ASTREE* astreeCreate(int type, HASH_NODE* symbol, int lineNum,
                     ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3)
 {
     ASTREE* newnode = 0;
@@ -9,6 +9,7 @@ ASTREE* astreeCreate(int type, HASH_NODE* symbol,
 
     newnode->type = type;
     newnode->symbol = symbol;
+    newnode->lineNum = lineNum;
     newnode->son[0] = son0;
     newnode->son[1] = son1;
     newnode->son[2] = son2;
@@ -363,6 +364,7 @@ void astreePrint(ASTREE* node, int level)
         fprintf(stderr, ": %s", node->symbol->text);
     else
         fprintf(stderr, ":");
+    fprintf(stderr, ", line:%i, ", node->lineNum );
     level += 1;
     for(i=0; i < MAX_SONS; i++)
     {
@@ -706,7 +708,8 @@ void astreeNodePrint(ASTREE* node)
         fprintf(stderr, ": %s", node->symbol->text);
     else
         fprintf(stderr, ": ___");
-
+    fprintf(stderr, ", line:%i, ", node->lineNum );
+    fprintf(stderr, ")\n" );
 }
 
 char* astreeDecompile(ASTREE* ast)
