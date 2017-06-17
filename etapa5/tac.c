@@ -26,9 +26,148 @@ TAC* tacJoin(TAC* code1, TAC* code2)
   tac->prev = code1;
   return code2;
 }
-//void tacPrintBack(TAC* last)
-//void tacPrintForward(TAC* first)
-//TAC* tacReverse(TAC* last)
+void tacPrintBack(TAC* last)
+{
+  TAC* tac;
+  for (tac = last; tac; tac->prev)
+  {
+    fprintf(stderr, "TAC(" );
+    switch (tac->type) {
+      case TAC_SYMBOL:
+        fprintf(stderr, "TAC_SYMBOL" );
+        break;
+      case TAC_RETURN:
+        fprintf(stderr, "TAC_RETURN" );
+        break;
+      case TAC_BEGGINFUN:
+        fprintf(stderr, "TAC_BEGGINFUN" );
+        break;
+      case TAC_ENDFUN:
+        fprintf(stderr, "TAC_ENDFUN" );
+        break;
+      case TAC_VECREAD:
+        fprintf(stderr, "TAC_VECREAD" );
+        break;
+      case TAC_VECWRITE:
+        fprintf(stderr, "TAC_VECWRITE" );
+        break;
+      case TAC_MOV:
+        fprintf(stderr, "TAC_MOV" );
+        break;
+      case TAC_READ:
+        fprintf(stderr, "TAC_READ" );
+        break;
+      case TAC_PRINT:
+        fprintf(stderr, "TAC_PRINT" );
+        break;
+      case TAC_ARG:
+        fprintf(stderr, "TAC_ARG" );
+        break;
+      case TAC_CALL:
+        fprintf(stderr, "TAC_CALL" );
+        break;
+      default:
+        fprintf(stderr, "TAC_UNKNOWN" );
+        break;
+    }
+    if(tac->res)
+    {
+      fprintf(stderr,",%s", tac->res->text);
+    }else{
+      fprintf(stderr, ", ");
+    }
+    if(tac->op1)
+    {
+      fprintf(stderr,",%s", tac->op1->text);
+    }else{
+      fprintf(stderr, ", ");
+    }
+    if(tac->op2)
+    {
+      fprintf(stderr,",%s", tac->op2->text);
+    }else{
+      fprintf(stderr, ", ");
+    }
+    fprintf(stderr, ")\n" );
+  }
+}
+void tacPrintForward(TAC* first)
+{
+  TAC* tac;
+  for (tac = first; tac; tac->next)
+  {
+    fprintf(stderr, "TAC(" );
+    switch (tac->type) {
+      case TAC_SYMBOL:
+        fprintf(stderr, "TAC_SYMBOL" );
+        break;
+      case TAC_RETURN:
+        fprintf(stderr, "TAC_RETURN" );
+        break;
+      case TAC_BEGGINFUN:
+        fprintf(stderr, "TAC_BEGGINFUN" );
+        break;
+      case TAC_ENDFUN:
+        fprintf(stderr, "TAC_ENDFUN" );
+        break;
+      case TAC_VECREAD:
+        fprintf(stderr, "TAC_VECREAD" );
+        break;
+      case TAC_VECWRITE:
+        fprintf(stderr, "TAC_VECWRITE" );
+        break;
+      case TAC_MOV:
+        fprintf(stderr, "TAC_MOV" );
+        break;
+      case TAC_READ:
+        fprintf(stderr, "TAC_READ" );
+        break;
+      case TAC_PRINT:
+        fprintf(stderr, "TAC_PRINT" );
+        break;
+      case TAC_ARG:
+        fprintf(stderr, "TAC_ARG" );
+        break;
+      case TAC_CALL:
+        fprintf(stderr, "TAC_CALL" );
+        break;
+      default:
+        fprintf(stderr, "TAC_UNKNOWN" );
+        break;
+    }
+    if(tac->res)
+    {
+      fprintf(stderr,",%s", tac->res->text);
+    }else{
+      fprintf(stderr, ", ");
+    }
+    if(tac->op1)
+    {
+      fprintf(stderr,",%s", tac->op1->text);
+    }else{
+      fprintf(stderr, ", ");
+    }
+    if(tac->op2)
+    {
+      fprintf(stderr,",%s", tac->op2->text);
+    }else{
+      fprintf(stderr, ", ");
+    }
+    fprintf(stderr, ")\n" );
+  }
+}
+
+TAC* tacReverse(TAC* last)
+{
+  TAC* temp;
+  if(!last->prev) return last; //lista c 1 elemento
+
+  temp = last->prev;
+  last->prev->next = 0;
+  last->prev = 0;
+
+  return tacJoin(last, tacReverse(temp));
+}
 
 TAC* tacGenerate(ASTREE* node){
   int i = 0;

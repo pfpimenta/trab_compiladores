@@ -7,15 +7,14 @@
 #define TAC_SYMBOL 1
 #define TAC_RETURN 2
 #define TAC_BEGGINFUN 3
-#define TAC_ENDFUN
-#define TAC_VECREAD
-#define TAC_VECWRITE
-#define TAC_MOV
-#define TAC_SMP //???
-#define TAC_READ
-#define TAC_PRINT
-#define TAC_ARG
-#define TAC_CALL
+#define TAC_ENDFUN 4
+#define TAC_VECREAD 5
+#define TAC_VECWRITE 6
+#define TAC_MOV 7
+#define TAC_READ 8
+#define TAC_PRINT 9
+#define TAC_ARG 10
+#define TAC_CALL 11
 //codigo aqui
 
 typedef struct tac_struct
