@@ -29,7 +29,8 @@ TAC* tacJoin(TAC* code1, TAC* code2)
 void tacPrintBack(TAC* last)
 {
   TAC* tac;
-  for (tac = last; tac; tac->prev)
+  fprintf(stderr, "\n   tacPrintBack\n", );
+  for (tac = last; tac; tac=tac->prev)
   {
     fprintf(stderr, "TAC(" );
     switch (tac->type) {
@@ -94,7 +95,7 @@ void tacPrintBack(TAC* last)
 void tacPrintForward(TAC* first)
 {
   TAC* tac;
-  for (tac = first; tac; tac->next)
+  for (tac = first; tac; tac=tac->next)
   {
     fprintf(stderr, "TAC(" );
     switch (tac->type) {

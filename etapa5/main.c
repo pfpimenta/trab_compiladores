@@ -28,6 +28,7 @@ int writeToFile(char* path, char* programString)
 
 int main(int argc, char** argv)
 {
+	TAC* tac;
 	//printf("debug");
 	if(argc < 2){ // insuficient arguments
         	printf("\nerror : insuficient arguments\n");
@@ -54,6 +55,9 @@ int main(int argc, char** argv)
 		//fprintf(stderr, "\ndebug: deu exit(4)\n");
 		exit(4);
 	}
+
+	tac = tacGenerate(root);
+	tacPrintBack(tac);
 
   //se chegou ate aqui, o programa de input esta correto
   fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
