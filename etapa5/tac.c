@@ -29,7 +29,7 @@ TAC* tacJoin(TAC* code1, TAC* code2)
 void tacPrintBack(TAC* last)
 {
   TAC* tac;
-  fprintf(stderr, "\n   tacPrintBack\n", );
+  fprintf(stderr, "\n   tacPrintBack\n" );
   for (tac = last; tac; tac=tac->prev)
   {
     fprintf(stderr, "TAC(" );
