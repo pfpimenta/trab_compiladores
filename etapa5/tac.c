@@ -226,6 +226,18 @@ TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
   return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
 }
 
+TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
+{
+  HASH_NODE* elseLabel = makeLabel();
+  HASH_NODE* endLabel = makeLabel();
+  tacIfz = tacCreate(TAC_IFZ, elseLabel,code0->res, 0);
+  tacElseLabel = tacCreate(TAC_LABEL, elseLabel,0, 0);
+  tacJmp = tacCreate(TAC_JMP, endLabel, 0, 0);
+  tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+  return tacJoin(code0, tacJoin(tacIfz, tacJoin(code1, tacJoin(tacJmp,
+    tacJoin(tacElseLabel, tacJoin(code2, tacEndLabel))))));
+}
+
 TAC* tacGenerate(ASTREE* node){
   int i = 0;
   TAC* code[MAX_SONS];
@@ -244,6 +256,9 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_KWWHENTHEN:
       result = tacMakeWhen(node, code[0], code[1]);
+      break;
+    case ASTREE_KWWHENTHENELSE:
+      result = tacMakeWhenElse(node, code[0], code[1], code[2]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);

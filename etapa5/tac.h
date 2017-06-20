@@ -17,6 +17,7 @@
 #define TAC_CALL 11
 #define TAC_IFZ 12
 #define TAC_LABEL 13
+#define TAC_JMP 14
 //codigo aqui
 
 typedef struct tac_struct
@@ -40,5 +41,5 @@ HASH_NODE* makeLabel();
 HASH_NODE* makeTemporary();
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacGenerate(ASTREE* node);
-
+TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 #endif
