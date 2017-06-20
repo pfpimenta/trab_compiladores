@@ -21,12 +21,10 @@ TAC* tacGetFirst(TAC* tac)
   // get first tac of a tac chain
   if(!tac->prev)
   { //eh o primeiro tac
-    fprintf(stderr, "debug3\n%i", tac->type );
     return tac;
   }
   else
   { //ainda nao eh o primeiro tac
-    fprintf(stderr, "debug2\n%s ", tac->res->text );
     return tacGetFirst(tac->prev);
   }
 }
@@ -52,6 +50,7 @@ TAC* tacJoin(TAC* code1, TAC* code2)
   for(tac = code2; tac->prev; tac= tac->prev)
     ; //soh vai ate o inicio da lista
   tac->prev = code1;
+  code1->next = tac;
   return code2;
 }
 void tacPrintBack(TAC* last)
@@ -187,16 +186,31 @@ void tacPrintForward(TAC* first)
   }
 }
 
+/*
 TAC* tacReverse(TAC* last)
 {
   TAC* temp;
   if(!last->prev) return last; //lista c 1 elemento
 
   temp = last->prev;
-  last->prev->next = 0;
+  temp->next = 0;
   last->prev = 0;
 
   return tacJoin(last, tacReverse(temp));
+}
+*/
+TAC* tacReverse(TAC* last)
+{// versao nova que cria uma copia das tacs na memoria
+  TAC* newTac;
+  newTac = tacCreate(last->type, last->res, last->op1, last->op2);
+  if(!last->prev)//lista c 1 elemento
+  {
+    return newTac;
+  }
+  else
+  {
+    return tacJoin(newTac, tacReverse(last->prev));
+  }
 }
 
 TAC* tacGenerate(ASTREE* node){
