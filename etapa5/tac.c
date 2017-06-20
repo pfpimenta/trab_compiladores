@@ -16,6 +16,34 @@ TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2)
   return newtac;
 }
 
+TAC* tacGetFirst(TAC* tac)
+{
+  // get first tac of a tac chain
+  if(!tac->prev)
+  { //eh o primeiro tac
+    fprintf(stderr, "debug3\n%i", tac->type );
+    return tac;
+  }
+  else
+  { //ainda nao eh o primeiro tac
+    fprintf(stderr, "debug2\n%s ", tac->res->text );
+    return tacGetFirst(tac->prev);
+  }
+}
+
+TAC* tacGetLast(TAC* tac)
+{
+  // get last tac of a tac chain
+  if(!tac->next)
+  { //eh o ultimo tac
+    return tac;
+  }
+  else
+  { //ainda nao eh o ultimo tac
+    return tacGetLast(tac->next);
+  }
+}
+
 TAC* tacJoin(TAC* code1, TAC* code2)
 {
   TAC* tac;
@@ -95,6 +123,7 @@ void tacPrintBack(TAC* last)
 void tacPrintForward(TAC* first)
 {
   TAC* tac;
+  fprintf(stderr, "\n   tacPrintForward\n" );
   for (tac = first; tac; tac=tac->next)
   {
     fprintf(stderr, "TAC(" );
