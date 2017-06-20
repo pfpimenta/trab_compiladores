@@ -15,6 +15,8 @@
 #define TAC_PRINT 9
 #define TAC_ARG 10
 #define TAC_CALL 11
+#define TAC_IFZ 12
+#define TAC_LABEL 13
 //codigo aqui
 
 typedef struct tac_struct
@@ -34,6 +36,9 @@ TAC* tacJoin(TAC* code1, TAC* code2);
 void tacPrintBack(TAC* last);
 void tacPrintForward(TAC* first);
 TAC* tacReverse(TAC* last);
+HASH_NODE* makeLabel();
+HASH_NODE* makeTemporary();
+TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacGenerate(ASTREE* node);
 
 #endif

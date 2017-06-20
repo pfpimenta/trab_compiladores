@@ -2,6 +2,9 @@
 #include "tac.h"
 #include "astree.h"
 
+int temporaryCount = 0;
+int labelCount = 0;
+
 
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2)
 {
@@ -94,6 +97,9 @@ void tacPrintBack(TAC* last)
       case TAC_CALL:
         fprintf(stderr, "TAC_CALL" );
         break;
+      case TAC_IFZ:
+        fprintf(stderr, "TAC_IFZ" );
+        break;
       default:
         fprintf(stderr, "TAC_UNKNOWN" );
         break;
@@ -160,6 +166,9 @@ void tacPrintForward(TAC* first)
       case TAC_CALL:
         fprintf(stderr, "TAC_CALL" );
         break;
+      case TAC_IFZ:
+        fprintf(stderr, "TAC_IFZ" );
+        break;
       default:
         fprintf(stderr, "TAC_UNKNOWN" );
         break;
@@ -186,19 +195,6 @@ void tacPrintForward(TAC* first)
   }
 }
 
-/*
-TAC* tacReverse(TAC* last)
-{
-  TAC* temp;
-  if(!last->prev) return last; //lista c 1 elemento
-
-  temp = last->prev;
-  temp->next = 0;
-  last->prev = 0;
-
-  return tacJoin(last, tacReverse(temp));
-}
-*/
 TAC* tacReverse(TAC* last)
 {// versao nova que cria uma copia das tacs na memoria
   TAC* newTac;
@@ -211,6 +207,23 @@ TAC* tacReverse(TAC* last)
   {
     return tacJoin(newTac, tacReverse(last->prev));
   }
+}
+
+HASH_NODE* makeLabel()
+{
+
+}
+HASH_NODE* makeTemporary()
+{
+  
+}
+
+TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
+{
+  //create label hashnode?
+  tacIfz = tacCreate(TAC_IFZ, label?,code0->res, 0);
+  tacLabel = tacCreate(TAC_LABEL, label?,0, 0);
+  return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
 }
 
 TAC* tacGenerate(ASTREE* node){
@@ -228,6 +241,9 @@ TAC* tacGenerate(ASTREE* node){
   switch (node->type) {
     case ASTREE_TKID:
       result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
+      break;
+    case ASTREE_KWWHENTHEN:
+      result = tacMakeWhen(node, code[0], code[1]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
