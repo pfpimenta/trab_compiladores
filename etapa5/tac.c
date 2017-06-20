@@ -215,14 +215,14 @@ HASH_NODE* makeLabel()
 }
 HASH_NODE* makeTemporary()
 {
-  
+
 }
 
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
 {
-  //create label hashnode?
-  tacIfz = tacCreate(TAC_IFZ, label?,code0->res, 0);
-  tacLabel = tacCreate(TAC_LABEL, label?,0, 0);
+  HASH_NODE* label = makeLabel();
+  tacIfz = tacCreate(TAC_IFZ, label,code0->res, 0);
+  tacLabel = tacCreate(TAC_LABEL, label,0, 0);
   return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
 }
 
