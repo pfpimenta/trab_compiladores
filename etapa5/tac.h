@@ -10,19 +10,20 @@
 #define TAC_ENDFUN 4
 #define TAC_VECREAD 5
 #define TAC_VECWRITE 6
-#define TAC_MOV 7
+#define TAC_MOV 7 // res = op1
 #define TAC_READ 8
 #define TAC_PRINT 9
 #define TAC_ARG 10
-#define TAC_CALL 11
+#define TAC_CALL 11 //
 #define TAC_IFZ 12 //jmp if zero
 #define TAC_IFN 13 //jmp if negative
 #define TAC_LABEL 14
 #define TAC_JMP 15
-#define TAC_SUB 16
+#define TAC_SUB 16 // res = op1 - op2
 #define TAC_ADD 17
 #define TAC_MUL 18
 #define TAC_DIV 19
+#define TAC_INC 20 // res = op1 + 1
 //codigo aqui
 
 typedef struct tac_struct

@@ -57,12 +57,12 @@ int main(int argc, char** argv)
 	}
 
 	tac = tacGenerate(root);
-	tacPrintBack(tac);
+	//tacPrintBack(tac);
 	//fprintf(stderr, "\ndebug1\n");
 
 	tacPrintBack(tacReverse(tac));
 	//fprintf(stderr, "\ndebug1i1i1\n");
-	tacPrintForward(tacGetFirst(tacReverse(tac)));
+	//tacPrintForward(tacGetFirst(tacReverse(tac)));
 
   //se chegou ate aqui, o programa de input esta correto
   fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);

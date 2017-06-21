@@ -115,6 +115,9 @@ void tacPrintBack(TAC* last)
       case TAC_ADD:
         fprintf(stderr, "TAC_ADD" );
         break;
+      case TAC_INC:
+        fprintf(stderr, "TAC_INC" );
+        break;
       default:
         fprintf(stderr, "TAC_UNKNOWN" );
         break;
@@ -196,8 +199,11 @@ void tacPrintForward(TAC* first)
       case TAC_SUB:
         fprintf(stderr, "TAC_SUB" );
         break;
-        case TAC_ADD:
+      case TAC_ADD:
         fprintf(stderr, "TAC_ADD" );
+        break;
+      case TAC_INC:
+        fprintf(stderr, "TAC_INC" );
         break;
       default:
         fprintf(stderr, "TAC_UNKNOWN" );
@@ -291,45 +297,45 @@ TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 
 TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
-  /////////TA ERRADO ESSE FOR, NAO TA INCREMENTANDO O I EU ACHO
-
   //for (son0 to son1) son2
   HASH_NODE* tempvar = makeTemporary();
   HASH_NODE* begginingLabel = makeLabel();
   HASH_NODE* endLabel = makeLabel();
-  TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0->res, 0); 
+  TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0->res, 0);
   TAC* tacBegginingLabel = tacCreate(TAC_LABEL, begginingLabel,0, 0);
-  TAC* tacSub = tacCreate(TAC_SUB,tempvar,node->symbol,code0->res);
+  TAC* tacSub = tacCreate(TAC_SUB, tempvar, code1->res, node->symbol);
   TAC* tacIfz = tacCreate(TAC_IFZ,endLabel,tempvar,0);
+  TAC* tacInc = tacCreate(TAC_INC,node->symbol, node->symbol, 0);
   TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-  // join order: code0 code1 mov begginingLabel sub ifz code2 jmp endLabel
+  // join order: code0 code1 mov begginingLabel sub ifz code2 inc jmp endLabel
   return tacJoin(code0, tacJoin(code1, tacJoin(tacMov, tacJoin(tacBegginingLabel,
             tacJoin(tacSub, tacJoin(tacIfz, tacJoin(code2,
-            tacJoin(tacJmp, tacEndLabel))))))));
+            tacJoin(tacInc, tacJoin(tacJmp, tacEndLabel)))))))));
 }
 
 TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1)
 {
+  int type;
 
-int type;
+  switch (node->type){
+    case ASTREE_ADD:
+      type = TAC_ADD;
+      break;
+    case ASTREE_SUB:
+      type = TAC_SUB;
+      break;
+    case ASTREE_MULT:
+      type = TAC_MUL;
+      break;
+    case ASTREE_DIV:
+      type = TAC_DIV;
+      break;
+  }
 
-switch (node->type){
-  
-  case ASTREE_ADD: type = TAC_ADD;
-    break;
-  case ASTREE_SUB: type = TAC_SUB;
-    break;
-  case ASTREE_MULT: type = TAC_MUL;
-    break;
-  case ASTREE_DIV: type = TAC_DIV;
-    break;
-
-}
-
-HASH_NODE* temp = makeTemporary();
-TAC* tac = tacCreate(type,temp,code0->res,code1->res);
-return tacJoin(tacJoin(code0,code1),tac);
+  HASH_NODE* temp = makeTemporary();
+  TAC* tac = tacCreate(type,temp,code0->res,code1->res);
+  return tacJoin(tacJoin(code0,code1),tac);
 }
 
 
@@ -341,7 +347,7 @@ TAC* tacGenerate(ASTREE* node){
   if (!node) return 0;
 
   //process children first
-  for(i=0; i<MAX_SONS; ++i)  
+  for(i=0; i<MAX_SONS; ++i)
   {
     code[i] = tacGenerate(node->son[i]);
   }
