@@ -40,6 +40,7 @@ TAC* tacGetFirst(TAC* tac);
 TAC* tacGetLast(TAC* tac);
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2);
 TAC* tacJoin(TAC* code1, TAC* code2);
+void tacPrintType(TAC* tac);
 void tacPrintBack(TAC* last);
 void tacPrintForward(TAC* first);
 TAC* tacReverse(TAC* last);

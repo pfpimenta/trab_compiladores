@@ -56,6 +56,76 @@ TAC* tacJoin(TAC* code1, TAC* code2)
   code1->next = tac;
   return code2;
 }
+
+void tacPrintType(TAC* tac)
+{
+  switch (tac->type) {
+    case TAC_SYMBOL:
+      fprintf(stderr, "TAC_SYMBOL" );
+      break;
+    case TAC_RETURN:
+      fprintf(stderr, "TAC_RETURN" );
+      break;
+    case TAC_BEGGINFUN:
+      fprintf(stderr, "TAC_BEGGINFUN" );
+      break;
+    case TAC_ENDFUN:
+      fprintf(stderr, "TAC_ENDFUN" );
+      break;
+    case TAC_VECREAD:
+      fprintf(stderr, "TAC_VECREAD" );
+      break;
+    case TAC_VECWRITE:
+      fprintf(stderr, "TAC_VECWRITE" );
+      break;
+    case TAC_MOV:
+      fprintf(stderr, "TAC_MOV" );
+      break;
+    case TAC_READ:
+      fprintf(stderr, "TAC_READ" );
+      break;
+    case TAC_PRINT:
+      fprintf(stderr, "TAC_PRINT" );
+      break;
+    case TAC_ARG:
+      fprintf(stderr, "TAC_ARG" );
+      break;
+    case TAC_CALL:
+      fprintf(stderr, "TAC_CALL" );
+      break;
+    case TAC_IFZ:
+      fprintf(stderr, "TAC_IFZ" );
+      break;
+    case TAC_IFN:
+      fprintf(stderr, "TAC_IFN" );
+      break;
+    case TAC_LABEL:
+      fprintf(stderr, "TAC_LABEL" );
+      break;
+    case TAC_JMP:
+      fprintf(stderr, "TAC_JMP" );
+      break;
+    case TAC_SUB:
+      fprintf(stderr, "TAC_SUB" );
+      break;
+    case TAC_ADD:
+      fprintf(stderr, "TAC_ADD" );
+      break;
+    case TAC_MUL:
+      fprintf(stderr, "TAC_MUL" );
+      break;
+    case TAC_DIV:
+      fprintf(stderr, "TAC_DIV" );
+      break;
+    case TAC_INC:
+      fprintf(stderr, "TAC_INC" );
+      break;
+    default:
+      fprintf(stderr, "TAC_UNKNOWN: %i", tac->type );
+      break;
+  }
+}
+
 void tacPrintBack(TAC* last)
 {
   TAC* tac;
@@ -63,65 +133,7 @@ void tacPrintBack(TAC* last)
   for (tac = last; tac; tac=tac->prev)
   {
     fprintf(stderr, "TAC(" );
-    switch (tac->type) {
-      case TAC_SYMBOL:
-        fprintf(stderr, "TAC_SYMBOL" );
-        break;
-      case TAC_RETURN:
-        fprintf(stderr, "TAC_RETURN" );
-        break;
-      case TAC_BEGGINFUN:
-        fprintf(stderr, "TAC_BEGGINFUN" );
-        break;
-      case TAC_ENDFUN:
-        fprintf(stderr, "TAC_ENDFUN" );
-        break;
-      case TAC_VECREAD:
-        fprintf(stderr, "TAC_VECREAD" );
-        break;
-      case TAC_VECWRITE:
-        fprintf(stderr, "TAC_VECWRITE" );
-        break;
-      case TAC_MOV:
-        fprintf(stderr, "TAC_MOV" );
-        break;
-      case TAC_READ:
-        fprintf(stderr, "TAC_READ" );
-        break;
-      case TAC_PRINT:
-        fprintf(stderr, "TAC_PRINT" );
-        break;
-      case TAC_ARG:
-        fprintf(stderr, "TAC_ARG" );
-        break;
-      case TAC_CALL:
-        fprintf(stderr, "TAC_CALL" );
-        break;
-      case TAC_IFZ:
-        fprintf(stderr, "TAC_IFZ" );
-        break;
-      case TAC_IFN:
-        fprintf(stderr, "TAC_IFN" );
-        break;
-      case TAC_LABEL:
-        fprintf(stderr, "TAC_LABEL" );
-        break;
-      case TAC_JMP:
-        fprintf(stderr, "TAC_JMP" );
-        break;
-      case TAC_SUB:
-        fprintf(stderr, "TAC_SUB" );
-        break;
-      case TAC_ADD:
-        fprintf(stderr, "TAC_ADD" );
-        break;
-      case TAC_INC:
-        fprintf(stderr, "TAC_INC" );
-        break;
-      default:
-        fprintf(stderr, "TAC_UNKNOWN" );
-        break;
-    }
+    tacPrintType(tac);
     if(tac->res)
     {
       fprintf(stderr,",%s", tac->res->text);
@@ -150,65 +162,7 @@ void tacPrintForward(TAC* first)
   for (tac = first; tac; tac=tac->next)
   {
     fprintf(stderr, "TAC(" );
-    switch (tac->type) {
-      case TAC_SYMBOL:
-        fprintf(stderr, "TAC_SYMBOL" );
-        break;
-      case TAC_RETURN:
-        fprintf(stderr, "TAC_RETURN" );
-        break;
-      case TAC_BEGGINFUN:
-        fprintf(stderr, "TAC_BEGGINFUN" );
-        break;
-      case TAC_ENDFUN:
-        fprintf(stderr, "TAC_ENDFUN" );
-        break;
-      case TAC_VECREAD:
-        fprintf(stderr, "TAC_VECREAD" );
-        break;
-      case TAC_VECWRITE:
-        fprintf(stderr, "TAC_VECWRITE" );
-        break;
-      case TAC_MOV:
-        fprintf(stderr, "TAC_MOV" );
-        break;
-      case TAC_READ:
-        fprintf(stderr, "TAC_READ" );
-        break;
-      case TAC_PRINT:
-        fprintf(stderr, "TAC_PRINT" );
-        break;
-      case TAC_ARG:
-        fprintf(stderr, "TAC_ARG" );
-        break;
-      case TAC_CALL:
-        fprintf(stderr, "TAC_CALL" );
-        break;
-      case TAC_IFZ:
-        fprintf(stderr, "TAC_IFZ" );
-        break;
-      case TAC_IFN:
-        fprintf(stderr, "TAC_IFN" );
-        break;
-      case TAC_LABEL:
-        fprintf(stderr, "TAC_LABEL" );
-        break;
-      case TAC_JMP:
-        fprintf(stderr, "TAC_JMP" );
-        break;
-      case TAC_SUB:
-        fprintf(stderr, "TAC_SUB" );
-        break;
-      case TAC_ADD:
-        fprintf(stderr, "TAC_ADD" );
-        break;
-      case TAC_INC:
-        fprintf(stderr, "TAC_INC" );
-        break;
-      default:
-        fprintf(stderr, "TAC_UNKNOWN" );
-        break;
-    }
+    tacPrintType(tac);
     if(tac->res)
     {
       fprintf(stderr,",%s", tac->res->text);
