@@ -20,6 +20,9 @@
 #define TAC_LABEL 14
 #define TAC_JMP 15
 #define TAC_SUB 16
+#define TAC_ADD 17
+#define TAC_MUL 18
+#define TAC_DIV 19
 //codigo aqui
 
 typedef struct tac_struct
@@ -45,4 +48,6 @@ TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 TAC* tacDeclaration(TAC* id, TAC* literal);
 TAC* tacGenerate(ASTREE* node);
+TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
+TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1);
 #endif
