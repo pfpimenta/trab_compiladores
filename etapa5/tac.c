@@ -281,7 +281,7 @@ TAC* tacGenerate(ASTREE* node){
       result = tacMakeWhenElse(node, code[0], code[1], code[2]);
       break;
     case ASTREE_KWRETURN:
-      result = tacJoin(code[0],tacCreate(TAC_RETURN, NULL, code[0]->res, NULL);
+      result = tacJoin(code[0],tacCreate(TAC_RETURN, NULL, code[0]->res, NULL));
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
