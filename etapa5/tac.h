@@ -18,6 +18,7 @@
 #define TAC_IFZ 12
 #define TAC_LABEL 13
 #define TAC_JMP 14
+#define TAC_SUB 15
 //codigo aqui
 
 typedef struct tac_struct

@@ -218,7 +218,9 @@ HASH_NODE* makeLabel()
   count++;
 
   LINKED_LIST* linkedList = addSymbol(labelName, SYMBOL_TK_IDENTIFIER,0,0);
-  return linkedList->symbol;
+  HASH_NODE* hashNode;
+  hashNode = &(linkedList->symbol);
+  return hashNode;
 }
 
 HASH_NODE* makeTemporary()
@@ -230,7 +232,9 @@ HASH_NODE* makeTemporary()
   count++;
 
   LINKED_LIST* linkedList = addSymbol(tempName, SYMBOL_TK_IDENTIFIER,0,0);
-  return linkedList->symbol;
+  HASH_NODE* hashNode;
+  hashNode = &(linkedList->symbol);
+  return hashNode;
 }
 
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
@@ -238,6 +242,7 @@ TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
   HASH_NODE* label = makeLabel();
   TAC* tacIfz = tacCreate(TAC_IFZ, label,code0->res, 0);
   TAC* tacLabel = tacCreate(TAC_LABEL, label,0, 0);
+  //join order: code0 tacIfz code1 tacLabel
   return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
 }
 
@@ -249,13 +254,25 @@ TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
   TAC* tacElseLabel = tacCreate(TAC_LABEL, elseLabel,0, 0);
   TAC* tacJmp = tacCreate(TAC_JMP, endLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+  //join order: code0 tacIfz code1 tacJmp tacElseLabel code2 tacEndLabel
   return tacJoin(code0, tacJoin(tacIfz, tacJoin(code1, tacJoin(tacJmp,
     tacJoin(tacElseLabel, tacJoin(code2, tacEndLabel))))));
 }
 
-TAC* tacDeclaration(TAC* id, TAC* literal)
+TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
-   return tac(TAC_MOV, id->res, literal->res, 0);
+  //for (son0 to son1) son2
+  HASH_NODE* tempvar = makeTemporary();
+  HASH_NODE* begginingLabel = makeLabel();
+  HASH_NODE* endLabel = makeLabel();
+  TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0->res, 0);
+  TAC* tacBegginingLabel = tacCreate(TAC_LABEL, begginingLabel,0, 0);
+  TAC* tacSub = tacCreate(TAC_SUB,tempvar,node->symbol,code0->res);
+  TAC* tacIfz = tacCreate(TAC_IFZ,endLabel,tempvar,0);
+  TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
+  TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+  // join order: code0 code1 mov begginingLabel sub ifz code2 jmp endLabel
+  return tacJoin(code0,code1);
 }
 
 TAC* tacGenerate(ASTREE* node){
