@@ -290,7 +290,9 @@ TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
   TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
   // join order: code0 code1 mov begginingLabel sub ifz code2 jmp endLabel
-  return tacJoin(code0,code1);
+  return tacJoin(code0, tacJoin(code1, tacJoin(tacMov, tacJoin(tacBegginingLabel,
+            tacJoin(tacSub, tacJoin(tacIfz, tacJoin(code2,
+            tacJoin(tacJmp, tacEndLabel))))))));
 }
 
 TAC* tacGenerate(ASTREE* node){
