@@ -292,6 +292,17 @@ TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1)
   return tacJoin(tacJoin(code0,code1),tac);
 }
 
+TAC* tacMakeFuncDec(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
+{
+  // MISTERIO
+  TAC* tacBeginFunc = tacCreate(TAC_BEGGINFUN, node->symbol, 0, 0); // MISTERIO
+  TAC* tacEndFunc = tacCreate(TAC_ENDFUN, node->symbol, 0, 0); // MISTERIO
+  // MISTERIO
+
+  //code0: vartype
+  //join order:  beginFunc code1 code2 endFunc
+  return tacJoin(tacBeginFunc, tacJoin(code1, tacJoin(code2, tacEndFunc)));
+}
 
 TAC* tacGenerate(ASTREE* node){
   int i = 0;
@@ -329,6 +340,9 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_MULT:
     case ASTREE_DIV:
       result = tacAritExpr(node, code[0], code[1]);
+      break;
+    case ASTREE_FUNCDEC:
+      result = tacMakeFuncDec(node, code[0], code[1], code[2]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
