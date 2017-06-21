@@ -100,6 +100,15 @@ void tacPrintBack(TAC* last)
       case TAC_IFZ:
         fprintf(stderr, "TAC_IFZ" );
         break;
+      case TAC_LABEL:
+        fprintf(stderr, "TAC_LABEL" );
+        break;
+      case TAC_JMP:
+        fprintf(stderr, "TAC_JMP" );
+        break;
+      case TAC_SUB:
+        fprintf(stderr, "TAC_SUB" );
+        break;
       default:
         fprintf(stderr, "TAC_UNKNOWN" );
         break;
@@ -168,6 +177,15 @@ void tacPrintForward(TAC* first)
         break;
       case TAC_IFZ:
         fprintf(stderr, "TAC_IFZ" );
+        break;
+      case TAC_LABEL:
+        fprintf(stderr, "TAC_LABEL" );
+        break;
+      case TAC_JMP:
+        fprintf(stderr, "TAC_JMP" );
+        break;
+      case TAC_SUB:
+        fprintf(stderr, "TAC_SUB" );
         break;
       default:
         fprintf(stderr, "TAC_UNKNOWN" );
