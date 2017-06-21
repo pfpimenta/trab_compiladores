@@ -213,29 +213,31 @@ HASH_NODE* makeLabel()
 {
   static int count = 0;
   char* labelName = malloc(8 + sizeof(int) + 1);
-  
+
   sprintf(labelName, "___label%d", count);
   count++;
-  
-  return addSymbol(labelName, SYMBOL_IDENTIFIER,0,0);
+
+  LINKED_LIST* linkedList = addSymbol(labelName, SYMBOL_TK_IDENTIFIER,0,0);
+  return linkedList->symbol;
 }
 
 HASH_NODE* makeTemporary()
 {
   static int count = 0;
   char* tempName = malloc(7 + sizeof(int) + 1);
-  
+
   sprintf(tempName, "___temp%d", count);
   count++;
-  
-  return addSymbol(tempName, SYMBOL_IDENTIFIER,0,0);
+
+  LINKED_LIST* linkedList = addSymbol(tempName, SYMBOL_TK_IDENTIFIER,0,0);
+  return linkedList->symbol;
 }
 
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
 {
   HASH_NODE* label = makeLabel();
-  tacIfz = tacCreate(TAC_IFZ, label,code0->res, 0);
-  tacLabel = tacCreate(TAC_LABEL, label,0, 0);
+  TAC* tacIfz = tacCreate(TAC_IFZ, label,code0->res, 0);
+  TAC* tacLabel = tacCreate(TAC_LABEL, label,0, 0);
   return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
 }
 
@@ -243,17 +245,17 @@ TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
   HASH_NODE* elseLabel = makeLabel();
   HASH_NODE* endLabel = makeLabel();
-  tacIfz = tacCreate(TAC_IFZ, elseLabel,code0->res, 0);
-  tacElseLabel = tacCreate(TAC_LABEL, elseLabel,0, 0);
-  tacJmp = tacCreate(TAC_JMP, endLabel, 0, 0);
-  tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+  TAC* tacIfz = tacCreate(TAC_IFZ, elseLabel,code0->res, 0);
+  TAC* tacElseLabel = tacCreate(TAC_LABEL, elseLabel,0, 0);
+  TAC* tacJmp = tacCreate(TAC_JMP, endLabel, 0, 0);
+  TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
   return tacJoin(code0, tacJoin(tacIfz, tacJoin(code1, tacJoin(tacJmp,
     tacJoin(tacElseLabel, tacJoin(code2, tacEndLabel))))));
 }
 
-TAC* declaration_tac(TAC* id, TAC* literal)
+TAC* tacDeclaration(TAC* id, TAC* literal)
 {
-   return tac(TAC_MOVE, id->destination, literal->destination, NULL);
+   return tac(TAC_MOV, id->res, literal->res, 0);
 }
 
 TAC* tacGenerate(ASTREE* node){
@@ -280,10 +282,9 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_KWRETURN:
       result = tacJoin(code[0],tacCreate(TAC_RETURN, NULL, code[0]->res, NULL);
-      break; 
+      break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
   }
   return result;
 }
-

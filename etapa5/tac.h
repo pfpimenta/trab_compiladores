@@ -40,6 +40,7 @@ TAC* tacReverse(TAC* last);
 HASH_NODE* makeLabel();
 HASH_NODE* makeTemporary();
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1);
-TAC* tacGenerate(ASTREE* node);
 TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
+TAC* tacDeclaration(TAC* id, TAC* literal);
+TAC* tacGenerate(ASTREE* node);
 #endif
