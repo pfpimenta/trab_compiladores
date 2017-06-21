@@ -100,6 +100,9 @@ void tacPrintBack(TAC* last)
       case TAC_IFZ:
         fprintf(stderr, "TAC_IFZ" );
         break;
+      case TAC_IFN:
+        fprintf(stderr, "TAC_IFN" );
+        break;
       case TAC_LABEL:
         fprintf(stderr, "TAC_LABEL" );
         break;
@@ -177,6 +180,9 @@ void tacPrintForward(TAC* first)
         break;
       case TAC_IFZ:
         fprintf(stderr, "TAC_IFZ" );
+        break;
+      case TAC_IFN:
+        fprintf(stderr, "TAC_IFN" );
         break;
       case TAC_LABEL:
         fprintf(stderr, "TAC_LABEL" );
@@ -279,6 +285,8 @@ TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 
 TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
+  /////////TA ERRADO ESSE FOR, NAO TA INCREMENTANDO O I EU ACHO
+
   //for (son0 to son1) son2
   HASH_NODE* tempvar = makeTemporary();
   HASH_NODE* begginingLabel = makeLabel();
@@ -319,6 +327,9 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_KWRETURN:
       result = tacJoin(code[0],tacCreate(TAC_RETURN, NULL, code[0]->res, NULL));
+      break;
+    case ASTREE_KWFOR:
+      result = tacMakeFor(node, code[0], code[1], code[2]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);

@@ -15,10 +15,11 @@
 #define TAC_PRINT 9
 #define TAC_ARG 10
 #define TAC_CALL 11
-#define TAC_IFZ 12
-#define TAC_LABEL 13
-#define TAC_JMP 14
-#define TAC_SUB 15
+#define TAC_IFZ 12 //jmp if zero
+#define TAC_IFN 13 //jmp if negative
+#define TAC_LABEL 14
+#define TAC_JMP 15
+#define TAC_SUB 16
 //codigo aqui
 
 typedef struct tac_struct

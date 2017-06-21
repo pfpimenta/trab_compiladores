@@ -1,0 +1,43 @@
+//programa teste para a etapa5
+
+x: long 0;
+i: byte 0;
+v: long[3] 1 2 3;
+f: float 12.12;
+c: byte 'c';
+vchar: byte[2] 'a' 'b';
+vfloat: float[3] 1.23 12.3 123.0;
+
+byte main()
+{
+    for( i = 3 to 10)
+        print "oi";
+    
+    read x;
+    
+    x = inc(x);
+    
+    while(x<10)
+    {
+        print "\ncoisa";
+        x = inc(x);
+    };
+    when (x == 10) then
+        print "x eh 10";
+    
+    when (x < 11) then
+    {
+        print "x eh menor q 11";
+    }
+    else
+    {
+        print "x nao eh menor q 11";
+    };
+    
+    x =  ((x * 2)/2) - 1;
+    
+    
+};
+
+short inc (short xInc)
+    return xInc + 1;
