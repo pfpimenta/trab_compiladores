@@ -317,7 +317,7 @@ TAC* tacMakeFuncCall(ASTREE* node, TAC* code0)
   //code0: expr
   HASH_NODE* tempvar = makeTemporary();
   TAC* tacCall = tacCreate(TAC_CALL, tempvar, node->symbol, 0);
-  tacArgsComplete(code0, node->symbol, 1);
+  //tacArgsComplete(code0, node->symbol, 1);
   //join order: args call
   return tacJoin(code0, tacCall);
 }
@@ -339,7 +339,7 @@ void tacArgsComplete(TAC* tac, HASH_NODE* func, int argIndex)
 TAC* tacMakeArgs(ASTREE* node, TAC* son0)
 {
   //o index e o HASH_NODE func sao completados dps
-  TAC* tacArg = tacCreate(TAC_ARG, 0, node->symbol, 0);
+  TAC* tacArg = tacCreate(TAC_ARG, 0, son0?son0->res:0, 0);
   //join order: expr tacArg
   return tacJoin(son0, tacArg);
 }
@@ -430,6 +430,15 @@ TAC* tacMakeVecRead(ASTREE* node, TAC* code0)
   return tacJoin(code0, tacVecread);
 }
 
+TAC* tacMakeVarDec(node)
+{
+  //if(node->symbol->nature == NATURE_VAR)
+  {
+
+  }
+  //if(node->symbol->nature == NATURE_ARRAY)
+}
+
 TAC* tacGenerate(ASTREE* node){
   int i = 0;
   TAC* code[MAX_SONS];
@@ -442,7 +451,7 @@ TAC* tacGenerate(ASTREE* node){
   {
     code[i] = tacGenerate(node->son[i]);
   }
-  fprintf(stderr, "\nDEBUG SEGMENTATION 1\n" );
+  //fprintf(stderr, "\nDEBUG SEGMENTATION 1\n" );
 
   switch (node->type) {
     case ASTREE_LITREAL:
@@ -483,6 +492,7 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_ARGS:
     case ASTREE_ARGSTAIL:
+      fprintf(stderr, "\nDEBUG\n" );
       result = tacMakeArgs(node, code[0]);
       break;
     case ASTREE_LESSEQUAL:
@@ -504,6 +514,11 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_TKIDARRAY:
       result = tacMakeVecRead(node, code[0]);
       break;
+    case ASTREE_VARDEC:
+      result = tacMakeVarDec();
+      break;
+    case ASTREE_KWPRINT:
+    ////////
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
   }
