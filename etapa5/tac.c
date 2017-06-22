@@ -551,12 +551,15 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_INTLIST:
     case ASTREE_CHARLIST:
     case ASTREE_FLOATLIST:
+      result = tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), code[0]);
+      break;
     case ASTREE_KWCHAR:
     case ASTREE_KWINT:
     case ASTREE_KWREAL:
     case ASTREE_LITREAL:
     case ASTREE_LITCHAR:
     case ASTREE_LITINT:
+    case ASTREE_LITSTRING:
     case ASTREE_TKID:
       result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
       break;

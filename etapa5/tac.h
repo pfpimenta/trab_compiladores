@@ -5,7 +5,7 @@
 #include "astree.h"
 
 #define TAC_SYMBOL 1
-#define TAC_RETURN 2
+#define TAC_RETURN 2 // op1: var a ser retornada
 #define TAC_BEGGINFUN 3
 #define TAC_ENDFUN 4
 #define TAC_VECREAD 5
