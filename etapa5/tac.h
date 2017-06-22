@@ -12,7 +12,7 @@
 #define TAC_VECWRITE 6
 #define TAC_MOV 7 // res := op1
 #define TAC_READ 8
-#define TAC_PRINT 9
+#define TAC_PRINT 9 // res:expr
 #define TAC_ARG 10 // res:var, op1:index, op2:func
 #define TAC_CALL 11 // op1=f, res=res
 #define TAC_IFZ 12 //jmp if zero
@@ -25,6 +25,9 @@
 #define TAC_DIV 19
 #define TAC_INC 20 // res = op1 + 1
 #define TAC_PARAM 21 // res eh a variavel do parametro
+#define TAC_VARDEC 22 // res:var op1:valor
+#define TAC_VECDEC 23 // res:var op1:expr op2:valor
+
 //codigo aqui
 
 typedef struct tac_struct
@@ -61,5 +64,7 @@ TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeVecWrite(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeVecRead(ASTREE* node, TAC* code0);
+TAC* tacMakeVarDec(ASTREE* node, TAC* code0);
+TAC* tacMakePrint(ASTREE* node, TAC* code0);
 TAC* tacGenerate(ASTREE* node);
 #endif
