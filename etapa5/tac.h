@@ -59,5 +59,7 @@ void tacArgsComplete(TAC* tac, HASH_NODE* func, int argIndex);
 TAC* tacMakeArgs(ASTREE* node, TAC* son0);
 TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1);
+TAC* tacMakeVecWrite(ASTREE* node, TAC* code0, TAC* code1);
+TAC* tacMakeVecRead(ASTREE* node, TAC* code0);
 TAC* tacGenerate(ASTREE* node);
 #endif

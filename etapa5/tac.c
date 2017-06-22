@@ -190,6 +190,7 @@ void tacPrintForward(TAC* first)
 
 TAC* tacReverse(TAC* last)
 {// versao nova que cria uma copia das tacs na memoria
+  if(!last) return 0;
   TAC* newTac;
   newTac = tacCreate(last->type, last->res, last->op1, last->op2);
   if(!last->prev)//lista c 1 elemento
@@ -381,7 +382,7 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
       HASH_NODE *end = makeLabel();
       HASH_NODE *aux = makeTemporary();
       TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
-      TAC *jz = tacCreate(TAC_IFZ, tru, check->res, NULL);
+      TAC *jz = tacCreate(TAC_IFZ, tru, check?check->res:0, NULL);
       HASH_NODE *res = makeTemporary();
       TAC *mov0 = tacCreate(TAC_MOV, res, '0', NULL);
       TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
@@ -414,6 +415,21 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
   return exprBool;
 }
 
+TAC* tacMakeVecWrite(ASTREE* node, TAC* code0, TAC* code1)
+{
+  TAC* tacVecwrite = tacCreate(TAC_VECWRITE, node->symbol, code0?code0->res:0, code1?code1->res:0);
+  //join order: code0 code1 vecwrite
+  return tacJoin(code0, tacJoin(code1, tacVecwrite));
+}
+
+TAC* tacMakeVecRead(ASTREE* node, TAC* code0)
+{
+  HASH_NODE* temp = makeTemporary();
+  TAC* tacVecread = tacCreate(TAC_VECREAD, temp, node->symbol, code0?code0->res:0);
+  //join order: code0 vecread
+  return tacJoin(code0, tacVecread);
+}
+
 TAC* tacGenerate(ASTREE* node){
   int i = 0;
   TAC* code[MAX_SONS];
@@ -426,6 +442,8 @@ TAC* tacGenerate(ASTREE* node){
   {
     code[i] = tacGenerate(node->son[i]);
   }
+  fprintf(stderr, "\nDEBUG SEGMENTATION 1\n" );
+
   switch (node->type) {
     case ASTREE_LITREAL:
     case ASTREE_LITCHAR:
@@ -440,7 +458,7 @@ TAC* tacGenerate(ASTREE* node){
       result = tacMakeWhenElse(node, code[0], code[1], code[2]);
       break;
     case ASTREE_KWRETURN:
-      result = tacJoin(code[0],tacCreate(TAC_RETURN, NULL, code[0]->res, NULL));
+      result = tacJoin(code[0],tacCreate(TAC_RETURN, NULL, code[0]?code[0]->res:0, NULL));
       break;
     case ASTREE_KWFOR:
       result = tacMakeFor(node, code[0], code[1], code[2]);
@@ -476,6 +494,12 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_GREATER:
     case ASTREE_LESS:
       result = tacMakeBool(node,code[0],code[1]);
+      break;
+    case ASTREE_ATRIBARRAY:
+      result = tacMakeVecWrite(node, code[0], code[1]);
+      break;
+    case ASTREE_TKIDARRAY:
+      result = tacMakeVecRead(node, code[0]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
