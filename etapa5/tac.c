@@ -495,6 +495,9 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_LESS:
       result = tacMakeBool(node,code[0],code[1]);
       break;
+    case ASTREE_ATRIB:
+      result = tacJoin(code[0], tacCreate(TAC_MOV, node->symbol, code[0]?code[0]->res:0, 0));
+      break;
     case ASTREE_ATRIBARRAY:
       result = tacMakeVecWrite(node, code[0], code[1]);
       break;
