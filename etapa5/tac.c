@@ -304,6 +304,17 @@ TAC* tacMakeFuncDec(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
   return tacJoin(tacBeginFunc, tacJoin(code1, tacJoin(code2, tacEndFunc)));
 }
 
+TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1){
+
+HASH_NODE *beginLabel = makeLabel();
+HASH_NODE *endLabel = makeLabel();
+TAC* tacBeginLabel = tacCreate(TAC_LABEL, beginLabel,0, 0);
+TAC *tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+TAC *j0 = tacCreate(TAC_IFZ, endLabel, code0->res, NULL);
+TAC *j1 = tacCreate(TAC_JMP, beginLabel,0,0);
+return tacJoin(tacBeginLabel,tacJoin(code0,tacJoin(j0,tacJoin(code1,tacJoin(j1,tacEndLabel)))));
+}
+
 TAC* tacGenerate(ASTREE* node){
   int i = 0;
   TAC* code[MAX_SONS];
@@ -334,6 +345,9 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_KWFOR:
       result = tacMakeFor(node, code[0], code[1], code[2]);
+      break;
+    case ASTREE_KWWHILE:
+      result =  tacMakeWhile(node, code[0], code[1]);
       break;
     case ASTREE_ADD:
     case ASTREE_SUB:

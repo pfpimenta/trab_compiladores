@@ -53,4 +53,5 @@ TAC* tacGenerate(ASTREE* node);
 TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeFuncDec(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
+TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1);
 #endif
