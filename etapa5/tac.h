@@ -10,11 +10,11 @@
 #define TAC_ENDFUN 4
 #define TAC_VECREAD 5
 #define TAC_VECWRITE 6
-#define TAC_MOV 7 // res = op1
+#define TAC_MOV 7 // res := op1
 #define TAC_READ 8
 #define TAC_PRINT 9
-#define TAC_ARG 10
-#define TAC_CALL 11 //
+#define TAC_ARG 10 // res:index, op1:var, op2:func
+#define TAC_CALL 11 // op1=f, res=res
 #define TAC_IFZ 12 //jmp if zero
 #define TAC_IFN 13 //jmp if negative
 #define TAC_LABEL 14
@@ -24,6 +24,7 @@
 #define TAC_MUL 18
 #define TAC_DIV 19
 #define TAC_INC 20 // res = op1 + 1
+#define TAC_PARAM 21 // res eh a variavel do parametro
 //codigo aqui
 
 typedef struct tac_struct
@@ -49,8 +50,12 @@ HASH_NODE* makeTemporary();
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 TAC* tacDeclaration(TAC* id, TAC* literal);
-TAC* tacGenerate(ASTREE* node);
 TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeFuncDec(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
+TAC* tacMakeParam(ASTREE* node);
+TAC* tacMakeFuncCall(ASTREE* node, TAC* son0);
+void tacArgsComplete(TAC* tac, HASH_NODE* func, int argIndex);
+TAC* tacMakeArgs(ASTREE* node, TAC* son0);
+TAC* tacGenerate(ASTREE* node);
 #endif

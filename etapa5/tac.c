@@ -120,6 +120,9 @@ void tacPrintType(TAC* tac)
     case TAC_INC:
       fprintf(stderr, "TAC_INC" );
       break;
+    case TAC_PARAM:
+      fprintf(stderr, "TAC_PARAM" );
+      break;
     default:
       fprintf(stderr, "TAC_UNKNOWN: %i", tac->type );
       break;
@@ -230,7 +233,7 @@ HASH_NODE* makeTemporary()
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
 {
   HASH_NODE* label = makeLabel();
-  TAC* tacIfz = tacCreate(TAC_IFZ, label,code0->res, 0);
+  TAC* tacIfz = tacCreate(TAC_IFZ, label,code0?code0->res:0, 0);
   TAC* tacLabel = tacCreate(TAC_LABEL, label,0, 0);
   //join order: code0 tacIfz code1 tacLabel
   return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
@@ -240,7 +243,7 @@ TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
   HASH_NODE* elseLabel = makeLabel();
   HASH_NODE* endLabel = makeLabel();
-  TAC* tacIfz = tacCreate(TAC_IFZ, elseLabel,code0->res, 0);
+  TAC* tacIfz = tacCreate(TAC_IFZ, elseLabel,code0?code0->res:0, 0);
   TAC* tacElseLabel = tacCreate(TAC_LABEL, elseLabel,0, 0);
   TAC* tacJmp = tacCreate(TAC_JMP, endLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
@@ -255,16 +258,16 @@ TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
   HASH_NODE* tempvar = makeTemporary();
   HASH_NODE* begginingLabel = makeLabel();
   HASH_NODE* endLabel = makeLabel();
-  TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0->res, 0);
+  TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0?code0->res:0, 0);
   TAC* tacBegginingLabel = tacCreate(TAC_LABEL, begginingLabel,0, 0);
-  TAC* tacSub = tacCreate(TAC_SUB, tempvar, code1->res, node->symbol);
-  TAC* tacIfz = tacCreate(TAC_IFZ,endLabel,tempvar,0);
+  TAC* tacSub = tacCreate(TAC_SUB, tempvar, code1?code1->res:0, node->symbol);
+  TAC* tacIfn = tacCreate(TAC_IFN,endLabel,tempvar,0);
   TAC* tacInc = tacCreate(TAC_INC,node->symbol, node->symbol, 0);
   TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-  // join order: code0 code1 mov begginingLabel sub ifz code2 inc jmp endLabel
+  // join order: code0 code1 mov begginingLabel sub ifn code2 inc jmp endLabel
   return tacJoin(code0, tacJoin(code1, tacJoin(tacMov, tacJoin(tacBegginingLabel,
-            tacJoin(tacSub, tacJoin(tacIfz, tacJoin(code2,
+            tacJoin(tacSub, tacJoin(tacIfn, tacJoin(code2,
             tacJoin(tacInc, tacJoin(tacJmp, tacEndLabel)))))))));
 }
 
@@ -288,20 +291,56 @@ TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1)
   }
 
   HASH_NODE* temp = makeTemporary();
-  TAC* tac = tacCreate(type,temp,code0->res,code1->res);
+  TAC* tac = tacCreate(type,temp,code0?code0->res:0,code1?code1->res:0);
   return tacJoin(tacJoin(code0,code1),tac);
 }
 
 TAC* tacMakeFuncDec(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
-  // MISTERIO
-  TAC* tacBeginFunc = tacCreate(TAC_BEGGINFUN, node->symbol, 0, 0); // MISTERIO
-  TAC* tacEndFunc = tacCreate(TAC_ENDFUN, node->symbol, 0, 0); // MISTERIO
-  // MISTERIO
+  TAC* tacBeginFunc = tacCreate(TAC_BEGGINFUN, node->symbol, 0, 0);
+  TAC* tacEndFunc = tacCreate(TAC_ENDFUN, node->symbol, 0, 0);
 
   //code0: vartype
   //join order:  beginFunc code1 code2 endFunc
   return tacJoin(tacBeginFunc, tacJoin(code1, tacJoin(code2, tacEndFunc)));
+}
+
+TAC* tacMakeParam(ASTREE* node)
+{
+  TAC* tacParam = tacCreate(TAC_PARAM, node->symbol, 0, 0);
+  return tacParam;
+}
+
+TAC* tacMakeFuncCall(ASTREE* node, TAC* code0)
+{
+  //code0: expr
+  HASH_NODE* tempvar = makeTemporary();
+  TAC* tacCall = tacCreate(TAC_CALL, tempvar, node->symbol, 0);
+  tacArgsComplete(code0, node->symbol, 1);
+  //join order: args call
+  return tacJoin(code0, tacCall);
+}
+
+
+void tacArgsComplete(TAC* tac, HASH_NODE* func, int argIndex)
+{
+  if(!tac) return;
+  if(tac->type == TAC_ARG  && tac->res==0 && tac->op2==0)
+  {
+    tac->res = (HASH_NODE*)argIndex;
+    argIndex = argIndex + 1;
+    tac->op2 = func;
+  }
+  tacArgsComplete(tac->prev, func, argIndex);
+  return;
+}
+
+TAC* tacMakeArgs(ASTREE* node, TAC* son0)
+{
+  //o index e o HASH_NODE func sao completados dps
+  TAC* tacArg = tacCreate(TAC_ARG, 0, node->symbol, 0);
+  //join order: expr tacArg
+  return tacJoin(son0, tacArg);
 }
 
 TAC* tacGenerate(ASTREE* node){
@@ -343,6 +382,16 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_FUNCDEC:
       result = tacMakeFuncDec(node, code[0], code[1], code[2]);
+      break;
+    case ASTREE_PARAM:
+      result = tacMakeParam(node);
+      break;
+    case ASTREE_TKIDFUNC:
+      result = tacMakeFuncCall(node, code[0]);
+      break;
+    case ASTREE_ARGS:
+    case ASTREE_ARGSTAIL:
+      result = tacMakeArgs(node, code[0]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
