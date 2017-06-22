@@ -129,6 +129,30 @@ void tacPrintType(TAC* tac)
     case TAC_VECDEC:
       fprintf(stderr, "TAC_VECDEC" );
       break;
+    case TAC_OR:
+      fprintf(stderr, "TAC_OR" );
+      break;
+    case TAC_AND:
+      fprintf(stderr, "TAC_AND" );
+      break;
+    case TAC_EQUAL:
+      fprintf(stderr, "TAC_EQUAL" );
+      break;
+    case TAC_NOTEQUAL:
+      fprintf(stderr, "TAC_NOTEQUAL" );
+      break;
+    case TAC_LESSEQUAL:
+      fprintf(stderr, "TAC_LESSEQUAL" );
+      break;
+    case TAC_GREATEREQUAL:
+      fprintf(stderr, "TAC_GREATEREQUAL" );
+      break;
+    case TAC_LESS:
+      fprintf(stderr, "TAC_LESS" );
+      break;
+    case TAC_GREATER:
+      fprintf(stderr, "TAC_GREATER" );
+      break;
     default:
       fprintf(stderr, "TAC_UNKNOWN: %i", tac->type );
       break;
@@ -278,7 +302,7 @@ TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
             tacJoin(tacInc, tacJoin(tacJmp, tacEndLabel)))))))));
 }
 
-TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1)
+TAC* tacOp(ASTREE* node, TAC* code0, TAC* code1)
 {
   int type;
 
@@ -294,6 +318,30 @@ TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1)
       break;
     case ASTREE_DIV:
       type = TAC_DIV;
+      break;
+    case ASTREE_OR:
+      type = TAC_OR;
+      break;
+    case ASTREE_AND:
+      type = TAC_AND;
+      break;
+    case ASTREE_EQUAL:
+      type = TAC_EQUAL;
+      break;
+    case ASTREE_NOTEQUAL:
+      type = TAC_NOTEQUAL;
+      break;
+    case ASTREE_LESSEQUAL:
+      type = TAC_LESSEQUAL;
+      break;
+    case ASTREE_GREATEREQUAL:
+      type = TAC_GREATEREQUAL;
+      break;
+    case ASTREE_LESS:
+      type = TAC_LESS;
+      break;
+    case ASTREE_GREATER:
+      type = TAC_GREATER;
       break;
   }
 
@@ -369,7 +417,7 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
     case ASTREE_OR:
     {
       HASH_NODE *temp = makeTemporary();
-      TAC *result = tacCreate(TAC_ADD, temp, code0?code0->res:0, code1?code1->res:0);
+      TAC *result = tacCreate(TAC_OR, temp, code0?code0->res:0, code1?code1->res:0);
       exprBool = tacJoin(tacJoin(code0,code1),result);
     }
       break;
@@ -377,25 +425,16 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
     case ASTREE_AND:
     {
       HASH_NODE *temp = makeTemporary();
-      TAC *result = tacCreate(TAC_MUL, temp, code0?code0->res:0, code1?code1->res:0);
+      TAC *result = tacCreate(TAC_AND, temp, code0?code0->res:0, code1?code1->res:0);
       exprBool = tacJoin(tacJoin(code0,code1),result);
     }
       break;
 
     case ASTREE_EQUAL:
     {
-      HASH_NODE *tru = makeLabel();
-      HASH_NODE *end = makeLabel();
-      HASH_NODE *aux = makeTemporary();
-      TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
-      TAC *jz = tacCreate(TAC_IFZ, tru, check?check->res:0, NULL);
-      HASH_NODE *res = makeTemporary();
-      TAC *mov0 = tacCreate(TAC_MOV, res, NULL, NULL);
-      TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
-      TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
-      TAC *mov1 = tacCreate(TAC_MOV, res, NULL, NULL);
-      TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
-      exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jz),mov0),jmp),ltru),mov1),lend);
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_EQUAL, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
     }
       break;
 
@@ -540,7 +579,15 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_SUB:
     case ASTREE_MULT:
     case ASTREE_DIV:
-      result = tacAritExpr(node, code[0], code[1]);
+    case ASTREE_LESSEQUAL:
+    case ASTREE_EQUAL:
+    case ASTREE_GREATEREQUAL:
+    case ASTREE_OR:
+    case ASTREE_AND:
+    case ASTREE_NOTEQUAL:
+    case ASTREE_GREATER:
+    case ASTREE_LESS:
+      result = tacOp(node, code[0], code[1]);
       break;
     case ASTREE_FUNCDEC:
       result = tacMakeFuncDec(node, code[0], code[1], code[2]);
@@ -555,16 +602,6 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_ARGSTAIL:
       //fprintf(stderr, "\nDEBUG\n" );
       result = tacMakeArgs(node, code[0]);
-      break;
-    case ASTREE_LESSEQUAL:
-    case ASTREE_EQUAL:
-    case ASTREE_GREATEREQUAL:
-    case ASTREE_OR:
-    case ASTREE_AND:
-    case ASTREE_NOTEQUAL:
-    case ASTREE_GREATER:
-    case ASTREE_LESS:
-      result = tacMakeBool(node,code[0],code[1]);
       break;
     case ASTREE_ATRIB:
       result = tacJoin(code[0], tacCreate(TAC_MOV, node->symbol, code[0]?code[0]->res:0, 0));

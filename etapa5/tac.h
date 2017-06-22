@@ -27,6 +27,14 @@
 #define TAC_PARAM 21 // res eh a variavel do parametro
 #define TAC_VARDEC 22 // res:var op1:valor
 #define TAC_VECDEC 23 // res:var op1:expr op2:valor
+#define TAC_OR 24
+#define TAC_EQUAL 25
+#define TAC_NOTEQUAL 26
+#define TAC_LESSEQUAL 27
+#define TAC_GREATEREQUAL 28
+#define TAC_LESS 29
+#define TAC_GREATER 30
+#define TAC_AND 31
 
 //codigo aqui
 
@@ -54,14 +62,13 @@ TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 TAC* tacDeclaration(TAC* id, TAC* literal);
 TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
-TAC* tacAritExpr(ASTREE* node, TAC* code0, TAC* code1);
+TAC* tacOp(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeFuncDec(ASTREE* node, TAC* code0, TAC* code1, TAC* code2);
 TAC* tacMakeParam(ASTREE* node);
 TAC* tacMakeFuncCall(ASTREE* node, TAC* son0);
 void tacArgsComplete(TAC* tac, HASH_NODE* func, int argIndex);
 TAC* tacMakeArgs(ASTREE* node, TAC* son0);
 TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1);
-TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeVecWrite(ASTREE* node, TAC* code0, TAC* code1);
 TAC* tacMakeVecRead(ASTREE* node, TAC* code0);
 TAC* tacMakeVarDec(ASTREE* node, TAC* code0);
