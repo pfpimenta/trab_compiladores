@@ -11,7 +11,7 @@
 #define TAC_VECREAD 5
 #define TAC_VECWRITE 6
 #define TAC_MOV 7 // res := op1
-#define TAC_READ 8
+#define TAC_READ 8 // res: var de input
 #define TAC_PRINT 9 // res:expr
 #define TAC_ARG 10 // res:var, op1:index, op2:func
 #define TAC_CALL 11 // op1=f, res=res

@@ -390,10 +390,10 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
       TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
       TAC *jz = tacCreate(TAC_IFZ, tru, check?check->res:0, NULL);
       HASH_NODE *res = makeTemporary();
-      TAC *mov0 = tacCreate(TAC_MOV, res, '0', NULL);
+      TAC *mov0 = tacCreate(TAC_MOV, res, NULL, NULL);
       TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
       TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
-      TAC *mov1 = tacCreate(TAC_MOV, res, '1', NULL);
+      TAC *mov1 = tacCreate(TAC_MOV, res, NULL, NULL);
       TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
       exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jz),mov0),jmp),ltru),mov1),lend);
     }
@@ -410,11 +410,44 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
 
     case ASTREE_LESSEQUAL:
     {
+      HASH_NODE *tru = makeLabel();
+      HASH_NODE *end = makeLabel();
+      HASH_NODE *aux = makeTemporary();
+      TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
+      TAC *jn = tacCreate(TAC_IFN, tru, check?check->res:0, NULL);
+      HASH_NODE *res = makeTemporary();
+      TAC *mov0 = tacCreate(TAC_MOV, res, NULL, NULL);
+      TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
+      TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
+      TAC *mov1 = tacCreate(TAC_MOV, res, NULL, NULL);
+      TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
+      exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jn),mov1),jmp),ltru),mov0),lend);
+    }
+      break;
+
+    case ASTREE_GREATEREQUAL:
+    {
+      HASH_NODE *tru = makeLabel();
+      HASH_NODE *end = makeLabel();
+      HASH_NODE *aux = makeTemporary();
+      TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
+      TAC *jn = tacCreate(TAC_IFN, tru, check?check->res:0, NULL);
+      HASH_NODE *res = makeTemporary();
+      TAC *mov0 = tacCreate(TAC_MOV, res, NULL, NULL);
+      TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
+      TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
+      TAC *mov1 = tacCreate(TAC_MOV, res, NULL, NULL);
+      TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
+      exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jn),mov0),jmp),ltru),mov1),lend);
+    }
+
+    case ASTREE_LESS:
+    case ASTREE_GREATER:
+    {
       HASH_NODE *temp = makeTemporary();
       TAC *result = tacCreate(TAC_SUB, temp, code0?code0->res:0, code1?code1->res:0);
       exprBool = tacJoin(tacJoin(code0,code1),result);
     }
-      break;
 
   }
 
@@ -453,6 +486,12 @@ TAC* tacMakePrint(ASTREE* node, TAC* code0)
 {
   TAC* tacPrint = tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0);
   return tacJoin(code0, tacPrint);
+}
+
+TAC* tacMakeRead(ASTREE* node)
+{
+  TAC* tacRead = tacCreate(TAC_READ, node->symbol, 0, 0);
+  return tacRead;
 }
 
 TAC* tacGenerate(ASTREE* node){
@@ -517,16 +556,16 @@ TAC* tacGenerate(ASTREE* node){
       //fprintf(stderr, "\nDEBUG\n" );
       result = tacMakeArgs(node, code[0]);
       break;
-    //case ASTREE_LESSEQUAL:
-    //case ASTREE_EQUAL:
-    //case ASTREE_GREATEREQUAL:
-    //case ASTREE_OR:
-    //case ASTREE_AND:
-    //case ASTREE_NOTEQUAL:
-    //case ASTREE_GREATER:
-    //case ASTREE_LESS:
-      //result = tacMakeBool(node,code[0],code[1]);
-      //break;
+    case ASTREE_LESSEQUAL:
+    case ASTREE_EQUAL:
+    case ASTREE_GREATEREQUAL:
+    case ASTREE_OR:
+    case ASTREE_AND:
+    case ASTREE_NOTEQUAL:
+    case ASTREE_GREATER:
+    case ASTREE_LESS:
+      result = tacMakeBool(node,code[0],code[1]);
+      break;
     case ASTREE_ATRIB:
       result = tacJoin(code[0], tacCreate(TAC_MOV, node->symbol, code[0]?code[0]->res:0, 0));
       break;
@@ -541,6 +580,9 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_KWPRINT:
       result = tacMakePrint(node, code[0]);
+      break;
+    case ASTREE_KWREAD:
+      result = tacMakeRead(node);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
