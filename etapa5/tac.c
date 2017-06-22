@@ -343,6 +343,77 @@ TAC* tacMakeArgs(ASTREE* node, TAC* son0)
   return tacJoin(son0, tacArg);
 }
 
+TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1)
+{
+  HASH_NODE *beginLabel = makeLabel();
+  HASH_NODE *endLabel = makeLabel();
+  TAC* tacBeginLabel = tacCreate(TAC_LABEL, beginLabel,0, 0);
+  TAC *tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+  TAC *j0 = tacCreate(TAC_IFZ, endLabel, code0?code0->res:0, NULL);
+  TAC *j1 = tacCreate(TAC_JMP, beginLabel,0,0);
+  return tacJoin(tacBeginLabel,tacJoin(code0,tacJoin(j0,tacJoin(code1,tacJoin(j1,tacEndLabel)))));
+}
+
+TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
+{
+  TAC* exprBool;
+
+  switch (node->type){
+    case ASTREE_OR:
+    {
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_ADD, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
+    }
+      break;
+
+    case ASTREE_AND:
+    {
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_MUL, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
+    }
+      break;
+
+    case ASTREE_EQUAL:
+    {
+      HASH_NODE *tru = makeLabel();
+      HASH_NODE *end = makeLabel();
+      HASH_NODE *aux = makeTemporary();
+      TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
+      TAC *jz = tacCreate(TAC_IFZ, tru, check->res, NULL);
+      HASH_NODE *res = makeTemporary();
+      TAC *mov0 = tacCreate(TAC_MOV, res, '0', NULL);
+      TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
+      TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
+      TAC *mov1 = tacCreate(TAC_MOV, res, '1', NULL);
+      TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
+      exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jz),mov0),jmp),ltru),mov1),lend);
+    }
+      break;
+
+    case ASTREE_NOTEQUAL:
+    {
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_SUB, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
+    }
+      break;
+
+
+    case ASTREE_LESSEQUAL:
+    {
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_SUB, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
+    }
+      break;
+
+  }
+
+  return exprBool;
+}
+
 TAC* tacGenerate(ASTREE* node){
   int i = 0;
   TAC* code[MAX_SONS];
@@ -374,6 +445,9 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_KWFOR:
       result = tacMakeFor(node, code[0], code[1], code[2]);
       break;
+    case ASTREE_KWWHILE:
+      result =  tacMakeWhile(node, code[0], code[1]);
+      break;
     case ASTREE_ADD:
     case ASTREE_SUB:
     case ASTREE_MULT:
@@ -392,6 +466,16 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_ARGS:
     case ASTREE_ARGSTAIL:
       result = tacMakeArgs(node, code[0]);
+      break;
+    case ASTREE_LESSEQUAL:
+    case ASTREE_EQUAL:
+    case ASTREE_GREATEREQUAL:
+    case ASTREE_OR:
+    case ASTREE_AND:
+    case ASTREE_NOTEQUAL:
+    case ASTREE_GREATER:
+    case ASTREE_LESS:
+      result = tacMakeBool(node,code[0],code[1]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);
