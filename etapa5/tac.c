@@ -61,7 +61,7 @@ void tacPrintType(TAC* tac)
 {
   switch (tac->type) {
     case TAC_SYMBOL:
-      fprintf(stderr, "TAC_SYMBOL" );
+      //fprintf(stderr, "TAC_SYMBOL" ); //ignora
       break;
     case TAC_RETURN:
       fprintf(stderr, "TAC_RETURN" );
@@ -121,7 +121,7 @@ void tacPrintType(TAC* tac)
       fprintf(stderr, "TAC_INC" );
       break;
     case TAC_PARAM:
-      fprintf(stderr, "TAC_PARAM" );
+      //fprintf(stderr, "TAC_PARAM" ); //ignora
       break;
     case TAC_VARDEC:
       fprintf(stderr, "TAC_VARDEC" );
@@ -165,27 +165,29 @@ void tacPrintBack(TAC* last)
   fprintf(stderr, "\n   tacPrintBack\n" );
   for (tac = last; tac; tac=tac->prev)
   {
-    fprintf(stderr, "TAC(" );
-    tacPrintType(tac);
-    if(tac->res)
-    {
-      fprintf(stderr,",%s", tac->res->text);
-    }else{
-      fprintf(stderr, ", ");
+    if (!(tac->type == TAC_SYMBOL || tac->type == TAC_PARAM)){
+      fprintf(stderr, "TAC(" );
+      tacPrintType(tac);
+      if(tac->res)
+      {
+        fprintf(stderr,",%s", tac->res->text);
+      }else{
+        fprintf(stderr, ", ");
+      }
+      if(tac->op1)
+      {
+        fprintf(stderr,",%s", tac->op1->text);
+      }else{
+        fprintf(stderr, ", ");
+      }
+      if(tac->op2)
+      {
+        fprintf(stderr,",%s", tac->op2->text);
+      }else{
+        fprintf(stderr, ", ");
+      }
+      fprintf(stderr, ")\n" );
     }
-    if(tac->op1)
-    {
-      fprintf(stderr,",%s", tac->op1->text);
-    }else{
-      fprintf(stderr, ", ");
-    }
-    if(tac->op2)
-    {
-      fprintf(stderr,",%s", tac->op2->text);
-    }else{
-      fprintf(stderr, ", ");
-    }
-    fprintf(stderr, ")\n" );
   }
 }
 void tacPrintForward(TAC* first)
@@ -194,27 +196,29 @@ void tacPrintForward(TAC* first)
   fprintf(stderr, "\n   tacPrintForward\n" );
   for (tac = first; tac; tac=tac->next)
   {
-    fprintf(stderr, "TAC(" );
-    tacPrintType(tac);
-    if(tac->res)
-    {
-      fprintf(stderr,",%s", tac->res->text);
-    }else{
-      fprintf(stderr, ", ");
+    if (tac->type == TAC_SYMBOL || tac->type == TAC_PARAM){
+      fprintf(stderr, "TAC(" );
+      tacPrintType(tac);
+      if(tac->res)
+      {
+        fprintf(stderr,",%s", tac->res->text);
+      }else{
+        fprintf(stderr, ", ");
+      }
+      if(tac->op1)
+      {
+        fprintf(stderr,",%s", tac->op1->text);
+      }else{
+        fprintf(stderr, ", ");
+      }
+      if(tac->op2)
+      {
+        fprintf(stderr,",%s", tac->op2->text);
+      }else{
+        fprintf(stderr, ", ");
+      }
+      fprintf(stderr, ")\n" );
     }
-    if(tac->op1)
-    {
-      fprintf(stderr,",%s", tac->op1->text);
-    }else{
-      fprintf(stderr, ", ");
-    }
-    if(tac->op2)
-    {
-      fprintf(stderr,",%s", tac->op2->text);
-    }else{
-      fprintf(stderr, ", ");
-    }
-    fprintf(stderr, ")\n" );
   }
 }
 
@@ -604,7 +608,7 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_ARGS:
     case ASTREE_ARGSTAIL:
       //fprintf(stderr, "\nDEBUG\n" );
-      result = tacMakeArgs(node, code[0]);
+      result = tacJoin(tacMakeArgs(node, code[0]), code[1]);
       break;
     case ASTREE_ATRIB:
       result = tacJoin(code[0], tacCreate(TAC_MOV, node->symbol, code[0]?code[0]->res:0, 0));
