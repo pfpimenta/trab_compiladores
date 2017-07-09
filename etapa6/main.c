@@ -3,6 +3,7 @@
 #include "hash.h"
 #include "astree.h"
 #include "semantic.h"
+#include "asm.h"
 #include "tac.h"
 #include "y.tab.h"
 
@@ -63,6 +64,10 @@ int main(int argc, char** argv)
 	tacPrintBack(tacReverse(tac));
 	//fprintf(stderr, "\ndebug1i1i1\n");
 	//tacPrintForward(tacGetFirst(tacReverse(tac)));
+
+	char* asmString = generateAsm(tac);
+
+	writeToFile("teste.s",asmString);
 
   //se chegou ate aqui, o programa de input esta correto
   fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
