@@ -6,4 +6,9 @@ char* generateAsm (TAC* tac)
   // e gera uma string
   // que eh o programa em assembly
   return "teste\n\n";
+  switch (tac->type) {
+    case TAC_ADD:
+      // sei la 
+      break;
+    }
 }
