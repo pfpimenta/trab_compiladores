@@ -1,11 +1,16 @@
 #include "asm.h"
 
+
 char* generateAsm (TAC* tac)
 {
   //recebe uma corrente de TACs
   // e gera uma string
   // que eh o programa em assembly
-  return "teste\n\n";
+  char* asmString[200];
+
+  strcpy(asmString, "	.file	\"testProgram.c\"\n");
+
+
   switch (tac->type) {
     case TAC_SYMBOL:
       //ignora
@@ -41,5 +46,14 @@ char* generateAsm (TAC* tac)
     case TAC_GREATER:
     case TAC_AND:
       break;
+    default:
+      fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );
+      break;
     }
+
+
+    strcat(asmString,"	.ident	\"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\"\n" );
+    strcat(asmString,"	.section	.note.GNU-stack,\"\",@progbits\n");
+
+    return asmString;
 }

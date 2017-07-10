@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
 	char* asmString = generateAsm(tac);
 
-	writeToFile("teste.s",asmString);
+	writeToFile("testProgram.s",asmString);
 
   //se chegou ate aqui, o programa de input esta correto
   fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
