@@ -3,14 +3,19 @@
 void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString0, "\n## TAC_VARDEC\n");
-  if(tac->op1->type == SYMBOL_LIT_CHAR)
+  if(tac->op1->type == SYMBOL_LIT_REAL)
   {
-    char* charValue;
-    sprintf(charValue , "%d", tac->op1->text[1]);
-    sprintf(tempString, " .globl	%s\n .type	%s, @object\n .size	%s, 1\n%s:\n .byte	%s\n",  tac->res->text,tac->res->text,tac->res->text,tac->res->text, charValue);
-
+    sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\n%s:\n	.long	111\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text);
   }else{
-    sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\n%s:\n	.long	%s\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text, tac->op1->text);
+    if(tac->op1->type == SYMBOL_LIT_CHAR)
+    {
+      char* charValue[40];
+      sprintf(charValue , "%d", tac->op1->text[1]);
+      sprintf(tempString, " .globl	%s\n .type	%s, @object\n .size	%s, 1\n%s:\n  .byte	%s\n",  tac->res->text,tac->res->text,tac->res->text,tac->res->text, charValue);
+
+    }else{
+      sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\n%s:\n	.long	%s\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text, tac->op1->text);
+    }
   }
   strcat(asmString0, tempString);
 }
