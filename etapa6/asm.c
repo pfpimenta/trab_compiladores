@@ -1,5 +1,19 @@
 #include "asm.h"
 
+void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString0, "\n## TAC_VARDEC\n");
+  if(tac->op1->type == SYMBOL_LIT_CHAR)
+  {
+    char* charValue;
+    sprintf(charValue , "%d", tac->op1->text[1]);
+    sprintf(tempString, " .globl	%s\n .type	%s, @object\n .size	%s, 1\n%s:\n .byte	%s\n",  tac->res->text,tac->res->text,tac->res->text,tac->res->text, charValue);
+
+  }else{
+    sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\n%s:\n	.long	%s\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text, tac->op1->text);
+  }
+  strcat(asmString0, tempString);
+}
 
 char* generateAsm (TAC* first)
 {
@@ -21,9 +35,7 @@ char* generateAsm (TAC* first)
         //ignora
         break;
       case TAC_VARDEC:
-        strcat(asmString0, "\n## TAC_VARDEC\n");
-        sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\na:\n	.long	2\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text);
-        strcat(asmString0, tempString);
+        asmVardec(tac, asmString0, asmString1, tempString);
         break;
       case TAC_VECDEC:
       case TAC_RETURN:
@@ -33,11 +45,15 @@ char* generateAsm (TAC* first)
       case TAC_VECWRITE:
       case TAC_MOV:
       case TAC_READ:
+          strcat(asmString0, "\n## TAC_READ\n");
+          break;
       case TAC_PRINT:
           strcat(asmString0, "\n## TAC_PRINT\n");
           break;
       case TAC_ARG:
       case TAC_CALL:
+          strcat(asmString0, "\n## TAC_CALL\n");
+          break;
       case TAC_IFZ:
       case TAC_IFN:
       case TAC_LABEL:
