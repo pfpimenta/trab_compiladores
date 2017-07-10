@@ -1,5 +1,7 @@
 #include "asm.h"
 
+int printNumber = 0;
+
 void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   int vectorSize;
@@ -85,6 +87,16 @@ void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
+void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_PRINT\n");
+  sprintf(tempString,".LC%d:\n	.string	%s",printNumber,tac->res->text);
+  strcat(asmString0, tempString);
+  sprintf(tempString,"	movl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n",printNumber);
+  strcat(asmString1, tempString);
+  printNumber++;
+}
+
 char* generateAsm (TAC* first)
 {
   //recebe uma corrente de TACs
@@ -118,16 +130,18 @@ char* generateAsm (TAC* first)
         break;
       case TAC_ENDFUN:
         strcat(asmString1, "\n## TAC_ENDFUN\n");
-        strcat(asmString1,"	popq	%%rbp\n	ret\n");
+        strcat(asmString1,"	popq	%rbp\n	ret\n	leave\n");
         break;
       case TAC_VECREAD:
       case TAC_VECWRITE:
       case TAC_MOV:
       case TAC_READ:
           strcat(asmString0, "\n## TAC_READ\n");
+
           break;
       case TAC_PRINT:
           strcat(asmString0, "\n## TAC_PRINT\n");
+          asmPrint(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ARG:
       case TAC_CALL:
