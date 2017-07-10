@@ -6,6 +6,8 @@
 
 #define ASM_STRING_SIZE 2000
 
+void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString);
+void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString);
 char* generateAsm (TAC* last);
 
 #endif

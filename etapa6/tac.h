@@ -26,7 +26,7 @@
 #define TAC_INC 20 // res = op1 + 1
 #define TAC_PARAM 21 // res eh a variavel do parametro
 #define TAC_VARDEC 22 // res:var op1:valor
-#define TAC_VECDEC 23 // res:var op1:expr op2:valor
+#define TAC_VECDEC 23 // res:var op1: sei la op2:tamanho do vetor
 #define TAC_OR 24
 #define TAC_EQUAL 25
 #define TAC_NOTEQUAL 26

@@ -58,9 +58,9 @@ int main(int argc, char** argv)
 	}
 
 	tac = tacGenerate(root);
-	//tacPrintBack(tacReverse(tac));
+	tacPrintBack(tacReverse(tac)); //print da etapa 5
 
-	char* asmString = generateAsm(tacGetFirst(tac));
+	char* asmString = generateAsm(tacGetFirst(tac)); //etapa6
 
 	writeToFile("testProgram.s",asmString);
 

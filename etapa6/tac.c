@@ -61,7 +61,7 @@ void tacPrintType(TAC* tac)
 {
   switch (tac->type) {
     case TAC_SYMBOL:
-      //fprintf(stderr, "TAC_SYMBOL" ); //ignora
+      fprintf(stderr, "TAC_SYMBOL" ); //ignora pra q?
       break;
     case TAC_RETURN:
       fprintf(stderr, "TAC_RETURN" );
@@ -165,7 +165,8 @@ void tacPrintBack(TAC* last)
   fprintf(stderr, "\n   tacPrintBack\n" );
   for (tac = last; tac; tac=tac->prev)
   {
-    if (!(tac->type == TAC_SYMBOL || tac->type == TAC_PARAM)){
+    //if (!(tac->type == TAC_SYMBOL || tac->type == TAC_PARAM)){
+    if (1){//debug
       fprintf(stderr, "TAC(" );
       tacPrintType(tac);
       if(tac->res)
@@ -520,8 +521,7 @@ TAC* tacMakeVarDec(ASTREE* node, TAC* code0)
   }
   if(node->symbol->nature == NATURE_ARRAY)
   {
-    //???????
-    return tacJoin(code0, tacCreate(TAC_VECDEC, node->symbol, code0?code0->res:0, 0));
+    return tacJoin(code0, tacCreate(TAC_VECDEC, node->symbol, code0?code0->res:0, node->son[0]->symbol));
   }
 }
 
