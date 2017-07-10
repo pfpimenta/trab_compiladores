@@ -6,20 +6,24 @@ char* generateAsm (TAC* first)
   //recebe uma corrente de TACs
   // e gera uma string
   // que eh o programa em assembly
-  char* asmString0[ASM_STRING_SIZE];
+  char* asmString0[ASM_STRING_SIZE]; //declaracoes assembly
   char* asmString1[ASM_STRING_SIZE];
+  char* tempString[ASM_STRING_SIZE];
 
-  strcpy(asmString0, "	.file	\"testProgram.c\"\n");
+  strcat(asmString0, "	.file	\"testProgram.c\"\n");
 
   TAC* tac;
   for (tac = first; tac; tac= tac->next)
   {
+    fprintf(stderr, "debug %i\n", tac->type );
     switch (tac->type) {
       case TAC_SYMBOL:
         //ignora
         break;
       case TAC_VARDEC:
-        strcpy(asmString0, "\n## TAC_VARDEC");
+        strcat(asmString0, "\n## TAC_VARDEC\n");
+        sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\na:\n	.long	2\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text);
+        strcat(asmString0, tempString);
         break;
       case TAC_VECDEC:
       case TAC_RETURN:
@@ -30,8 +34,8 @@ char* generateAsm (TAC* first)
       case TAC_MOV:
       case TAC_READ:
       case TAC_PRINT:
-          strcpy(asmString0, "\n## TAC_VARDEC");
-
+          strcat(asmString0, "\n## TAC_PRINT\n");
+          break;
       case TAC_ARG:
       case TAC_CALL:
       case TAC_IFZ:

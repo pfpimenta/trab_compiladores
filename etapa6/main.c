@@ -61,11 +61,11 @@ int main(int argc, char** argv)
 	//tacPrintBack(tac);
 	//fprintf(stderr, "\ndebug1\n");
 
-	tacPrintBack(tacReverse(tac));
+	//tacPrintBack(tacReverse(tac));
 	//fprintf(stderr, "\ndebug1i1i1\n");
 	//tacPrintForward(tacGetFirst(tacReverse(tac)));
 
-	char* asmString = generateAsm(tac);
+	char* asmString = generateAsm(tacGetFirst(tac));
 
 	writeToFile("testProgram.s",asmString);
 

@@ -6,6 +6,6 @@
 
 #define ASM_STRING_SIZE 2000
 
-char* generateAsm (TAC* first);
+char* generateAsm (TAC* last);
 
 #endif
