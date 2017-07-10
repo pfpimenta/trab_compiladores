@@ -62,6 +62,29 @@ void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString0, tempString);
 }
 
+void asmBeginFun(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_BEGGINFUN\n");
+  sprintf(tempString,"	.globl	%s\n	.type	%s, @function\n%s:\n	pushq	%%rbp\n	movq	%%rsp, %%rbp\n",tac->res->text,tac->res->text,tac->res->text);
+  strcat(asmString1, tempString);
+}
+
+void endFun(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_BEGGINFUN\n");
+  sprintf(tempString,"	popq	%%rbp\n	ret\n");
+  strcat(asmString1, tempString);
+}
+
+void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  char* charValue[40];
+  strcat(asmString1, "\n## TAC_RETURN\n");
+  sprintf(charValue , "%d", tac->op1->text);
+  sprintf(tempString, "	movl	$%s, %%eax",charValue);
+  strcat(asmString1, tempString);
+}
+
 char* generateAsm (TAC* first)
 {
   //recebe uma corrente de TACs
@@ -88,8 +111,15 @@ char* generateAsm (TAC* first)
         asmVecdec(tac, asmString0, asmString1, tempString);
         break;
       case TAC_RETURN:
+        asmReturn(tac, asmString0, asmString1, tempString);
+        break;
       case TAC_BEGGINFUN:
+        asmBeginFun(tac, asmString0, asmString1, tempString);
+        break;
       case TAC_ENDFUN:
+        strcat(asmString1, "\n## TAC_ENDFUN\n");
+        strcat(asmString1,"	popq	%%rbp\n	ret\n");
+        break;
       case TAC_VECREAD:
       case TAC_VECWRITE:
       case TAC_MOV:
