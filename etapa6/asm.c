@@ -13,7 +13,7 @@ void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString0, "\n## TAC_VECDEC\n");
   if(! tac->op1) //se nao for inicializado
   {
-    sprintf(tempString, " .comm %s, %i, 32\n", tac->res->text, 4*vectorSize);
+    sprintf(tempString, "	.comm %s, %i, 32\n", tac->res->text, 4*vectorSize);
   }else{
     sprintf(tempString, "");
     for(tacTemp = tac->prev; tacTemp->prev->type == TAC_SYMBOL; tacTemp = tacTemp->prev)
@@ -22,7 +22,7 @@ void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
     {
       if(tacTemp->res->type == SYMBOL_LIT_REAL)
       {
-        strcat(tempString, " .long ");
+        strcat(tempString, "	.long ");
         strcat(tempString, "111111" );
         strcat(tempString, "\n");
       }else{
@@ -30,11 +30,11 @@ void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
         {
           char* charValue[40];
           sprintf(charValue , "%d", tacTemp->res->text[1]);
-          strcat(tempString, " .byte ");
+          strcat(tempString, "	.byte ");
           strcat(tempString, charValue);
           strcat(tempString, "\n");
         }else{
-          strcat(tempString, " .long ");
+          strcat(tempString, "	.long ");
           strcat(tempString, tacTemp->res->text );
           strcat(tempString, "\n");
         }
@@ -71,13 +71,6 @@ void asmBeginFun(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
-void endFun(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_BEGGINFUN\n");
-  sprintf(tempString,"	popq	%%rbp\n	ret\n");
-  strcat(asmString1, tempString);
-}
-
 void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   char* charValue[40];
@@ -96,6 +89,35 @@ void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
   printNumber++;
 }
+
+void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_ADD\n");
+  if(tac->op1 && tac->op2 && tac->res){
+    sprintf(tempString, "	movl	%s(%%rip), %%edx\n", tac->op1->text);
+    strcat(asmString1, tempString);
+    sprintf(tempString, "	movl	%s(%%rip), %%eax\n	addl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    strcat(asmString1, tempString);
+  }else{
+    fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
+  }
+
+}
+
+void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_SUB\n");
+  if(tac->op1 && tac->op2 && tac->res){
+    sprintf(tempString, "  	movl	%s(%%rip), %%edx\n  	movl	%s(%%rip), %%eax\n", tac->op1->text, tac->op2->text);
+    strcat(asmString1, tempString);
+    sprintf(tempString, "  	subl	%%eax, %%edx\n  	movl	%%edx, %%eax\n  	movl	%%eax, %s(%%rip)\n", tac->res->text);
+    strcat(asmString1, tempString);
+  }else{
+    fprintf(stderr, "ERRO que nao deveria acontecer: asmSub\n" );
+  }
+
+}
+
 
 char* generateAsm (TAC* first)
 {
@@ -133,39 +155,62 @@ char* generateAsm (TAC* first)
         strcat(asmString1,"	popq	%rbp\n	ret\n	leave\n");
         break;
       case TAC_VECREAD:
+          break;
       case TAC_VECWRITE:
+          break;
       case TAC_MOV:
+          break;
       case TAC_READ:
           strcat(asmString0, "\n## TAC_READ\n");
-
+          //asmRead(tac, asmString0, asmString1, tempString); //TODO
           break;
       case TAC_PRINT:
           strcat(asmString0, "\n## TAC_PRINT\n");
           asmPrint(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ARG:
+          break;
       case TAC_CALL:
           strcat(asmString0, "\n## TAC_CALL\n");
           break;
       case TAC_IFZ:
+          break;
       case TAC_IFN:
+          break;
       case TAC_LABEL:
+          break;
       case TAC_JMP:
+          break;
       case TAC_SUB:
+          asmSub(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_ADD:
+          asmAdd(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_MUL:
+          break;
       case TAC_DIV:
+          break;
       case TAC_INC:
+          break;
       case TAC_PARAM:
+          break;
       case TAC_OR:
+          break;
       case TAC_EQUAL:
+          break;
       case TAC_NOTEQUAL:
+          break;
       case TAC_LESSEQUAL:
+          break;
       case TAC_GREATEREQUAL:
+          break;
       case TAC_LESS:
+          break;
       case TAC_GREATER:
+          break;
       case TAC_AND:
-        break;
+          break;
       default:
         fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );
         break;
