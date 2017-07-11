@@ -192,6 +192,27 @@ void asmMov(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
+void asmIFN(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_IFN\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	jns	.%s", tac->op1->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
+void asmIFZ(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_IFZ\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	jne	.%s", tac->op1->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
+void asmBool(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_BOOL\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n	cmpl	%%eax, %%edx", tac->op1->text,tac->op2->text);
+  strcat(asmString1, tempString);
+}
+
 char* generateAsm (TAC* first)
 {
   //recebe uma corrente de TACs
@@ -238,6 +259,7 @@ char* generateAsm (TAC* first)
       case TAC_VECWRITE:
           break;
       case TAC_MOV:
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmMov(tac, asmString0, asmString1, tempString);
           break;
       case TAC_READ:
@@ -254,8 +276,10 @@ char* generateAsm (TAC* first)
           strcat(asmString1, "\n## TAC_CALL\n");
           break;
       case TAC_IFZ:
+          asmIFZ(tac, asmString0, asmString1, tempString);
           break;
       case TAC_IFN:
+          asmIFN(tac, asmString0, asmString1, tempString);
           break;
       case TAC_LABEL:
           asmLabel(tac, asmString0, asmString1, tempString);
@@ -284,21 +308,16 @@ char* generateAsm (TAC* first)
           asmParam(tac, asmString0, asmString1, tempString);
           break;
       case TAC_OR:
-          break;
       case TAC_EQUAL:
-          break;
       case TAC_NOTEQUAL:
-          break;
       case TAC_LESSEQUAL:
-          break;
       case TAC_GREATEREQUAL:
-          break;
       case TAC_LESS:
-          break;
       case TAC_GREATER:
-          break;
       case TAC_AND:
-          break;
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmBool(tac, asmString0, asmString1, tempString);
+      break;
       default:
         fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );
         break;
