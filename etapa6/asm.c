@@ -178,6 +178,12 @@ void asmParam(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString0, tempString);
 }
 
+void asmLabel(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_LABEL\n");
+  sprintf(tempString, ".%s:\n", tac->res->text);
+  strcat(asmString1, tempString);
+}
 
 char* generateAsm (TAC* first)
 {
@@ -233,13 +239,14 @@ char* generateAsm (TAC* first)
       case TAC_ARG:
           break;
       case TAC_CALL:
-          strcat(asmString0, "\n## TAC_CALL\n");
+          strcat(asmString1, "\n## TAC_CALL\n");
           break;
       case TAC_IFZ:
           break;
       case TAC_IFN:
           break;
       case TAC_LABEL:
+          asmLabel(tac, asmString0, asmString1, tempString);
           break;
       case TAC_JMP:
           break;
