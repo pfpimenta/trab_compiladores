@@ -185,6 +185,13 @@ void asmLabel(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
+void asmMov(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_MOV\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
 char* generateAsm (TAC* first)
 {
   //recebe uma corrente de TACs
@@ -194,7 +201,11 @@ char* generateAsm (TAC* first)
   char* asmString1[ASM_STRING_SIZE];
   char* tempString[ASM_STRING_SIZE];
 
-  strcat(asmString0, "	.file	\"testProgram.c\"\n");
+  strcat(asmString0, "### string0\n");
+  strcat(asmString1, "### string1\n");
+
+
+  strcat(asmString1, "	.file	\"testProgram.c\"\n");
 
   initDeclaredTemps();
 
@@ -227,6 +238,7 @@ char* generateAsm (TAC* first)
       case TAC_VECWRITE:
           break;
       case TAC_MOV:
+          asmMov(tac, asmString0, asmString1, tempString);
           break;
       case TAC_READ:
           strcat(asmString0, "\n## TAC_READ\n");

@@ -1,6 +1,6 @@
 
 etapa6: y.tab.o lex.yy.o hash.o astree.o semantic.o tac.o asm.o main.o
-	gcc -o etapa6 y.tab.o lex.yy.o hash.o astree.o semantic.o tac.o asm.o main.o 
+	gcc -o etapa6 y.tab.o lex.yy.o hash.o astree.o semantic.o tac.o asm.o main.o
 
 main.o: main.c
 	gcc -c main.c
@@ -36,4 +36,4 @@ lex.yy.c: scanner.l
 	lex scanner.l
 
 clean:
-	rm *.o lex.yy.c y.tab.c lex.yy.h y.tab.h etapa6 y.output
+	rm *.s *.o lex.yy.c y.tab.c lex.yy.h y.tab.h etapa6 y.output
