@@ -103,42 +103,47 @@ void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   int index ;
-  if(tac->res->text[0] == '_')
-  {
-    index = tac->res->text[7] - '0';
-    if(declaredTemps[8]==1){
-      index = (tac->res->text[8] - '0') + 10;
-    }
-    if(declaredTemps[index] == 0)
+  if(tac->res){
+    if(tac->res->text[0] == '_')
     {
-      declaredTemps[index] = 1;
-      sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
-      strcat(asmString0, tempString);
+      index = tac->res->text[7] - '0';
+      if(declaredTemps[8]==1){
+        index = (tac->res->text[8] - '0') + 10;
+      }
+      if(declaredTemps[index] == 0)
+      {
+        declaredTemps[index] = 1;
+        sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
+        strcat(asmString0, tempString);
+      }
     }
   }
-  if(tac->op1->text[0] == '_')
-  {
-    index = tac->op1->text[7] - '0';
-    if(declaredTemps[8]==1){
-      index = (tac->res->text[8] - '0') + 10;
-    }
-    if(declaredTemps[index] == 0)
+  if(tac->op1){
+    if(tac->op1->text[0] == '_')
     {
-      sprintf(tempString, "	.comm	%s,4,4\n", tac->op1->text);
-      strcat(asmString0, tempString);
+      index = tac->op1->text[7] - '0';
+      if(declaredTemps[8]==1){
+        index = (tac->op1->text[8] - '0') + 10;
+      }
+      if(declaredTemps[index] == 0)
+      {
+        sprintf(tempString, "	.comm	%s,4,4\n", tac->op1->text);
+        strcat(asmString0, tempString);
+      }
     }
   }
-  if(tac->op2->text[0] == '_')
-  {
-    index = tac->op2->text[7] - '0';
-    if(declaredTemps[8]==1){
-      index = (tac->res->text[8] - '0') + 10;
-    }
-    if(declaredTemps)
-    if(declaredTemps[index] == 0)
+  if(tac->op2){
+    if(tac->op2->text[0] == '_')
     {
-      sprintf(tempString, "	.comm	%s,4,4\n", tac->op2->text);
-      strcat(asmString0, tempString);
+      index = tac->op2->text[7] - '0';
+      if(declaredTemps[8]==1){
+        index = (tac->op2->text[8] - '0') + 10;
+      }
+      if(declaredTemps[index] == 0)
+      {
+        sprintf(tempString, "	.comm	%s,4,4\n", tac->op2->text);
+        strcat(asmString0, tempString);
+      }
     }
   }
 }
@@ -188,7 +193,13 @@ void asmLabel(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmMov(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_MOV\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+  //if(tac->op1->text[0] >= '0' && tac->op1->text[0] <= '9')
+  if(isdigit(tac->op1->text[0]))
+  {
+    sprintf(tempString, "	movl	$%s, %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+  }else{
+    sprintf(tempString, "	movl	%s(%%rip), %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+  }
   strcat(asmString1, tempString);
 }
 
@@ -213,6 +224,13 @@ void asmBool(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
+void asmCall(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_CALL\n");
+  sprintf(tempString, "	movl	$0, %%eax\ncall	%s\n	movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
 char* generateAsm (TAC* first)
 {
   //recebe uma corrente de TACs
@@ -234,6 +252,7 @@ char* generateAsm (TAC* first)
   for (tac = first; tac; tac= tac->next)
   {
     //fprintf(stderr, "debug %i\n", tac->type );
+    //asmDeclareTemp(tac, asmString0, asmString1, tempString);
     switch (tac->type) {
       case TAC_SYMBOL:
         //ignora
@@ -273,7 +292,8 @@ char* generateAsm (TAC* first)
       case TAC_ARG:
           break;
       case TAC_CALL:
-          strcat(asmString1, "\n## TAC_CALL\n");
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmCall(tac, asmString0, asmString1, tempString);
           break;
       case TAC_IFZ:
           asmIFZ(tac, asmString0, asmString1, tempString);

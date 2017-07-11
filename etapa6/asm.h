@@ -3,6 +3,7 @@
 #include "tac.h"
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #define ASM_STRING_SIZE 2000
 
