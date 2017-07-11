@@ -196,7 +196,7 @@ void asmMov(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   //if(tac->op1->text[0] >= '0' && tac->op1->text[0] <= '9')
   if(isdigit(tac->op1->text[0]))
   {
-    sprintf(tempString, "	movl	$%s, %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+    sprintf(tempString, "	movl	$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
   }else{
     sprintf(tempString, "	movl	%s(%%rip), %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
   }
