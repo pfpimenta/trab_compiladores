@@ -1,6 +1,16 @@
 #include "asm.h"
 
 int printNumber = 0;
+int declaredTemps[200];
+
+void initDeclaredTemps()
+{
+  int i;
+  for(i = 0; i < 200; i++)
+  {
+    declaredTemps[i] = 0;
+  }
+}
 
 void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
@@ -90,6 +100,39 @@ void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   printNumber++;
 }
 
+void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  int index;
+  if(tac->res->text[0] == '_')
+  {
+    index = atoi(tac->res->text[7]);
+    if(declaredTemps[index] == 0)
+    {
+      declaredTemps[index] = 1;
+      sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
+      strcat(asmString0, tempString);
+    }
+  }
+  if(tac->op1->text[0] == '_')
+  {
+    index = atoi(tac->op1->text[7]);
+    if(declaredTemps[index] == 0)
+    {
+      sprintf(tempString, "	.comm	%s,4,4\n", tac->op1->text);
+      strcat(asmString0, tempString);
+    }
+  }
+  if(tac->op2->text[0] == '_')
+  {
+    index = atoi(tac->op2->text[7]);
+    if(declaredTemps[index] == 0)
+    {
+      sprintf(tempString, "	.comm	%s,4,4\n", tac->op2->text);
+      strcat(asmString0, tempString);
+    }
+  }
+}
+
 void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_ADD\n");
@@ -118,6 +161,13 @@ void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 
 }
 
+void asmParam(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString0, "\n## TAC_PARAM\n");
+  sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
+  strcat(asmString0, tempString);
+}
+
 
 char* generateAsm (TAC* first)
 {
@@ -129,6 +179,8 @@ char* generateAsm (TAC* first)
   char* tempString[ASM_STRING_SIZE];
 
   strcat(asmString0, "	.file	\"testProgram.c\"\n");
+
+  initDeclaredTemps();
 
   TAC* tac;
   for (tac = first; tac; tac= tac->next)
@@ -182,18 +234,25 @@ char* generateAsm (TAC* first)
       case TAC_JMP:
           break;
       case TAC_SUB:
+          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmSub(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ADD:
+          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmAdd(tac, asmString0, asmString1, tempString);
           break;
       case TAC_MUL:
+          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           break;
       case TAC_DIV:
+          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           break;
       case TAC_INC:
+          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           break;
       case TAC_PARAM:
+          //todas variaveis sao globais
+          asmParam(tac, asmString0, asmString1, tempString);
           break;
       case TAC_OR:
           break;
