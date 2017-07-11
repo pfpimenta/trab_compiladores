@@ -93,7 +93,7 @@ void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_PRINT\n");
-  sprintf(tempString,".LC%d:\n	.string	%s",printNumber,tac->res->text);
+  sprintf(tempString,".LC%d:\n	.string	%s\n",printNumber,tac->res->text);
   strcat(asmString0, tempString);
   sprintf(tempString,"	movl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n",printNumber);
   strcat(asmString1, tempString);
@@ -102,10 +102,13 @@ void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 
 void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
-  int index;
+  int index ;
   if(tac->res->text[0] == '_')
   {
-    index = atoi(tac->res->text[7]);
+    index = tac->res->text[7] - '0';
+    if(declaredTemps[8]==1){
+      index = (tac->res->text[8] - '0') + 10;
+    }
     if(declaredTemps[index] == 0)
     {
       declaredTemps[index] = 1;
@@ -115,7 +118,10 @@ void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempStri
   }
   if(tac->op1->text[0] == '_')
   {
-    index = atoi(tac->op1->text[7]);
+    index = tac->op1->text[7] - '0';
+    if(declaredTemps[8]==1){
+      index = (tac->res->text[8] - '0') + 10;
+    }
     if(declaredTemps[index] == 0)
     {
       sprintf(tempString, "	.comm	%s,4,4\n", tac->op1->text);
@@ -124,7 +130,11 @@ void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempStri
   }
   if(tac->op2->text[0] == '_')
   {
-    index = atoi(tac->op2->text[7]);
+    index = tac->op2->text[7] - '0';
+    if(declaredTemps[8]==1){
+      index = (tac->res->text[8] - '0') + 10;
+    }
+    if(declaredTemps)
     if(declaredTemps[index] == 0)
     {
       sprintf(tempString, "	.comm	%s,4,4\n", tac->op2->text);
@@ -234,18 +244,18 @@ char* generateAsm (TAC* first)
       case TAC_JMP:
           break;
       case TAC_SUB:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmSub(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ADD:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmAdd(tac, asmString0, asmString1, tempString);
           break;
       case TAC_MUL:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
           break;
       case TAC_DIV:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
           break;
       case TAC_INC:
           //asmDeclareTemp(tac, asmString0, asmString1, tempString);
