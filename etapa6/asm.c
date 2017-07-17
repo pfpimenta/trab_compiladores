@@ -240,8 +240,8 @@ char* generateAsm (TAC* first)
   char* asmString1[ASM_STRING_SIZE];
   char* tempString[ASM_STRING_SIZE];
 
-  strcat(asmString0, "###\n### string0\n");
-  strcat(asmString1, "###\n### string1\n");
+  strcat(asmString0, "###\n### string0\n	.data\n");
+  strcat(asmString1, "###\n### string1\n	.text\n");
 
 
   strcat(asmString1, "	.file	\"testProgram.c\"\n");
