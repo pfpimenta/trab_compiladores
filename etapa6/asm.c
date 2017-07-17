@@ -176,6 +176,34 @@ void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 
 }
 
+void asmMul(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_MUL\n");
+  if(tac->op1 && tac->op2 && tac->res){
+    sprintf(tempString, "	movl	%s(%%rip), %%edx\n", tac->op1->text);
+    strcat(asmString1, tempString);
+    sprintf(tempString, "	movl	%s(%%rip), %%eax\n	imull	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    strcat(asmString1, tempString);
+  }else{
+    fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
+  }
+
+}
+
+void asmDiv(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_DIV\n");
+  if(tac->op1 && tac->op2 && tac->res){
+    sprintf(tempString, "	movl	%s(%%rip), %%edx\n", tac->op1->text);
+    strcat(asmString1, tempString);
+    sprintf(tempString, "	movl	%s(%%rip), %%eax\n	cltd\n	idivl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    strcat(asmString1, tempString);
+  }else{
+    fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
+  }
+
+}
+
 void asmParam(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString0, "\n## TAC_PARAM\n");
@@ -230,6 +258,7 @@ void asmCall(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   sprintf(tempString, "	movl	$0, %%eax\ncall	%s\n	movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
   strcat(asmString1, tempString);
 }
+
 
 char* generateAsm (TAC* first)
 {
@@ -316,9 +345,11 @@ char* generateAsm (TAC* first)
           break;
       case TAC_MUL:
           asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmMul(tac, asmString0, asmString1, tempString);
           break;
       case TAC_DIV:
           asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmMul(tac, asmString0, asmString1, tempString);
           break;
       case TAC_INC:
           //asmDeclareTemp(tac, asmString0, asmString1, tempString);
