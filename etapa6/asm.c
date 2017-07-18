@@ -258,13 +258,6 @@ void asmIFZ(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
-void asmBool(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_BOOL\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n	cmpl	%%eax, %%edx", tac->op1->text,tac->op2->text);
-  strcat(asmString1, tempString);
-}
-
 void asmCall(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_CALL\n");
@@ -285,6 +278,21 @@ void asmJump(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   sprintf(tempString, "	jmp .%s\n", tac->res->text);
   strcat(asmString1, tempString);
 }
+
+void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_EQUAL\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n	subl %%eax, %%edx\n	subl $1, %%edx\n	movl	%%edx, %s(%%rip)\n", tac->op1->text, tac->op2->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
+void asmNotEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_NOTEQUAL\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n	subl %%eax, %%edx\n	movl	%%edx, %s(%%rip)\n", tac->op1->text, tac->op2->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
 
 char* generateAsm (TAC* first)
 {
@@ -390,15 +398,15 @@ char* generateAsm (TAC* first)
           break;
       case TAC_OR:
       case TAC_EQUAL:
+          asmEqual(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_NOTEQUAL:
       case TAC_LESSEQUAL:
       case TAC_GREATEREQUAL:
       case TAC_LESS:
       case TAC_GREATER:
       case TAC_AND:
-          asmDeclareTemp(tac, asmString0, asmString1, tempString);
-          asmBool(tac, asmString0, asmString1, tempString);
-      break;
+          break;
       default:
         fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );
         break;

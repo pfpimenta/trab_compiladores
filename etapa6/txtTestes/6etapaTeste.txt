@@ -11,16 +11,28 @@ vfloat: float[3] 1.23 12.3 123.0;
 
 byte main()
 {
-  print "asfds\n :-( \n";
-  x = 1;
+  print "\nasfds\n :-( \n";
+  x = 0;
 
 
-  while(x<10)
+  while (x <= 10)
   {
       print "\ncoisa";
       x = inc(x);
   };
-  print "fim"
+
+
+  when (x == 10) then
+      print "\nx eh 10";
+
+
+  when (x == 10) then {
+      print "\nx eh 10 mesmo";
+  }else{
+    print "\nx nao eh 10";
+  };
+
+  print "\nfim\n";
 };
 
 
