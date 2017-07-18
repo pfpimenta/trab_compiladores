@@ -13,4 +13,19 @@ byte main()
 {
   print "asfds\n :-( \n";
   x = 1;
+
+
+  while(x<10)
+  {
+      print "\ncoisa";
+      x = inc(x);
+  };
+  print "fim"
+};
+
+
+short inc (short xInc)
+{
+    print "short inc";
+    return xInc + 1;
 };

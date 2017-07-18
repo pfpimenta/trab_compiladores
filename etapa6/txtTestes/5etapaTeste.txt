@@ -41,7 +41,10 @@ byte main()
 };
 
 short inc (short xInc)
+{
+    print "short inc";
     return xInc + 1;
+};
 
 short sum (short variavel1, short variavel2)
     return variavel1 + variavel2;

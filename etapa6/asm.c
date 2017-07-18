@@ -247,14 +247,14 @@ void asmMov(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmIFN(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_IFN\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	jns	.%s", tac->op1->text, tac->res->text);
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	js	.%s", tac->op1->text, tac->res->text);
   strcat(asmString1, tempString);
 }
 
 void asmIFZ(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_IFZ\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	jne	.%s", tac->op1->text, tac->res->text);
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	je	.%s", tac->op1->text, tac->res->text);
   strcat(asmString1, tempString);
 }
 
@@ -272,6 +272,19 @@ void asmCall(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
+void asmInc(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_INC\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	addl	$1, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text, tac->res->text);
+  strcat(asmString1, tempString);
+}
+
+void asmJump(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_JUMP\n");
+  sprintf(tempString, "	jmp .%s\n", tac->res->text);
+  strcat(asmString1, tempString);
+}
 
 char* generateAsm (TAC* first)
 {
@@ -349,6 +362,7 @@ char* generateAsm (TAC* first)
           asmLabel(tac, asmString0, asmString1, tempString);
           break;
       case TAC_JMP:
+          asmJump(tac, asmString0, asmString1, tempString);
           break;
       case TAC_SUB:
           //asmDeclareTemp(tac, asmString0, asmString1, tempString);
@@ -368,6 +382,7 @@ char* generateAsm (TAC* first)
           break;
       case TAC_INC:
           //asmDeclareTemp(tac, asmString0, asmString1, tempString);
+          asmInc(tac, asmString0, asmString1, tempString);
           break;
       case TAC_PARAM:
           //todas variaveis sao globaiss
