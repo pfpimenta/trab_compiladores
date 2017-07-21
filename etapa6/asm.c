@@ -310,11 +310,41 @@ void boolExpressionResult(TAC* tac, char* asmString1, char* tempString)
   boolLabelCount += 1;
 }
 
+void boolSetOperandos(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  if(isdigit(tac->op1->text[0]))
+  {
+    sprintf(tempString, "\tmovl	$%s, %%edx\n", tac->op1->text);
+    strcat(asmString1, tempString);
+  }else{
+    sprintf(tempString, "\tmovl	%s(%%rip), %%edx\n", tac->op1->text);
+    strcat(asmString1, tempString);
+  }
+  if(isdigit(tac->op2->text[0]))
+  {
+    sprintf(tempString, "\tmovl	$%s, %%eax\n", tac->op2->text);
+    strcat(asmString1, tempString);
+
+  }else{
+    sprintf(tempString, "\tmovl	%s(%%rip), %%eax\n", tac->op2->text);
+    strcat(asmString1, tempString);
+  }
+}
+
 void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_EQUAL\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n", tac->op1->text, tac->op2->text);
+  boolSetOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tje .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
   strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
+
+
+void asmNotEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_NOTEQUAL\n");
+  boolSetOperandos(tac, asmString0, asmString1, tempString);
   sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjne .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
   strcat(asmString1, tempString);
   boolExpressionResult(tac, asmString1, tempString);
