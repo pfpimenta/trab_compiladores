@@ -11,7 +11,7 @@ vfloat: float[3] 1.23 12.3 123.0;
 byte main()
 {
     for( i = 3 to 10)
-        print "oi";
+        print "oi\n";
 
     read x;
 

@@ -12,16 +12,16 @@ vfloat: float[3] 1.23 12.3 123.0;
 byte main()
 {
   print "\nasfds\n :-( \n";
-  x = 10;
-  
-  when (x == 10) then
-      print "\nx eh 10";
+  x = 20/2;
+
+  when (x != 10) then
+      print "\nx nao eh 10 !!!!!!\n";
 
 
   when (x == 10) then {
-      print "\nx eh 10 mesmo";
+      print "\nx eh 10 mesmo\n";
   }else{
-    print "\nx nao eh 10";
+    print "\nx nao eh 10\n";
   };
 
   while (x > 0)
@@ -34,6 +34,8 @@ byte main()
   x = v[1];
   v#1 = x;
 
+  for( i = 3 to 10)
+      print "oi\n";
 
   print "\nfim\n";
 };

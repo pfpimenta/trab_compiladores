@@ -386,7 +386,6 @@ TAC* tacMakeFuncCall(ASTREE* node, TAC* code0)
   return tacJoin(code0, tacCall);
 }
 
-
 void tacArgsComplete(TAC* tac, HASH_NODE* func, int argIndex)
 {
   if(!tac) return;

@@ -179,10 +179,9 @@ void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempStri
 void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_ADD\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
   if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "	movl	%s(%%rip), %%edx\n", tac->op1->text);
-    strcat(asmString1, tempString);
-    sprintf(tempString, "	movl	%s(%%rip), %%eax\n	addl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    sprintf(tempString, "\taddl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
     strcat(asmString1, tempString);
   }else{
     fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
@@ -193,10 +192,9 @@ void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_SUB\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
   if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "  	movl	%s(%%rip), %%edx\n  	movl	%s(%%rip), %%eax\n", tac->op1->text, tac->op2->text);
-    strcat(asmString1, tempString);
-    sprintf(tempString, "  	subl	%%eax, %%edx\n  	movl	%%edx, %%eax\n  	movl	%%eax, %s(%%rip)\n", tac->res->text);
+    sprintf(tempString, "\tsubl	%%eax, %%edx\n  	movl	%%edx, %%eax\n  	movl	%%eax, %s(%%rip)\n", tac->res->text);
     strcat(asmString1, tempString);
   }else{
     fprintf(stderr, "ERRO que nao deveria acontecer: asmSub\n" );
@@ -207,10 +205,9 @@ void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmMul(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_MUL\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
   if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "	movl	%s(%%rip), %%edx\n", tac->op1->text);
-    strcat(asmString1, tempString);
-    sprintf(tempString, "	movl	%s(%%rip), %%eax\n	imull	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    sprintf(tempString, "\timull	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text);
     strcat(asmString1, tempString);
   }else{
     fprintf(stderr, "ERRO que nao deveria acontecer: asmMul\n" );
@@ -221,10 +218,9 @@ void asmMul(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmDiv(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_DIV\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
   if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "	movl	%s(%%rip), %%edx\n", tac->op1->text);
-    strcat(asmString1, tempString);
-    sprintf(tempString, "	movl	%s(%%rip), %%eax\n	cltd\n	idivl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    sprintf(tempString, "\tcltd\n	idivl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text);
     strcat(asmString1, tempString);
   }else{
     fprintf(stderr, "ERRO que nao deveria acontecer: asmDiv\n" );
@@ -310,8 +306,9 @@ void boolExpressionResult(TAC* tac, char* asmString1, char* tempString)
   boolLabelCount += 1;
 }
 
-void boolSetOperandos(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+void setOperandos(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
+  //bota op1 no edx e o op2 no eax
   if(isdigit(tac->op1->text[0]))
   {
     sprintf(tempString, "\tmovl	$%s, %%edx\n", tac->op1->text);
@@ -334,7 +331,7 @@ void boolSetOperandos(TAC* tac, char* asmString0, char* asmString1, char* tempSt
 void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_EQUAL\n");
-  boolSetOperandos(tac, asmString0, asmString1, tempString);
+  setOperandos(tac, asmString0, asmString1, tempString);
   sprintf(tempString, "\tcmpl %%eax, %%edx\n\tje .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
   strcat(asmString1, tempString);
   boolExpressionResult(tac, asmString1, tempString);
@@ -344,7 +341,7 @@ void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmNotEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_NOTEQUAL\n");
-  boolSetOperandos(tac, asmString0, asmString1, tempString);
+  setOperandos(tac, asmString0, asmString1, tempString);
   sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjne .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
   strcat(asmString1, tempString);
   boolExpressionResult(tac, asmString1, tempString);
@@ -460,6 +457,8 @@ char* generateAsm (TAC* first)
           asmEqual(tac, asmString0, asmString1, tempString);
           break;
       case TAC_NOTEQUAL:
+          asmNotEqual(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_LESSEQUAL:
       case TAC_GREATEREQUAL:
       case TAC_LESS:
