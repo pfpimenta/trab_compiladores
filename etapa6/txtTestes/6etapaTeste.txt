@@ -13,8 +13,12 @@ byte main()
 {
   print "\nasfds\n :-( \n";
 
-  when (x != 10) then
-      print "\nx nao eh 10 !!!!!!\n";
+  x = 2;
+  x = inc(x);
+
+
+  when (x == 10) then
+      print "\nx  eh 10 !!!!!!\n";
   when (x >= 5 || x<= 2) then
       print "\nx maior ou igual a 5 ou menor ou igual a 2\n";
   when (x < 8 && x > 3) then
@@ -27,15 +31,6 @@ byte main()
     print "\nx nao eh 10\n";
   };
 
-  while (x > 0)
-  {
-      print "\ncoisa";
-      x = x-1;
-  };
-
-
-  x = v[1];
-  v#1 = x;
 
   for( i = 3 to 10)
       print "oi\n";
@@ -46,6 +41,10 @@ byte main()
 
 short inc (short xInc)
 {
+    when(xInc == 2) then
+    {
+      print "\n aqui!!";
+    };
     print "short inc";
-    return xInc + 1;
+    return 8;
 };

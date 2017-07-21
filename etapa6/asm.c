@@ -556,7 +556,7 @@ char* generateAsm (TAC* first)
 
 
 
-    strcat(asmString1,"	.ident	\"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\"\n" );
+    strcat(asmString1,"	.ident	\"Pedros compiler: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\"\n" );
     strcat(asmString1,"	.section	.note.GNU-stack,\"\",@progbits\n");
 
     strcat(asmString0,asmString1);
