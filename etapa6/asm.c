@@ -218,10 +218,26 @@ void asmMul(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 void asmDiv(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_DIV\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
   if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "\tcltd\n	idivl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text);
-    strcat(asmString1, tempString);
+      //setando operandos
+      if(isdigit(tac->op1->text[0]) && isdigit(tac->op2->text[0]))
+      {
+        int divValue = atoi(tac->op1->text) / atoi(tac->op2->text);
+        fprintf(stderr, "\ndebug %i\n", divValue);
+        sprintf(tempString, "\tmovl	$%i,%s(%%rip)\n", divValue, tac->res->text);
+        strcat(asmString1, tempString);
+      }else if(isdigit(tac->op1->text[0]))
+      {
+
+      }else if(isdigit(tac->op2->text[0]))
+      {
+        sprintf(tempString, "\tmovl	$%s, %%ecx\n", tac->op2->text);
+        strcat(asmString1, tempString);
+
+      }else{ // nenhum valor imediato
+        sprintf(tempString, "\tmovl	%s(%%rip), %%ecx\n", tac->op2->text);
+        strcat(asmString1, tempString);
+      }
   }else{
     fprintf(stderr, "ERRO que nao deveria acontecer: asmDiv\n" );
   }
@@ -347,6 +363,24 @@ void asmNotEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   boolExpressionResult(tac, asmString1, tempString);
 }
 
+void asmLess(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_NOTEQUAL\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjge .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
+
+void asmGreater(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_NOTEQUAL\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjle .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
+
 
 char* generateAsm (TAC* first)
 {
@@ -453,6 +487,8 @@ char* generateAsm (TAC* first)
           asmParam(tac, asmString0, asmString1, tempString);
           break;
       case TAC_OR:
+          asmOr(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_EQUAL:
           asmEqual(tac, asmString0, asmString1, tempString);
           break;
@@ -460,10 +496,19 @@ char* generateAsm (TAC* first)
           asmNotEqual(tac, asmString0, asmString1, tempString);
           break;
       case TAC_LESSEQUAL:
+          asmLessEqual(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_GREATEREQUAL:
+          asmGreaterEqual(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_LESS:
+          asmLess(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_GREATER:
+          asmGreater(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_AND:
+          asmAdd(tac, asmString0, asmString1, tempString);
           break;
       case TAC_JMPFALSE:
           asmJmpFalse(tac, asmString0, asmString1, tempString);
