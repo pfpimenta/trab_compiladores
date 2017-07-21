@@ -1,6 +1,7 @@
 #include "asm.h"
 
 int printNumber = 0;
+int boolLabelCount = 0;
 int declaredTemps[200];
 
 void initDeclaredTemps()
@@ -25,7 +26,7 @@ void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   {
     sprintf(tempString, "	.comm %s, %i, 32\n", tac->res->text, 4*vectorSize);
   }else{
-    sprintf(tempString, "");
+    sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, %i\n%s:\n", tac->res->text,tac->res->text,tac->res->text,atoi(tac->op2->text)*4,tac->res->text);
     for(tacTemp = tac->prev; tacTemp->prev->type == TAC_SYMBOL; tacTemp = tacTemp->prev)
     {} // vai ate o primeiro TAC_SYMBOL
     for(tacTemp = tacTemp; tacTemp->type == TAC_SYMBOL; tacTemp = tacTemp->next)
@@ -52,6 +53,20 @@ void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
     }
   }
   strcat(asmString0, tempString);
+}
+
+void asmVecWrite(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_VECWRITE\n");
+  sprintf(tempString,"	movl	%s(%%rip), %%eax\n	movl	%%eax, %s+%i(%%rip)", tac->op1->text, tac->op2->text,  atoi(tac->op2->text)*4);
+  strcat(asmString1, tempString);
+}
+
+void asmVecRead(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_VECREAD\n");
+  sprintf(tempString,"	movl	%%eax, %s+%i(%%rip)\n	movl	%s(%%rip), %%eax", tac->op1->text, atoi(tac->op2->text)*4, tac->op2->text);
+  strcat(asmString1, tempString);
 }
 
 void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
@@ -198,7 +213,7 @@ void asmMul(TAC* tac, char* asmString0, char* asmString1, char* tempString)
     sprintf(tempString, "	movl	%s(%%rip), %%eax\n	imull	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
     strcat(asmString1, tempString);
   }else{
-    fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
+    fprintf(stderr, "ERRO que nao deveria acontecer: asmMul\n" );
   }
 
 }
@@ -212,7 +227,7 @@ void asmDiv(TAC* tac, char* asmString0, char* asmString1, char* tempString)
     sprintf(tempString, "	movl	%s(%%rip), %%eax\n	cltd\n	idivl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
     strcat(asmString1, tempString);
   }else{
-    fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
+    fprintf(stderr, "ERRO que nao deveria acontecer: asmDiv\n" );
   }
 
 }
@@ -286,13 +301,23 @@ void asmJmpFalse(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
+void boolExpressionResult(TAC* tac, char* asmString1, char* tempString)
+{
+  sprintf(tempString, ".boolLabelTrue_%i:\n	movl	$1,%s(%%rip)\n\tjmp .boolLabelEnd_%i\n", boolLabelCount, tac->res->text, boolLabelCount );
+  strcat(asmString1, tempString);
+  sprintf(tempString, ".boolLabelFalse_%i:\n	movl	$0,%s(%%rip)\n.boolLabelEnd_%i:\n", boolLabelCount, tac->res->text, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolLabelCount += 1;
+}
+
 void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_EQUAL\n");
   sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n", tac->op1->text, tac->op2->text);
   strcat(asmString1, tempString);
-  sprintf(tempString, "	movl	%s(%%rip), %%edx\n",tac->res->text);
+  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjne .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
   strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
 }
 
 
@@ -340,8 +365,10 @@ char* generateAsm (TAC* first)
         strcat(asmString1,"	popq	%rbp\n	ret\n	leave\n");
         break;
       case TAC_VECREAD:
+          asmVecRead(tac, asmString0, asmString1, tempString);
           break;
       case TAC_VECWRITE:
+          asmVecWrite(tac, asmString0, asmString1, tempString);
           break;
       case TAC_MOV:
           //asmDeclareTemp(tac, asmString0, asmString1, tempString);
@@ -410,6 +437,7 @@ char* generateAsm (TAC* first)
       case TAC_AND:
           break;
       case TAC_JMPFALSE:
+          asmJmpFalse(tac, asmString0, asmString1, tempString);
           break;
       default:
         fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );

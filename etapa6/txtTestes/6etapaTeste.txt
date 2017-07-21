@@ -1,6 +1,6 @@
 //programa teste para a etapa6
 
-x: long 0;
+x: long 10;
 i: byte 0;
 v: long[3] 1 2 3;
 f: float 12.12;
@@ -12,15 +12,6 @@ vfloat: float[3] 1.23 12.3 123.0;
 byte main()
 {
   print "\nasfds\n :-( \n";
-  x = 0;
-  x = v[1];
-  v#1 = x;
-
-  while (x <= 10)
-  {
-      print "\ncoisa";
-      x = inc(x);
-  };
 
 
   when (x == 10) then
@@ -32,6 +23,17 @@ byte main()
   }else{
     print "\nx nao eh 10";
   };
+
+  while (x > 0)
+  {
+      print "\ncoisa";
+      x = x-1;
+  };
+
+
+  x = v[1];
+  v#1 = x;
+
 
   print "\nfim\n";
 };
