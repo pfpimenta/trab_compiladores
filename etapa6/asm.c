@@ -381,6 +381,41 @@ void asmGreater(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   boolExpressionResult(tac, asmString1, tempString);
 }
 
+void asmGreaterEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_GREATEREQUAL\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjl .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
+
+void asmLessEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_LESSEQUAL\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjg .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
+
+void asmOr(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_OR\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl $1,%%eax\n\tje .boolLabelTrue_%i\n\tcmpl $1,%%edx\n\tje .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
+
+void asmAnd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+{
+  strcat(asmString1, "\n## TAC_AND\n");
+  setOperandos(tac, asmString0, asmString1, tempString);
+  sprintf(tempString, "\tcmpl $0,%%eax\n\tje .boolLabelFalse_%i\n\tcmpl $0,%%edx\n\tje .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount, boolLabelCount);
+  strcat(asmString1, tempString);
+  boolExpressionResult(tac, asmString1, tempString);
+}
 
 char* generateAsm (TAC* first)
 {
@@ -407,24 +442,24 @@ char* generateAsm (TAC* first)
     asmDeclareTemp(tac, asmString0, asmString1, tempString);
     switch (tac->type) {
       case TAC_SYMBOL:
-        //ignora
-        break;
+          //ignora
+          break;
       case TAC_VARDEC:
-        asmVardec(tac, asmString0, asmString1, tempString);
-        break;
+          asmVardec(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_VECDEC:
-        asmVecdec(tac, asmString0, asmString1, tempString);
-        break;
+          asmVecdec(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_RETURN:
-        asmReturn(tac, asmString0, asmString1, tempString);
-        break;
+          asmReturn(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_BEGGINFUN:
-        asmBeginFun(tac, asmString0, asmString1, tempString);
-        break;
+          asmBeginFun(tac, asmString0, asmString1, tempString);
+          break;
       case TAC_ENDFUN:
-        strcat(asmString1, "\n## TAC_ENDFUN\n");
-        strcat(asmString1,"	popq	%rbp\n	ret\n	leave\n");
-        break;
+          strcat(asmString1, "\n## TAC_ENDFUN\n");
+          strcat(asmString1,"	popq	%rbp\n	ret\n	leave\n");
+          break;
       case TAC_VECREAD:
           asmVecRead(tac, asmString0, asmString1, tempString);
           break;

@@ -12,10 +12,13 @@ vfloat: float[3] 1.23 12.3 123.0;
 byte main()
 {
   print "\nasfds\n :-( \n";
-  x = 20/2;
 
   when (x != 10) then
       print "\nx nao eh 10 !!!!!!\n";
+  when (x >= 5 || x<= 2) then
+      print "\nx maior ou igual a 5 ou menor ou igual a 2\n";
+  when (x < 8 && x > 3) then
+      print "\nx menor que 8 e maior que 3\n";
 
 
   when (x == 10) then {
