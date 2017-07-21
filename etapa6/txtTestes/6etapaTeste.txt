@@ -13,7 +13,8 @@ byte main()
 {
   print "\nasfds\n :-( \n";
   x = 0;
-
+  x = v[1];
+  v#1 = x;
 
   while (x <= 10)
   {

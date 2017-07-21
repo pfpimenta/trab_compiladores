@@ -14,6 +14,8 @@ void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString);
 void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString);
 void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString);
 void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString);
+void asmJump(TAC* tac, char* asmString0, char* asmString1, char* tempString);
+void asmJmpFalse(TAC* tac, char* asmString0, char* asmString1, char* tempString);
 char* generateAsm (TAC* last);
 
 #endif

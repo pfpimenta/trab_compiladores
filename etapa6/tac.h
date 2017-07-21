@@ -15,7 +15,7 @@
 #define TAC_PRINT 9 // res:expr
 #define TAC_ARG 10 // res:var, op1:index, op2:func
 #define TAC_CALL 11 // op1=f, res=res
-#define TAC_IFZ 12 //jmp if zero
+#define TAC_IFZ 12 //jmp if zero //nao vai ser mais usada
 #define TAC_IFN 13 //jmp if negative
 #define TAC_LABEL 14
 #define TAC_JMP 15
@@ -35,6 +35,7 @@
 #define TAC_LESS 29
 #define TAC_GREATER 30
 #define TAC_AND 31
+#define TAC_JMPFALSE 32 //jump if o op1 for false
 
 //codigo aqui
 

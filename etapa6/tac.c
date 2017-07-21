@@ -153,6 +153,9 @@ void tacPrintType(TAC* tac)
     case TAC_GREATER:
       fprintf(stderr, "TAC_GREATER" );
       break;
+    case TAC_JMPFALSE:
+      fprintf(stderr, "TAC_JMPFALSE" );
+      break;
     default:
       fprintf(stderr, "TAC_UNKNOWN: %i", tac->type );
       break;
@@ -269,22 +272,24 @@ HASH_NODE* makeTemporary()
 TAC* tacMakeWhen(ASTREE* node, TAC* code0, TAC* code1)
 {
   HASH_NODE* label = makeLabel();
-  TAC* tacIfz = tacCreate(TAC_IFZ, label,code0?code0->res:0, 0);
+  //TAC* tacIfz = tacCreate(TAC_IFZ, label,code0?code0->res:0, 0);
   TAC* tacLabel = tacCreate(TAC_LABEL, label,0, 0);
-  //join order: code0 tacIfz code1 tacLabel
-  return tacJoin(code0,tacJoin(tacIfz,tacJoin(code1,tacLabel)));
+  TAC* tacJmpFalse = tacCreate(TAC_JMPFALSE, label, code0?code0->res:0, 0);
+  //join order: code0 TAC_JMPFALSE code1 tacLabel
+  return tacJoin(code0,tacJoin(tacJmpFalse,tacJoin(code1,tacLabel)));
 }
 
 TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
   HASH_NODE* elseLabel = makeLabel();
   HASH_NODE* endLabel = makeLabel();
-  TAC* tacIfz = tacCreate(TAC_IFZ, elseLabel,code0?code0->res:0, 0);
+  //TAC* tacIfz = tacCreate(TAC_IFZ, elseLabel,code0?code0->res:0, 0);
+  TAC* tacJmpFalse = tacCreate(TAC_JMPFALSE, elseLabel,code0?code0->res:0, 0);
   TAC* tacElseLabel = tacCreate(TAC_LABEL, elseLabel,0, 0);
   TAC* tacJmp = tacCreate(TAC_JMP, endLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-  //join order: code0 tacIfz code1 tacJmp tacElseLabel code2 tacEndLabel
-  return tacJoin(code0, tacJoin(tacIfz, tacJoin(code1, tacJoin(tacJmp,
+  //join order: code0 tacJmpFalse code1 tacJmp tacElseLabel code2 tacEndLabel
+  return tacJoin(code0, tacJoin(tacJmpFalse, tacJoin(code1, tacJoin(tacJmp,
     tacJoin(tacElseLabel, tacJoin(code2, tacEndLabel))))));
 }
 
@@ -301,8 +306,8 @@ TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
   TAC* tacInc = tacCreate(TAC_INC,node->symbol, node->symbol, 0);
   TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
   TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-  // join order: code0 code1 mov begginingLabel sub ifn code2 inc jmp endLabel
-  return tacJoin(code0, tacJoin(code1, tacJoin(tacMov, tacJoin(tacBegginingLabel,
+  // join order: code0 mov code1 begginingLabel sub ifn code2 inc jmp endLabel
+  return tacJoin(code0, tacJoin(tacMov, tacJoin(code1, tacJoin(tacBegginingLabel,
             tacJoin(tacSub, tacJoin(tacIfn, tacJoin(code2,
             tacJoin(tacInc, tacJoin(tacJmp, tacEndLabel)))))))));
 }
@@ -408,10 +413,10 @@ TAC* tacMakeWhile(ASTREE* node, TAC* code0, TAC* code1)
   HASH_NODE *beginLabel = makeLabel();
   HASH_NODE *endLabel = makeLabel();
   TAC* tacBeginLabel = tacCreate(TAC_LABEL, beginLabel,0, 0);
-  TAC *tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-  TAC *j0 = tacCreate(TAC_IFZ, endLabel, code0?code0->res:0, NULL);
-  TAC *j1 = tacCreate(TAC_JMP, beginLabel,0,0);
-  return tacJoin(tacBeginLabel,tacJoin(code0,tacJoin(j0,tacJoin(code1,tacJoin(j1,tacEndLabel)))));
+  TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+  TAC* tacJmpFalse = tacCreate(TAC_JMPFALSE, endLabel, code0?code0->res:0, NULL);
+  TAC* tacJmp = tacCreate(TAC_JMP, beginLabel,0,0);
+  return tacJoin(tacBeginLabel,tacJoin(code0,tacJoin(tacJmpFalse,tacJoin(code1,tacJoin(tacJmp,tacEndLabel)))));
 }
 
 TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
@@ -446,7 +451,7 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
     case ASTREE_NOTEQUAL:
     {
       HASH_NODE *temp = makeTemporary();
-      TAC *result = tacCreate(TAC_SUB, temp, code0?code0->res:0, code1?code1->res:0);
+      TAC *result = tacCreate(TAC_NOTEQUAL, temp, code0?code0->res:0, code1?code1->res:0);
       exprBool = tacJoin(tacJoin(code0,code1),result);
     }
       break;
@@ -454,44 +459,34 @@ TAC* tacMakeBool(ASTREE* node, TAC* code0, TAC* code1)
 
     case ASTREE_LESSEQUAL:
     {
-      HASH_NODE *tru = makeLabel();
-      HASH_NODE *end = makeLabel();
-      HASH_NODE *aux = makeTemporary();
-      TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
-      TAC *jn = tacCreate(TAC_IFN, tru, check?check->res:0, NULL);
-      HASH_NODE *res = makeTemporary();
-      TAC *mov0 = tacCreate(TAC_MOV, res, NULL, NULL);
-      TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
-      TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
-      TAC *mov1 = tacCreate(TAC_MOV, res, NULL, NULL);
-      TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
-      exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jn),mov1),jmp),ltru),mov0),lend);
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_LESSEQUAL, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
     }
       break;
 
     case ASTREE_GREATEREQUAL:
     {
-      HASH_NODE *tru = makeLabel();
-      HASH_NODE *end = makeLabel();
-      HASH_NODE *aux = makeTemporary();
-      TAC *check = tacCreate(TAC_SUB, aux, code0?code0->res:0, code1?code1->res:0);
-      TAC *jn = tacCreate(TAC_IFN, tru, check?check->res:0, NULL);
-      HASH_NODE *res = makeTemporary();
-      TAC *mov0 = tacCreate(TAC_MOV, res, NULL, NULL);
-      TAC *jmp = tacCreate(TAC_JMP, end, NULL, NULL);
-      TAC *ltru = tacCreate(TAC_LABEL, tru, 0, 0);
-      TAC *mov1 = tacCreate(TAC_MOV, res, NULL, NULL);
-      TAC *lend = tacCreate(TAC_LABEL, end ,0, 0);
-      exprBool = tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0,code1),check),jn),mov0),jmp),ltru),mov1),lend);
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_GREATEREQUAL, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
     }
-
+      break;
     case ASTREE_LESS:
+    {
+      HASH_NODE *temp = makeTemporary();
+      TAC *result = tacCreate(TAC_LESS, temp, code0?code0->res:0, code1?code1->res:0);
+      exprBool = tacJoin(tacJoin(code0,code1),result);
+    }
+      break;
+
     case ASTREE_GREATER:
     {
       HASH_NODE *temp = makeTemporary();
-      TAC *result = tacCreate(TAC_SUB, temp, code0?code0->res:0, code1?code1->res:0);
+      TAC *result = tacCreate(TAC_GREATER, temp, code0?code0->res:0, code1?code1->res:0);
       exprBool = tacJoin(tacJoin(code0,code1),result);
     }
+      break;
 
   }
 

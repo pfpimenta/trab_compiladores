@@ -279,17 +279,19 @@ void asmJump(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, tempString);
 }
 
-void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+void asmJmpFalse(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
-  strcat(asmString1, "\n## TAC_EQUAL\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n	subl %%eax, %%edx\n	subl $1, %%edx\n	movl	%%edx, %s(%%rip)\n", tac->op1->text, tac->op2->text, tac->res->text);
+  strcat(asmString1, "\n## TAC_JMPFALSE\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	je	.%s\n", tac->op1->text, tac->res->text);
   strcat(asmString1, tempString);
 }
 
-void asmNotEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
-  strcat(asmString1, "\n## TAC_NOTEQUAL\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n	subl %%eax, %%edx\n	movl	%%edx, %s(%%rip)\n", tac->op1->text, tac->op2->text, tac->res->text);
+  strcat(asmString1, "\n## TAC_EQUAL\n");
+  sprintf(tempString, "	movl	%s(%%rip), %%edx\n	movl	%s(%%rip), %%eax\n", tac->op1->text, tac->op2->text);
+  strcat(asmString1, tempString);
+  sprintf(tempString, "	movl	%s(%%rip), %%edx\n",tac->res->text);
   strcat(asmString1, tempString);
 }
 
@@ -406,6 +408,8 @@ char* generateAsm (TAC* first)
       case TAC_LESS:
       case TAC_GREATER:
       case TAC_AND:
+          break;
+      case TAC_JMPFALSE:
           break;
       default:
         fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );

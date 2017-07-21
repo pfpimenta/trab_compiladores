@@ -6,7 +6,7 @@ main.o: main.c
 	gcc -c main.c
 
 hash.o: hash.c
-	gcc -c hash.c
+	gcc -w -c hash.c
 
 astree.o: astree.c
 	gcc -c astree.c
@@ -15,10 +15,10 @@ semantic.o: semantic.c
 	gcc -c semantic.c
 
 tac.o: tac.c
-	gcc -c tac.c
+	gcc -w -c tac.c
 
 asm.o: asm.c
-	gcc -c asm.c
+	gcc -w -c asm.c
 
 y.tab.o: y.tab.c lex.yy.h
 	gcc -c y.tab.c
@@ -27,7 +27,7 @@ y.tab.c: parser.y
 	yacc -d -v parser.y
 
 lex.yy.o: lex.yy.c
-	gcc -c lex.yy.c
+	gcc -w -c lex.yy.c
 
 lex.yy.h: scanner.l
 	lex scanner.l
