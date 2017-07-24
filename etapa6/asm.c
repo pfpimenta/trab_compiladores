@@ -305,7 +305,24 @@ void asmIFZ(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 
 void asmCall(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
+  TAC* temp1; //aponta pros argumentos
+  TAC* temp2; //aponta pros parametros
   strcat(asmString1, "\n## TAC_CALL\n");
+  temp2 = tacGetFirst(tac);
+  while(!(temp2 && temp2->type == TAC_BEGGINFUN && temp2->res->text == tac->op1->text)){
+    temp2 = temp2->next; //BEGGINFUN
+  }
+  temp2 = temp2->next; // PARAM
+  for(temp1 = tac->prev; (temp1) && (temp1->type == TAC_ARG || temp1->type == TAC_SYMBOL); temp1 = temp1->prev){
+    if(temp1->type != TAC_SYMBOL) //ignora TAC_SYMBOLs
+    if(isdigit(temp1->op1->text[0])){
+        sprintf(tempString, "\tmovl $%s, %%eax\n\tmovl %%eax,%s(%%rip)\n", temp1->op1->text, temp2->res->text);
+    }else{
+      sprintf(tempString, "\tmovl %s(%%rip), %%eax\n\tmovl %%eax,%s(%%rip)\n", temp1->op1->text, temp2->res->text);
+    }
+    strcat(asmString1, tempString);
+    temp2 = temp2->next;
+  }
   sprintf(tempString, "	movl	$0, %%eax\ncall	%s\n	movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
   strcat(asmString1, tempString);
 }
@@ -496,6 +513,7 @@ char* generateAsm (TAC* first)
           asmPrint(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ARG:
+          //nao faz nada, eh processado no TAC_CALL
           break;
       case TAC_CALL:
           asmCall(tac, asmString0, asmString1, tempString);

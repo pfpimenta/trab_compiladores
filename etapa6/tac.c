@@ -121,7 +121,7 @@ void tacPrintType(TAC* tac)
       fprintf(stderr, "TAC_INC" );
       break;
     case TAC_PARAM:
-      //fprintf(stderr, "TAC_PARAM" ); //ignora
+      fprintf(stderr, "TAC_PARAM" );
       break;
     case TAC_VARDEC:
       fprintf(stderr, "TAC_VARDEC" );

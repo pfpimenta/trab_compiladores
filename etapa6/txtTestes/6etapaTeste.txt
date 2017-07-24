@@ -15,11 +15,11 @@ byte main()
 
 
   x = 2;
-    print "\n primeiro x vale " x;
+  print "\n primeiro x vale " x;
   x = inc(x);
-    print "\n segundo x vale " x " ...\n";
+  print "\n segundo x vale " x " ...\n";
 
-
+  print "digite o valor do novo x: ";
   read x;
 
   when (x == 10) then
@@ -46,10 +46,6 @@ byte main()
 
 short inc (short xInc)
 {
-    when(xInc == 2) then
-    {
-      print "\n xInc igual a 2";
-    };
-    print "\nshort inc\n";
+    print "\nshort xInc eh " xInc "\n";
     return xInc + 1;
 };
