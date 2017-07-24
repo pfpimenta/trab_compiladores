@@ -98,11 +98,16 @@ void asmBeginFun(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 
 void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
-  char* charValue[40];
   strcat(asmString1, "\n## TAC_RETURN\n");
-  sprintf(charValue , "%d", tac->op1->text);
-  sprintf(tempString, "	movl	$%s, %%eax",charValue);
-  strcat(asmString1, tempString);
+  if (isdigit(tac->op1->text[0])){
+    char* charValue[40];
+    sprintf(charValue , "%d", tac->op1->text);
+    sprintf(tempString, "	movl	$%s, %%eax",tac->op1->text);
+    strcat(asmString1, tempString);
+  }else{ //variavel
+    sprintf(tempString, "	movl	%s(%%rip), %%eax",tac->op1->text);
+    strcat(asmString1, tempString);
+  }
 }
 
 void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
@@ -121,7 +126,7 @@ void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
       //fprintf(stderr, " DEBUG 11111\n");
       sprintf(tempString,".LC%d:\n	.string	\"%%d\"\n",printNumber);
       strcat(asmString0, tempString);
-      sprintf(tempString,"\tmovl %s(%%rip), %%eax\n\tmovl %%eax, %%esi\n\tmovl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n", temp->res->text, printNumber);
+      sprintf(tempString,"\tmovl\t%s(%%rip), %%eax\n\tmovl\t%%eax, %%esi\n\tmovl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n", temp->res->text, printNumber);
       strcat(asmString1, tempString);
       printNumber++;
     }
@@ -194,7 +199,7 @@ void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   strcat(asmString1, "\n## TAC_ADD\n");
   setOperandos(tac, asmString0, asmString1, tempString);
   if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "\taddl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->op2->text, tac->res->text);
+    sprintf(tempString, "\taddl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text);
     strcat(asmString1, tempString);
   }else{
     fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );

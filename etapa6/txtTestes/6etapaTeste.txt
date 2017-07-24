@@ -51,5 +51,5 @@ short inc (short xInc)
       print "\n xInc igual a 2";
     };
     print "\nshort inc\n";
-    return 10;
+    return xInc + 1;
 };
