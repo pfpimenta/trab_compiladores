@@ -156,6 +156,9 @@ void tacPrintType(TAC* tac)
     case TAC_JMPFALSE:
       fprintf(stderr, "TAC_JMPFALSE" );
       break;
+    case TAC_PRINTELEMENT:
+      fprintf(stderr, "TAC_PRINTELEMENT" );
+      break;
     default:
       fprintf(stderr, "TAC_UNKNOWN: %i", tac->type );
       break;
@@ -521,7 +524,8 @@ TAC* tacMakeVarDec(ASTREE* node, TAC* code0)
 
 TAC* tacMakePrint(ASTREE* node, TAC* code0)
 {
-  TAC* tacPrint = tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0);
+  //TAC* tacPrint = tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0);
+  TAC* tacPrint = tacCreate(TAC_PRINT, 0, 0, 0); //PRINT_ELEMENTs antes
   return tacJoin(code0, tacPrint);
 }
 
@@ -529,6 +533,25 @@ TAC* tacMakeRead(ASTREE* node)
 {
   TAC* tacRead = tacCreate(TAC_READ, node->symbol, 0, 0);
   return tacRead;
+}
+
+TAC* tacPrintList(ASTREE* node, TAC* code0, TAC* code1)
+{
+  TAC* result;
+  if( !node->son[0] ){
+    fprintf(stderr, "ERRO tacPrintList: n existe node->son[0]\n" );
+  }
+  if(node->son[0]->type == ASTREE_LITSTRING)
+  {
+    result = tacCreate(TAC_PRINTELEMENT, node->son[0]->symbol, 0, 0);
+  }else{ // expr
+    result = tacJoin( code0, tacCreate(TAC_PRINTELEMENT, code0?code0->res:0, 0, 0) );
+  }
+  if(code1->type == TAC_SYMBOL)
+  {
+    code1 = tacCreate(TAC_PRINTELEMENT, code1->res, 0, 0);
+  }
+  return tacJoin(code1, result);
 }
 
 TAC* tacGenerate(ASTREE* node){
@@ -557,9 +580,11 @@ TAC* tacGenerate(ASTREE* node){
     case ASTREE_LITREAL:
     case ASTREE_LITCHAR:
     case ASTREE_LITINT:
-    case ASTREE_LITSTRING:
     case ASTREE_TKID:
       result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
+      break;
+    case ASTREE_LITSTRING: //so aparece no print
+      result = tacCreate(TAC_PRINTELEMENT, node->symbol, 0, 0);
       break;
     case ASTREE_KWWHENTHEN:
       result = tacMakeWhen(node, code[0], code[1]);
@@ -621,6 +646,10 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_KWREAD:
       result = tacMakeRead(node);
+      break;
+    case ASTREE_PRINTLIST:
+      fprintf(stderr, " DEBUG 11111\n");
+      result = tacPrintList(node, code[0], code[1]);
       break;
     default:
       result = tacJoin( tacJoin( tacJoin(code[0], code[1]), code[2]), code[3]);

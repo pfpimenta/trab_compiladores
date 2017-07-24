@@ -36,6 +36,7 @@
 #define TAC_GREATER 30
 #define TAC_AND 31
 #define TAC_JMPFALSE 32 //jump if o op1 for false
+#define TAC_PRINTELEMENT 33 // tipo tac_symbol
 
 //codigo aqui
 

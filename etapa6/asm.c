@@ -107,12 +107,25 @@ void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 
 void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
+  TAC* temp;
   strcat(asmString1, "\n## TAC_PRINT\n");
-  sprintf(tempString,".LC%d:\n	.string	%s\n",printNumber,tac->res->text);
-  strcat(asmString0, tempString);
-  sprintf(tempString,"	movl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n",printNumber);
-  strcat(asmString1, tempString);
-  printNumber++;
+  for(temp = tac->prev; (temp) && (temp->type == TAC_PRINTELEMENT || temp->type == TAC_SYMBOL); temp = temp->prev){
+    if(temp->type != TAC_SYMBOL) //ignora TAC_SYMBOLs
+    if(temp->res->type == SYMBOL_LIT_STRING){
+      sprintf(tempString,".LC%d:\n	.string	%s\n",printNumber,temp->res->text);
+      strcat(asmString0, tempString);
+      sprintf(tempString,"	movl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n",printNumber);
+      strcat(asmString1, tempString);
+      printNumber++;
+    }else{ //expr
+      //fprintf(stderr, " DEBUG 11111\n");
+      sprintf(tempString,".LC%d:\n	.string	\"%%d\"\n",printNumber);
+      strcat(asmString0, tempString);
+      sprintf(tempString,"\tmovl %s(%%rip), %%eax\n\tmovl %%eax, %%esi\n\tmovl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n", temp->res->text, printNumber);
+      strcat(asmString1, tempString);
+      printNumber++;
+    }
+  }
 }
 
 void asmRead(TAC* tac, char* asmString0, char* asmString1, char* tempString)
@@ -467,7 +480,6 @@ char* generateAsm (TAC* first)
           asmVecWrite(tac, asmString0, asmString1, tempString);
           break;
       case TAC_MOV:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmMov(tac, asmString0, asmString1, tempString);
           break;
       case TAC_READ:
@@ -479,10 +491,8 @@ char* generateAsm (TAC* first)
           asmPrint(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ARG:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           break;
       case TAC_CALL:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmCall(tac, asmString0, asmString1, tempString);
           break;
       case TAC_IFZ:
@@ -498,27 +508,22 @@ char* generateAsm (TAC* first)
           asmJump(tac, asmString0, asmString1, tempString);
           break;
       case TAC_SUB:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmSub(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ADD:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmAdd(tac, asmString0, asmString1, tempString);
           break;
       case TAC_MUL:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmMul(tac, asmString0, asmString1, tempString);
           break;
       case TAC_DIV:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmMul(tac, asmString0, asmString1, tempString);
           break;
       case TAC_INC:
-          //asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmInc(tac, asmString0, asmString1, tempString);
           break;
       case TAC_PARAM:
-          //todas variaveis sao globaiss
+          //todas variaveis sao globais
           asmParam(tac, asmString0, asmString1, tempString);
           break;
       case TAC_OR:
@@ -547,6 +552,9 @@ char* generateAsm (TAC* first)
           break;
       case TAC_JMPFALSE:
           asmJmpFalse(tac, asmString0, asmString1, tempString);
+          break;
+      case TAC_PRINTELEMENT:
+          //nao faz nada, eh processado na tacPrint
           break;
       default:
         fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );

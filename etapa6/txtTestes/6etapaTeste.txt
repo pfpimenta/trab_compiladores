@@ -13,9 +13,14 @@ byte main()
 {
   print "\nasfds\n :-( \n";
 
-  x = 2;
-  x = inc(x);
 
+  x = 2;
+    print "\n primeiro x vale " x;
+  x = inc(x);
+    print "\n segundo x vale " x " ...\n";
+
+
+  read x;
 
   when (x == 10) then
       print "\nx  eh 10 !!!!!!\n";
@@ -43,8 +48,8 @@ short inc (short xInc)
 {
     when(xInc == 2) then
     {
-      print "\n aqui!!";
+      print "\n xInc igual a 2";
     };
-    print "short inc";
-    return 8;
+    print "\nshort inc\n";
+    return 10;
 };
