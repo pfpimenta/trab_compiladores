@@ -1,0 +1,52 @@
+//programa teste para a etapa6
+
+x: long 9;
+i: byte 0;
+v: long[3] 1 2 3;
+f: float 12.12;
+c: byte 'c';
+vector: byte[10];
+vchar: byte[2] 'a' 'b';
+vfloat: float[3] 1.23 12.3 123.0;
+
+byte main()
+{
+  print "\nasfds\n :-( \n";
+
+
+  x = 2;
+  print "\n primeiro x vale " x;
+  x = inc(x);
+  print "\n segundo x vale " x " ...\n";
+
+  print "digite o valor do novo x: ";
+  read x;
+
+  when (x == 10) then
+      print "\nx  eh 10 !!!!!!\n";
+  when (x >= 5 || x<= 2) then
+      print "\nx maior ou igual a 5 ou menor ou igual a 2\n";
+  when (x < 8 && x > 3) then
+      print "\nx menor que 8 e maior que 3\n";
+  when( x >= 1 && x <= 3) then
+      print "x entre 1 e 3\n";
+
+  when (x == 10) then {
+      print "\nx eh 10 mesmo\n";
+  }else{
+    print "\nx nao eh 10\n";
+  };
+
+
+  for( i = 3 to 10)
+      print "oi\n";
+
+  print "\nfim\n";
+};
+
+
+short inc (short xInc)
+{
+    print "\nshort xInc eh " xInc "\n";
+    return xInc + 1;
+};

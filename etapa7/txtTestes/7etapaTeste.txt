@@ -1,0 +1,13 @@
+//programa teste para a etapa6
+
+x: long 9;
+i: byte 0;
+v: long[10] 1 2 3 4 5 6 7 8 9 10;
+
+byte main()
+{
+  print "\ninicio\n";
+
+  for( i = 1 to 5)
+    print "\n i: " i "\n";
+};
