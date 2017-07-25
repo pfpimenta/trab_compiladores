@@ -6,6 +6,7 @@
     #include "astree.h"
     #include "semantic.h"
     void yyerror(char *s);
+    int sintaticErrorFlag = 0;
 
 %}
 
@@ -66,6 +67,7 @@
 %type <astree> printelement
 %type <astree> args
 %type <astree> argstail
+%type <astree> panicmode
 
 %left OPERATOR_AND OPERATOR_OR
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
@@ -83,6 +85,7 @@ declist: dec declist { $$ = astreeCreate(ASTREE_PROGRAM, NULL, getLineNumber(), 
     ;
 dec: funcdec  { $$ = $1; }
     | vardec { $$ = $1; }
+    | panicmode { $$ = 0; }
     ;
 vardec: TK_IDENTIFIER ':' vartypeandvalue ';' { $$ = astreeCreate(ASTREE_VARDEC, $1, getLineNumber(), $3, 0, 0, 0); }
     ;
@@ -131,6 +134,7 @@ funcbody: cmd { $$ = $1; }
     ;
 
 cmdlist : cmdlist cmd ';' { $$ = astreeCreate(ASTREE_CMDLIST, NULL, getLineNumber(), $1, $2, 0, 0); }
+    | cmdlist panicmode { $$ = $1; }
     | /* nada */ { $$ = 0; }
     ;
 
@@ -191,6 +195,8 @@ argstail: ',' expr argstail { $$ = astreeCreate(ASTREE_ARGSTAIL, NULL, getLineNu
 	|  /* nada */ { $$ = 0; }
 	;
 
+panicmode: error ';' { yyerrok; sintaticErrorFlag = 1;} //recuperacao de erros
+  ;
 
 
 %%
@@ -200,5 +206,6 @@ void yyerror(char *s)
     int lineNum = getLineNumber();
     fprintf(stdout, "ERROR\n%s\nna linha: %i\n\n   ", s, lineNum);
 
-    exit(3);
+
+    //exit(3);
 }

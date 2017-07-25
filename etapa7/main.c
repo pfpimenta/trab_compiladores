@@ -9,13 +9,12 @@
 
 extern ASTREE* root;
 extern int semanticErrorFlag;
+extern int sintaticErrorFlag;
 
 int writeToFile(char* path, char* programString)
 {
 	FILE* file;
-
 	file = fopen(path,"w");
-
 	if(file == NULL)
 	{
 		fprintf(stderr,"ERROR: Couldn't open %s\n",path);
@@ -23,14 +22,12 @@ int writeToFile(char* path, char* programString)
 	}
 
 	fprintf(file,"%s",programString);
-
 	return 1;
 }
 
 int main(int argc, char** argv)
 {
 	TAC* tac;
-	//printf("debug");
 	if(argc < 2){ // insuficient arguments
         	printf("\nerror : insuficient arguments\n");
 		exit(1);}
@@ -39,11 +36,16 @@ int main(int argc, char** argv)
        		printf("\nerror : couldn't open input file\n");
 					exit(1);}
 
-
 	initMe();
 
+	sintaticErrorFlag = 0;
   yyparse();
 
+	if(sintaticErrorFlag)
+	{
+		fprintf(stderr, "---- sintatic error found! ----\n");
+		//exit(3);
+	}
 	//char* decompiledASTREE = astreeDecompile(root);
 	//astreePrint(root, 0);
  	//writeToFile(argv[2],decompiledASTREE);
@@ -58,15 +60,17 @@ int main(int argc, char** argv)
 	}
 
 	tac = tacGenerate(root);
-	tacPrintBack(tacReverse(tac)); //print da etapa 5
+	//tacPrintBack(tacReverse(tac)); //print da etapa 5
 
 	char* asmString = generateAsm(tacGetFirst(tac)); //etapa6
-
 	writeToFile("testProgram.s",asmString);
 
   //se chegou ate aqui, o programa de input esta correto
-  fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
-  exit(0);
+	if( ! semanticErrorFlag && ! sintaticErrorFlag)
+	{
+		  fprintf(stderr,"\n\nprograma %s aceito\n", argv[1]);
+		  exit(0);
+	}
 
   return 1;
 }

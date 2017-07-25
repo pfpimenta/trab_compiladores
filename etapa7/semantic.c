@@ -377,7 +377,6 @@ void semanticSetDeclarations(ASTREE* node)
       semanticParam(node);
       break;
     default:
-      //fprintf(stderr, "ERRO QUE NAO DEVIA ACONTECER\n");
       //fprintf(stderr, "tipo da astree fora do switch case\n");
       //fprintf(stderr, "(semanticSetDeclarations)\n");
       break;

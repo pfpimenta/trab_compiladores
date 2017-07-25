@@ -18,14 +18,10 @@ long main()
   a = v[15-12+0];
   v#2 = 4;
 
-  for (i = 1 to 10)
+  for (i = (2==2) to 10) //ERRO SEMANTICO: essa expr nao pode ser booleana
     print i " ";
 
-  d = incn(d, d);
-  d = idFunc(d, d);   // ERRO SEMANTICO
-  d = otherFunc(d,d,d,d,d);
-  d = otherFunc(d,d); // ERRO SEMANTICO
-  d = // ERRO SINTATICO
+  a = ; // ERRO SINTATICO
 
   print " Digite um numero: \n";
   read i;
@@ -44,7 +40,7 @@ long main()
   ;;;
   {;};
   {};
-  };
+};
 
 long incn (long x, long n)
   return x+n;
