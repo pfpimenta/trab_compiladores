@@ -57,6 +57,20 @@ TAC* tacJoin(TAC* code1, TAC* code2)
   return code2;
 }
 
+TAC* tacCopy(TAC* tac)
+{
+  TAC* tacCopy = 0;
+  TAC* tacTemp;
+  if(!tac) return 0;
+  //tacPrintBack(tacReverse(tac));
+  for( tacTemp = tacGetFirst(tac); tacTemp; tacTemp = tacTemp->next)
+  {
+    tacCopy = tacJoin(tacCopy, tacCreate(tacTemp->type, tacTemp->res, tacTemp->op1, tacTemp->op2) );
+  }
+  //tacPrintBack(tacReverse(tacCopy));
+  return tacCopy;
+}
+
 void tacPrintType(TAC* tac)
 {
   switch (tac->type) {
@@ -299,20 +313,39 @@ TAC* tacMakeWhenElse(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 TAC* tacMakeFor(ASTREE* node, TAC* code0, TAC* code1, TAC* code2)
 {
   //for (son0 to son1) son2
-  HASH_NODE* tempvar = makeTemporary();
-  HASH_NODE* begginingLabel = makeLabel();
-  HASH_NODE* endLabel = makeLabel();
-  TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0?code0->res:0, 0);
-  TAC* tacBegginingLabel = tacCreate(TAC_LABEL, begginingLabel,0, 0);
-  TAC* tacSub = tacCreate(TAC_SUB, tempvar, code1?code1->res:0, node->symbol);
-  TAC* tacIfn = tacCreate(TAC_IFN,endLabel,tempvar,0);
-  TAC* tacInc = tacCreate(TAC_INC,node->symbol, node->symbol, 0);
-  TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
-  TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-  // join order: code0 mov code1 begginingLabel sub ifn code2 inc jmp endLabel
-  return tacJoin(code0, tacJoin(tacMov, tacJoin(code1, tacJoin(tacBegginingLabel,
-            tacJoin(tacSub, tacJoin(tacIfn, tacJoin(code2,
-            tacJoin(tacInc, tacJoin(tacJmp, tacEndLabel)))))))));
+
+  if(isdigit(code0->res->text[0]) && isdigit(code1->res->text[0])) //loop unroll
+  {
+      TAC* tacFor;
+      int forInitValue = atoi(code0->res->text);
+      int forEndValue = atoi(code1->res->text);
+      TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0?code0->res:0, 0);
+      //fprintf(stderr, " %d ate %d\n", forInitValue, forEndValue );
+      int i;
+      for(i = forInitValue; i <= forEndValue; i++){
+          TAC* tacInc = tacCreate(TAC_INC,node->symbol, node->symbol, 0);
+          TAC* code1copy = tacCopy(code2);
+          //tac join order: code1copy inc
+          tacFor = tacJoin(tacFor, tacJoin(code1copy, tacInc));
+      }
+      return tacJoin(tacMov, tacFor);
+
+  }else{ //sem loop unroll
+      HASH_NODE* tempvar = makeTemporary();
+      HASH_NODE* begginingLabel = makeLabel();
+      HASH_NODE* endLabel = makeLabel();
+      TAC* tacMov = tacCreate(TAC_MOV, node->symbol, code0?code0->res:0, 0);
+      TAC* tacBegginingLabel = tacCreate(TAC_LABEL, begginingLabel,0, 0);
+      TAC* tacSub = tacCreate(TAC_SUB, tempvar, code1?code1->res:0, node->symbol);
+      TAC* tacIfn = tacCreate(TAC_IFN,endLabel,tempvar,0);
+      TAC* tacInc = tacCreate(TAC_INC,node->symbol, node->symbol, 0);
+      TAC* tacJmp = tacCreate(TAC_JMP, begginingLabel, 0, 0);
+      TAC* tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+      // join order: code0 mov code1 begginingLabel sub ifn code2 inc jmp endLabel
+      return tacJoin(code0, tacJoin(tacMov, tacJoin(code1, tacJoin(tacBegginingLabel,
+                tacJoin(tacSub, tacJoin(tacIfn, tacJoin(code2,
+                tacJoin(tacInc, tacJoin(tacJmp, tacEndLabel)))))))));
+  }
 }
 
 TAC* tacOp(ASTREE* node, TAC* code0, TAC* code1)
