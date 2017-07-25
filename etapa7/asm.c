@@ -576,7 +576,7 @@ char* generateAsm (TAC* first)
           asmGreater(tac, asmString0, asmString1, tempString);
           break;
       case TAC_AND:
-          asmAdd(tac, asmString0, asmString1, tempString);
+          asmAnd(tac, asmString0, asmString1, tempString);
           break;
       case TAC_JMPFALSE:
           asmJmpFalse(tac, asmString0, asmString1, tempString);
