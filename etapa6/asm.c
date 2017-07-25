@@ -150,22 +150,24 @@ void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempStri
 {
   int index ;
   if(tac->res){
-    if(tac->res->text[0] == '_')
+    if(tac->res->text[0] == '_' && tac->res->text[3] == 't')
     {
       index = tac->res->text[7] - '0';
       if(declaredTemps[9]==1){
         index = (tac->res->text[8] - '0') + 10;
+        //fprintf(stderr, "\nDEBUG %s --- %i\n", tac->res->text, index );
       }
       if(declaredTemps[index] == 0)
       {
         declaredTemps[index] = 1;
         sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
         strcat(asmString0, tempString);
+        //fprintf(stderr, "\nDEBUG2 %s --- %i\n", tac->res->text, index );
       }
     }
   }
   if(tac->op1){
-    if(tac->op1->text[0] == '_')
+    if(tac->op1->text[0] == '_' && tac->op1->text[3] == 't')
     {
       index = tac->op1->text[7] - '0';
       if(declaredTemps[9]==1){
@@ -173,13 +175,14 @@ void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempStri
       }
       if(declaredTemps[index] == 0)
       {
+        declaredTemps[index] = 1;
         sprintf(tempString, "	.comm	%s,4,4\n", tac->op1->text);
         strcat(asmString0, tempString);
       }
     }
   }
   if(tac->op2){
-    if(tac->op2->text[0] == '_')
+    if(tac->op2->text[0] == '_' && tac->op2->text[3] == 't')
     {
       index = tac->op2->text[7] - '0';
       if(declaredTemps[9]==1){
@@ -187,6 +190,7 @@ void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempStri
       }
       if(declaredTemps[index] == 0)
       {
+        declaredTemps[index] = 1;
         sprintf(tempString, "	.comm	%s,4,4\n", tac->op2->text);
         strcat(asmString0, tempString);
       }
@@ -241,7 +245,7 @@ void asmDiv(TAC* tac, char* asmString0, char* asmString1, char* tempString)
       if(isdigit(tac->op1->text[0]) && isdigit(tac->op2->text[0]))
       {
         int divValue = atoi(tac->op1->text) / atoi(tac->op2->text);
-        fprintf(stderr, "\ndebug %i\n", divValue);
+        //fprintf(stderr, "\ndebug %i\n", divValue);
         sprintf(tempString, "\tmovl	$%i,%s(%%rip)\n", divValue, tac->res->text);
         strcat(asmString1, tempString);
       }else if(isdigit(tac->op1->text[0]))
@@ -462,7 +466,7 @@ char* generateAsm (TAC* first)
   char* tempString[ASM_STRING_SIZE];
 
   strcat(asmString0, "###\n### string0\n	.data\n");
-  strcat(asmString1, "###\n### string1\n	.text\n");
+  strcat(asmString1, "###\n###\n###\n###\n### string1\n	.text\n");
 
 
   strcat(asmString1, "	.file	\"testProgram.c\"\n");
@@ -534,6 +538,7 @@ char* generateAsm (TAC* first)
           asmSub(tac, asmString0, asmString1, tempString);
           break;
       case TAC_ADD:
+          asmDeclareTemp(tac, asmString0, asmString1, tempString);
           asmAdd(tac, asmString0, asmString1, tempString);
           break;
       case TAC_MUL:

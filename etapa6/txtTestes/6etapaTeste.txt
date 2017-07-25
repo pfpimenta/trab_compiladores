@@ -28,7 +28,8 @@ byte main()
       print "\nx maior ou igual a 5 ou menor ou igual a 2\n";
   when (x < 8 && x > 3) then
       print "\nx menor que 8 e maior que 3\n";
-
+  when( x >= 1 && x <= 3) then
+      print "x entre 1 e 3\n";
 
   when (x == 10) then {
       print "\nx eh 10 mesmo\n";

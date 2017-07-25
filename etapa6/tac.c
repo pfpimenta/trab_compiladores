@@ -566,7 +566,6 @@ TAC* tacGenerate(ASTREE* node){
   {
     code[i] = tacGenerate(node->son[i]);
   }
-  //fprintf(stderr, "\nDEBUG SEGMENTATION 1\n" );
 
   switch (node->type) {
     case ASTREE_INTLIST:
@@ -626,7 +625,6 @@ TAC* tacGenerate(ASTREE* node){
       break;
     case ASTREE_ARGS:
     case ASTREE_ARGSTAIL:
-      //fprintf(stderr, "\nDEBUG\n" );
       result = tacJoin(tacMakeArgs(node, code[0]), code[1]);
       break;
     case ASTREE_ATRIB:
@@ -648,7 +646,6 @@ TAC* tacGenerate(ASTREE* node){
       result = tacMakeRead(node);
       break;
     case ASTREE_PRINTLIST:
-      fprintf(stderr, " DEBUG 11111\n");
       result = tacPrintList(node, code[0], code[1]);
       break;
     default:
